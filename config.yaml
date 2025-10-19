@@ -1,16 +1,56 @@
-baseurl: https://kevinWangSheng.github.io/
+baseurl: https://kevinwangsheng.github.io/my-blog/
 languageCode: zh-cn
 theme: stack
-title: my-blog
+title: Shawn在路上
+hasCJKLanguage: true
 
 params:
   mainSections:
     - posts
-  
+
   sidebar:
-    emoji: 🚀
-    subtitle: blog
-    
+    emoji: 💻
+    subtitle: 寻找方向 | 记录思考
+    avatar:
+      enabled: false
+
+  article:
+    math: false
+    toc: true
+    readingTime: true
+    license:
+      enabled: false
+
+  comments:
+    enabled: false
+
   colorScheme:
     toggle: true
-    default: dark  # 默认暗色主题
+    default: light  # 改为默认亮色主题,符合GitHub风格
+
+menu:
+  main:
+    - identifier: home
+      name: 首页
+      url: /
+      weight: 1
+    - identifier: archives
+      name: 归档
+      url: /archives/
+      weight: 2
+    - identifier: categories
+      name: 分类
+      url: /categories/
+      weight: 3
+    - identifier: tags
+      name: 标签
+      url: /tags/
+      weight: 4
+
+markup:
+  highlight:
+    style: github  # GitHub代码高亮风格
+    lineNos: true
+  goldmark:
+    renderer:
+      unsafe: true

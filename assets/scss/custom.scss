@@ -1,0 +1,236 @@
+/* GitHub风格自定义样式 */
+
+/* GitHub配色方案 - 亮色主题 */
+:root {
+    /* GitHub白色背景和边框 */
+    --body-background: #ffffff;
+    --card-background: #ffffff;
+    --card-separator-color: #d0d7de;
+    --border-color: #d0d7de;
+
+    /* GitHub文字颜色 */
+    --body-text-color: #24292f;
+    --heading-color: #24292f;
+    --accent-color: #0969da; /* GitHub蓝色链接 */
+    --accent-color-darker: #0550ae;
+    --accent-color-text: #ffffff;
+
+    /* GitHub代码块样式 */
+    --code-background-color: #f6f8fa;
+    --code-text-color: #24292f;
+    --pre-background-color: #f6f8fa;
+    --pre-text-color: #24292f;
+
+    /* GitHub引用块 */
+    --blockquote-border-color: #d0d7de;
+    --blockquote-background-color: #f6f8fa;
+
+    /* 标签样式 */
+    --tag-background-color: #ddf4ff;
+    --tag-text-color: #0969da;
+}
+
+/* 暗色主题 - GitHub Dark */
+[data-scheme="dark"] {
+    --body-background: #0d1117;
+    --card-background: #161b22;
+    --card-separator-color: #30363d;
+    --border-color: #30363d;
+
+    --body-text-color: #c9d1d9;
+    --heading-color: #c9d1d9;
+    --accent-color: #58a6ff;
+    --accent-color-darker: #1f6feb;
+    --accent-color-text: #ffffff;
+
+    --code-background-color: #161b22;
+    --code-text-color: #c9d1d9;
+    --pre-background-color: #161b22;
+    --pre-text-color: #c9d1d9;
+
+    --blockquote-border-color: #30363d;
+    --blockquote-background-color: #161b22;
+
+    --tag-background-color: #1c2837;
+    --tag-text-color: #58a6ff;
+}
+
+/* 文章卡片样式 - GitHub风格 */
+.article-list article {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: border-color 0.2s ease;
+}
+
+.article-list article:hover {
+    border-color: var(--accent-color);
+}
+
+/* GitHub风格的链接 */
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--accent-color-darker);
+    text-decoration: underline;
+}
+
+/* GitHub风格的代码块 */
+code {
+    background-color: var(--code-background-color);
+    color: var(--code-text-color);
+    padding: 0.2em 0.4em;
+    border-radius: 6px;
+    font-size: 85%;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+pre {
+    background-color: var(--pre-background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 16px;
+    overflow: auto;
+    line-height: 1.45;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    font-size: 100%;
+}
+
+/* GitHub风格的引用块 */
+blockquote {
+    padding: 0 1em;
+    color: var(--body-text-color);
+    border-left: 0.25em solid var(--blockquote-border-color);
+    background-color: var(--blockquote-background-color);
+    margin: 0 0 16px 0;
+    border-radius: 0 6px 6px 0;
+}
+
+/* GitHub风格的表格 */
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+table th,
+table td {
+    padding: 6px 13px;
+    border: 1px solid var(--border-color);
+}
+
+table tr {
+    background-color: var(--card-background);
+    border-top: 1px solid var(--border-color);
+}
+
+table tr:nth-child(2n) {
+    background-color: var(--code-background-color);
+}
+
+/* GitHub风格的标签 */
+.article-tags a {
+    background-color: var(--tag-background-color);
+    color: var(--tag-text-color);
+    padding: 0 7px;
+    border-radius: 2em;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 18px;
+}
+
+/* GitHub风格的按钮 */
+button,
+.button {
+    background-color: #f6f8fa;
+    border: 1px solid rgba(27, 31, 36, 0.15);
+    border-radius: 6px;
+    color: #24292f;
+    padding: 5px 16px;
+    font-weight: 500;
+    line-height: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+}
+
+button:hover,
+.button:hover {
+    background-color: #f3f4f6;
+    border-color: rgba(27, 31, 36, 0.15);
+}
+
+[data-scheme="dark"] button,
+[data-scheme="dark"] .button {
+    background-color: #21262d;
+    border-color: rgba(240, 246, 252, 0.1);
+    color: #c9d1d9;
+}
+
+[data-scheme="dark"] button:hover,
+[data-scheme="dark"] .button:hover {
+    background-color: #30363d;
+}
+
+/* GitHub风格的分隔线 */
+hr {
+    height: 1px;
+    padding: 0;
+    margin: 24px 0;
+    background-color: var(--border-color);
+    border: 0;
+}
+
+/* 标题样式 */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--heading-color);
+    font-weight: 600;
+    line-height: 1.25;
+    margin-top: 24px;
+    margin-bottom: 16px;
+}
+
+h1 {
+    font-size: 2em;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.3em;
+}
+
+h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.3em;
+}
+
+/* 侧边栏优化 */
+.sidebar {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 16px;
+}
+
+/* 列表样式 */
+ul, ol {
+    padding-left: 2em;
+    margin-bottom: 16px;
+}
+
+li {
+    margin-top: 0.25em;
+}
+
+/* 图片样式 */
+img {
+    max-width: 100%;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
