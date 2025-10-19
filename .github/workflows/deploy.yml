@@ -6,6 +6,12 @@ on:
       - main  # 当推送到main分支时自动部署
   workflow_dispatch:  # 允许手动触发
 
+# 添加权限设置
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

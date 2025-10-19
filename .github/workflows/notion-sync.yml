@@ -5,6 +5,12 @@ on:
     - cron: '0 */6 * * *'  # 每6小时自动同步
   workflow_dispatch:  # 允许手动触发
 
+# 添加权限设置
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   sync-and-deploy:
     runs-on: ubuntu-latest
