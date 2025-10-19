@@ -1,0 +1,16 @@
+baseurl: https://kevinWangSheng.github.io/
+languageCode: zh-cn
+theme: stack
+title: my-blog
+
+params:
+  mainSections:
+    - posts
+  
+  sidebar:
+    emoji: 🚀
+    subtitle: blog
+    
+  colorScheme:
+    toggle: true
+    default: dark  # 默认暗色主题
