@@ -18,7 +18,12 @@ Rust的所有权系统是它最核心的特性之一。
 1. 所有者离开作用域,值被丢弃
 ### 代码示例
 
-rust   fn main() {       let s1 = String::from("hello");       let s2 = s1; // s1的所有权转移       println!("{}", s2);   }
+```rust
+rust   fn main() {
+       let s1 = String::from("hello");       let s2 = s1; // s1的所有权转移       println!("{}", s2);   
+      
+}
+```
 
 ### 今天的收获
 
