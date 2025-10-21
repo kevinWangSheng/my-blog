@@ -22,40 +22,47 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      # 2. 从Notion同步文章
-      - name: Notion to Markdown
-        uses: yucchiy/notion-to-markdown@v0.3.2
+      # 2. 设置 Python 环境
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          notion_auth_token: ${{ secrets.NOTION_TOKEN }}
-          notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
-          output_directory_path_template: 'content/posts/{{slug}}.md'
-          
-      # 3. 安装Hugo
+          python-version: '3.11'
+
+      # 3. 从Notion同步文章
+      - name: Sync from Notion
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: |
+          pip install notion-client
+          python scripts/notion-sync.py
+
+      # 4. 安装Hugo
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
           extended: true
 
-      # 4. 构建网站
+      # 5. 构建网站
       - name: Build
         run: hugo --minify
 
-      # 5. 提交更改
+      # 6. 提交更改
       - name: Commit files
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add -A
           git diff-index --quiet HEAD || git commit -m "Sync from Notion $(date +'%Y-%m-%d %H:%M:%S')"
-          
-      # 6. 推送到GitHub
+
+      # 7. 推送到GitHub
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      # 7. 部署到GitHub Pages
+      # 8. 部署到GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
