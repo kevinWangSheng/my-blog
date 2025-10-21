@@ -1,10 +1,32 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-    <channel>
-        <title>my-blog</title>
-        <link>http://localhost:1313/</link>
-        <description>Recent content on my-blog</description>
-        <generator>Hugo -- gohugo.io</generator>
-        <language>zh-cn</language><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-    </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Shawn在路上</title><link>https://kevinwangsheng.github.io/my-blog/</link><description>Recent content on Shawn在路上</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Tue, 21 Oct 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://kevinwangsheng.github.io/my-blog/index.xml" rel="self" type="application/rss+xml"/><item><title>Untitled</title><link>https://kevinwangsheng.github.io/my-blog/posts/untitled/</link><pubDate>Tue, 21 Oct 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/untitled/</guid><description/></item><item><title>测试notion和github同步:Rust所有权系统</title><link>https://kevinwangsheng.github.io/my-blog/posts/%E6%B5%8B%E8%AF%95notion%E5%92%8Cgithub%E5%90%8C%E6%AD%A5rust%E6%89%80%E6%9C%89%E6%9D%83%E7%B3%BB%E7%BB%9F/</link><pubDate>Sun, 19 Oct 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/%E6%B5%8B%E8%AF%95notion%E5%92%8Cgithub%E5%90%8C%E6%AD%A5rust%E6%89%80%E6%9C%89%E6%9D%83%E7%B3%BB%E7%BB%9F/</guid><description>&lt;h1 id="这里是测试"&gt;这里是测试
+&lt;/h1&gt;&lt;h2 id="什么是所有权"&gt;什么是所有权?
+&lt;/h2&gt;&lt;p&gt;Rust的所有权系统是它最核心的特性之一。&lt;/p&gt;
+&lt;h3 id="三大规则"&gt;三大规则
+&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;每个值都有一个所有者&lt;/li&gt;
+&lt;li&gt;同一时间只能有一个所有者&lt;/li&gt;
+&lt;li&gt;所有者离开作用域,值被丢弃&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id="代码示例"&gt;代码示例
+&lt;/h3&gt;&lt;p&gt;rust fn main() { let s1 = String::from(&amp;ldquo;hello&amp;rdquo;); let s2 = s1; // s1的所有权转移 println!(&amp;quot;{}&amp;quot;, s2); }&lt;/p&gt;
+&lt;h3 id="今天的收获"&gt;今天的收获
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;理解了所有权转移&lt;/li&gt;
+&lt;li&gt;学会了借用的概念&lt;/li&gt;
+&lt;li&gt;掌握了生命周期标注&lt;/li&gt;
+&lt;/ul&gt;</description></item><item><title>我的第一篇博客</title><link>https://kevinwangsheng.github.io/my-blog/posts/my-first-post/</link><pubDate>Sun, 19 Jan 2025 20:00:00 +0800</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/my-first-post/</guid><description>&lt;h2 id="今天做了什么"&gt;今天做了什么
+&lt;/h2&gt;&lt;p&gt;今天成功搭建了自己的博客系统!&lt;/p&gt;
+&lt;h3 id="技术栈"&gt;技术栈
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Hugo静态网站生成器&lt;/li&gt;
+&lt;li&gt;Stack主题&lt;/li&gt;
+&lt;li&gt;Notion作为CMS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="学习内容"&gt;学习内容
+&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;学习了Hugo的基本使用&lt;/li&gt;
+&lt;li&gt;配置了GitHub Actions自动部署&lt;/li&gt;
+&lt;li&gt;掌握了Markdown写作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;明天继续学习Rust! 🚀&lt;/p&gt;</description></item></channel></rss>
