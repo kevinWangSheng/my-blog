@@ -24,11 +24,11 @@ jobs:
 
       # 2. 从Notion同步文章
       - name: Notion to Markdown
-        uses: novuhq/notion-to-github-sync-action@v1
+        uses: yucchiy/notion-to-markdown@v0.3.2
         with:
-          notion-token: ${{ secrets.NOTION_TOKEN }}
-          notion-database-id: ${{ secrets.NOTION_DATABASE_ID }}
-          output-folder: 'content/posts'
+          notion_auth_token: ${{ secrets.NOTION_TOKEN }}
+          notion_database_id: ${{ secrets.NOTION_DATABASE_ID }}
+          output_directory_path_template: 'content/posts/{{slug}}.md'
           
       # 3. 安装Hugo
       - name: Setup Hugo
