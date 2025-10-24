@@ -34,7 +34,7 @@ jobs:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: |
-          pip install notion-client
+          pip install notion-client==2.5.0
           python scripts/notion-sync.py
 
       # 4. 安装Hugo
