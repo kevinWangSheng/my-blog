@@ -155,8 +155,12 @@ def sync_notion_to_hugo():
     print(f"数据库 ID: {NOTION_DATABASE_ID}")
 
     try:
-        # 查询数据库
-        response = notion.databases.query(database_id=NOTION_DATABASE_ID)
+        # 查询数据库 (使用新版 API: data_sources.query)
+        response = notion.data_sources.query(
+            **{
+                "data_source_id": NOTION_DATABASE_ID
+            }
+        )
         pages = response.get("results", [])
 
         print(f"找到 {len(pages)} 篇文章")
