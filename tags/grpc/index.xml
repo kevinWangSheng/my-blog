@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Shawn在路上</title><link>https://kevinwangsheng.github.io/my-blog/posts/</link><description>Recent content in Posts on Shawn在路上</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 07 Nov 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://kevinwangsheng.github.io/my-blog/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>grpc</title><link>https://kevinwangsheng.github.io/my-blog/posts/grpc/</link><pubDate>Fri, 07 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/grpc/</guid><description>&lt;h1 id="grpc"&gt;grpc
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Grpc on Shawn在路上</title><link>https://kevinwangsheng.github.io/my-blog/tags/grpc/</link><description>Recent content in Grpc on Shawn在路上</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Fri, 07 Nov 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://kevinwangsheng.github.io/my-blog/tags/grpc/index.xml" rel="self" type="application/rss+xml"/><item><title>grpc</title><link>https://kevinwangsheng.github.io/my-blog/posts/grpc/</link><pubDate>Fri, 07 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/grpc/</guid><description>&lt;h1 id="grpc"&gt;grpc
 &lt;/h1&gt;&lt;h2 id="rust-中的-grpc"&gt;rust 中的 grpc
 &lt;/h2&gt;&lt;p&gt;知名度比较高的就是 tonic(完整正式版还没有发布,看相关开发人说 26 年发布第一版)&lt;/p&gt;
 &lt;p&gt;github: &lt;a class="link" href="https://github.com/hyperium/tonic" target="_blank" rel="noopener"
@@ -1220,55 +1220,4 @@ server:&lt;/li&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;ol&gt;
 &lt;li&gt;总结: 简单使用场景下,需要 链接,生成,在配置 server,总体的使用方式不是非常友好,流程也相对复杂.&lt;/li&gt;
-&lt;/ol&gt;</description></item><item><title>Untitled</title><link>https://kevinwangsheng.github.io/my-blog/posts/untitled/</link><pubDate>Fri, 07 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/untitled/</guid><description/></item><item><title>2025-10计划</title><link>https://kevinwangsheng.github.io/my-blog/posts/2025-10%E8%AE%A1%E5%88%92/</link><pubDate>Sat, 25 Oct 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/2025-10%E8%AE%A1%E5%88%92/</guid><description>&lt;h1 id="2025-10-计划"&gt;2025-10 计划
-&lt;/h1&gt;&lt;ol&gt;
-&lt;li&gt;编写剩余的简历内容(2025-10-26截止)&lt;/li&gt;
-&lt;li&gt;学AI工具的具体使用,具体流程(详细的),按照规划内容完成基础练习(AI 模型基础设施优化)&lt;/li&gt;
-&lt;/ol&gt;</description></item><item><title>测试notion和github同步:Rust所有权系统</title><link>https://kevinwangsheng.github.io/my-blog/posts/%E6%B5%8B%E8%AF%95notion%E5%92%8Cgithub%E5%90%8C%E6%AD%A5rust%E6%89%80%E6%9C%89%E6%9D%83%E7%B3%BB%E7%BB%9F/</link><pubDate>Sun, 19 Oct 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/%E6%B5%8B%E8%AF%95notion%E5%92%8Cgithub%E5%90%8C%E6%AD%A5rust%E6%89%80%E6%9C%89%E6%9D%83%E7%B3%BB%E7%BB%9F/</guid><description>&lt;h1 id="rust所有权"&gt;Rust所有权
-&lt;/h1&gt;&lt;h2 id="什么是所有权"&gt;什么是所有权?
-&lt;/h2&gt;&lt;p&gt;Rust的所有权系统是它最核心的特性之一。&lt;/p&gt;
-&lt;h3 id="三大规则"&gt;三大规则
-&lt;/h3&gt;&lt;ol&gt;
-&lt;li&gt;每个值都有一个所有者&lt;/li&gt;
-&lt;li&gt;同一时间只能有一个所有者&lt;/li&gt;
-&lt;li&gt;所有者离开作用域,值被丢弃&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id="代码示例"&gt;代码示例
-&lt;/h3&gt;&lt;div class="highlight"&gt;&lt;div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;
-&lt;table style="border-spacing:0;padding:0;margin:0;border:0;"&gt;&lt;tr&gt;&lt;td style="vertical-align:top;padding:0;margin:0;border:0;"&gt;
-&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;1
-&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;2
-&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;3
-&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;4
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
-&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%"&gt;
-&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;rust&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#cf222e"&gt;fn&lt;/span&gt; &lt;span style="color:#6639ba"&gt;main&lt;/span&gt;&lt;span style="color:#1f2328"&gt;()&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#1f2328"&gt;{&lt;/span&gt;&lt;span style="color:#fff"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#cf222e"&gt;let&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;s1&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;=&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#6639ba"&gt;String&lt;/span&gt;::from&lt;span style="color:#1f2328"&gt;(&lt;/span&gt;&lt;span style="color:#0a3069"&gt;&amp;#34;hello&amp;#34;&lt;/span&gt;&lt;span style="color:#1f2328"&gt;);&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#cf222e"&gt;let&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;s2&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;=&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;s1&lt;span style="color:#1f2328"&gt;;&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#57606a"&gt;// s1的所有权转移 println!(&amp;#34;{}&amp;#34;, s2);
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#57606a"&gt;&lt;/span&gt;&lt;span style="color:#fff"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt;&lt;/span&gt;&lt;span style="color:#1f2328"&gt;}&lt;/span&gt;&lt;span style="color:#fff"&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-&lt;/div&gt;
-&lt;/div&gt;&lt;ol&gt;
-&lt;li&gt;一个变量生命周期消散之后,变量拥有的所有权自动释放 例如&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id="今天的收获"&gt;今天的收获
-&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;理解了所有权转移&lt;/li&gt;
-&lt;li&gt;学会了借用的概念&lt;/li&gt;
-&lt;li&gt;掌握了生命周期标注&lt;/li&gt;
-&lt;/ul&gt;</description></item><item><title>我的第一篇博客</title><link>https://kevinwangsheng.github.io/my-blog/posts/my-first-post/</link><pubDate>Sun, 19 Jan 2025 20:00:00 +0800</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/my-first-post/</guid><description>&lt;h2 id="今天做了什么"&gt;今天做了什么
-&lt;/h2&gt;&lt;p&gt;今天成功搭建了自己的博客系统!&lt;/p&gt;
-&lt;h3 id="技术栈"&gt;技术栈
-&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;Hugo静态网站生成器&lt;/li&gt;
-&lt;li&gt;Stack主题&lt;/li&gt;
-&lt;li&gt;Notion作为CMS&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h3 id="学习内容"&gt;学习内容
-&lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;学习了Hugo的基本使用&lt;/li&gt;
-&lt;li&gt;配置了GitHub Actions自动部署&lt;/li&gt;
-&lt;li&gt;掌握了Markdown写作&lt;/li&gt;
-&lt;/ul&gt;
-&lt;hr&gt;
-&lt;p&gt;明天继续学习Rust! 🚀&lt;/p&gt;</description></item></channel></rss>
+&lt;/ol&gt;</description></item></channel></rss>
