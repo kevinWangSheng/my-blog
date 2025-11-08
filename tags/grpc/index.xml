@@ -1220,4 +1220,93 @@ server:&lt;/li&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;ol&gt;
 &lt;li&gt;总结: 简单使用场景下,需要 链接,生成,在配置 server,总体的使用方式不是非常友好,流程也相对复杂.&lt;/li&gt;
-&lt;/ol&gt;</description></item></channel></rss>
+&lt;/ol&gt;
+&lt;p&gt;如果需要使用统一的流程管理, 可以使用 proto 的管理工具 buf&lt;/p&gt;
+&lt;p&gt;只需要编写对应的buf.yaml 和 buf.gen.yaml 即可,然后再配置 CI/CD 进行生成管理即可&lt;/p&gt;
+&lt;p&gt;进行 buf init 进行生成对应的文件&lt;/p&gt;
+&lt;p&gt;比如对应的 buf.yaml:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;"&gt;&lt;tr&gt;&lt;td style="vertical-align:top;padding:0;margin:0;border:0;"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;1
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;2
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;3
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;4
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;5
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;6
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;7
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;8
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;9
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#0550ae"&gt;version&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;v2&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt;&lt;/span&gt;&lt;span style="color:#0550ae"&gt;modules&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;- &lt;span style="color:#0550ae"&gt;path&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;proto&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt;&lt;/span&gt;&lt;span style="color:#0550ae"&gt;lint&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;use&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;- STANDARD&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#57606a"&gt;#使用标准的规则&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt;&lt;/span&gt;&lt;span style="color:#0550ae"&gt;breaking&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;use&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;- FILE&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;buf.gen.yaml&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;"&gt;&lt;tr&gt;&lt;td style="vertical-align:top;padding:0;margin:0;border:0;"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt; 1
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt; 2
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt; 3
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt; 4
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt; 5
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt; 6
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt; 7
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt; 8
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt; 9
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;10
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;11
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;12
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;13
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;14
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;15
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;16
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;17
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#57606a"&gt;# buf.gen.yaml&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt;&lt;/span&gt;&lt;span style="color:#0550ae"&gt;version&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;v2&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt;&lt;/span&gt;&lt;span style="color:#0550ae"&gt;managed&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;enabled&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#cf222e"&gt;true&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt;&lt;/span&gt;&lt;span style="color:#0550ae"&gt;plugins&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#57606a"&gt;# 使用 buf 的远程插件&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;- &lt;span style="color:#0550ae"&gt;local&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;protoc-gen-prost &lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#57606a"&gt;# 需要使用 cargo install protoc-gen-prost 或者这里指定远程的官方 github 地址&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;out&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;src/pb&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;opt&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;- bytes=.&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#57606a"&gt;# 正确的格式:用点号分隔多个 derive&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;- type_attribute=.=#[derive(serde::Serialize)]&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;- type_attribute=.=#[derive(serde::Deserialize)]&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#57606a"&gt;# 插件 2: tonic (生成 gRPC 服务代码)&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;- &lt;span style="color:#0550ae"&gt;local&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;protoc-gen-tonic&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#57606a"&gt;# 需要使用 cargo install protoc-gen-tonic 或者这里指定远程的官方 github 地址&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;out&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;src/pb&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;完成之后使用 buf generate 即可生成对应的 proto 的 rust 文件到对应指定的目录下&lt;/p&gt;
+&lt;p&gt;对应的生产环境编译,需要在 CI/CD 编写对应的规则即可:&lt;/p&gt;
+&lt;p&gt;这里以 github 为例, 需要在.github/workflows/ci.yml 中进行生成&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;"&gt;&lt;tr&gt;&lt;td style="vertical-align:top;padding:0;margin:0;border:0;"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;1
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;2
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;3
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;4
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;5
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-yaml" data-lang="yaml"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#57606a"&gt;# .github/workflows/ci.yml&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;- &lt;span style="color:#0550ae"&gt;name&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;Check proto changes&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;run&lt;/span&gt;&lt;span style="color:#1f2328"&gt;:&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#1f2328"&gt;|&lt;/span&gt;&lt;span style="color:#0a3069"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#0a3069"&gt; buf generate # push 或者PR 到 main 分支的时候进行执行,以及发布的时候执行生成
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#0a3069"&gt; git diff --exit-code &lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item></channel></rss>
