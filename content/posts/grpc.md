@@ -649,3 +649,65 @@ client
 
 
 
+如果需要使用统一的流程管理, 可以使用 proto 的管理工具 buf 
+
+只需要编写对应的buf.yaml 和 buf.gen.yaml 即可,然后再配置 CI/CD 进行生成管理即可
+
+进行 buf init 进行生成对应的文件
+
+比如对应的 buf.yaml:
+
+```yaml
+version: v2
+modules:
+  - path: proto
+lint:
+  use:
+    - STANDARD #使用标准的规则
+breaking:
+  use:
+    - FILE
+
+```
+
+buf.gen.yaml
+
+```yaml
+# buf.gen.yaml
+version: v2
+managed:
+  enabled: true
+plugins:
+  # 使用 buf 的远程插件
+  - local: protoc-gen-prost  # 需要使用 cargo install protoc-gen-prost 或者这里指定远程的官方 github 地址
+    out: src/pb
+    opt:
+      - bytes=.
+            # 正确的格式:用点号分隔多个 derive
+      - type_attribute=.=#[derive(serde::Serialize)]
+      - type_attribute=.=#[derive(serde::Deserialize)]
+
+      # 插件 2: tonic (生成 gRPC 服务代码)
+  - local: protoc-gen-tonic # 需要使用 cargo install protoc-gen-tonic 或者这里指定远程的官方 github 地址
+    out: src/pb
+
+```
+
+完成之后使用 buf generate 即可生成对应的 proto 的 rust 文件到对应指定的目录下
+
+
+
+对应的生产环境编译,需要在 CI/CD 编写对应的规则即可: 
+
+这里以 github 为例, 需要在.github/workflows/ci.yml 中进行生成
+
+```yaml
+# .github/workflows/ci.yml
+   - name: Check proto changes
+     run: |
+       buf generate # push 或者PR 到 main 分支的时候进行执行,以及发布的时候执行生成
+       git diff --exit-code  
+```
+
+
+
