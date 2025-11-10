@@ -1313,6 +1313,11 @@ server:&lt;/li&gt;
 &lt;/h1&gt;&lt;ol&gt;
 &lt;li&gt;编写剩余的简历内容(2025-10-26截止)&lt;/li&gt;
 &lt;li&gt;学AI工具的具体使用,具体流程(详细的),按照规划内容完成基础练习(AI 模型基础设施优化)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1 id="11-10---11-15-计划"&gt;11-10 - 11-15 计划
+&lt;/h1&gt;&lt;ol&gt;
+&lt;li&gt;调整剩余简历内容,并开始投递&lt;/li&gt;
+&lt;li&gt;&lt;/li&gt;
 &lt;/ol&gt;</description></item><item><title>测试notion和github同步:Rust所有权系统</title><link>https://kevinwangsheng.github.io/my-blog/posts/%E6%B5%8B%E8%AF%95notion%E5%92%8Cgithub%E5%90%8C%E6%AD%A5rust%E6%89%80%E6%9C%89%E6%9D%83%E7%B3%BB%E7%BB%9F/</link><pubDate>Sun, 19 Oct 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/%E6%B5%8B%E8%AF%95notion%E5%92%8Cgithub%E5%90%8C%E6%AD%A5rust%E6%89%80%E6%9C%89%E6%9D%83%E7%B3%BB%E7%BB%9F/</guid><description>&lt;h1 id="rust所有权"&gt;Rust所有权
 &lt;/h1&gt;&lt;h2 id="什么是所有权"&gt;什么是所有权?
 &lt;/h2&gt;&lt;p&gt;Rust的所有权系统是它最核心的特性之一。&lt;/p&gt;
