@@ -64,3 +64,4 @@ warning: Option "(some_random_option)" unknown. Ensure that your proto
 
 
 
+1. stream 关键字,生成带有 tokio 的Stream 的方法,返回一个 future
