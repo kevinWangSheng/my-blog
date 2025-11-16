@@ -86,4 +86,6 @@ option 就是给 protobuf 定义（消息、字段、服务、方法等）添加
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#f6f8fa;background-color:#82071e"&gt;#&lt;/span&gt; &lt;span style="color:#f6f8fa;background-color:#82071e"&gt;✅&lt;/span&gt; &lt;span style="color:#f6f8fa;background-color:#82071e"&gt;代码会正常生成
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;</description></item></channel></rss>
+&lt;/div&gt;&lt;ol&gt;
+&lt;li&gt;stream 关键字,生成带有 tokio 的Stream 的方法,返回一个 future&lt;/li&gt;
+&lt;/ol&gt;</description></item></channel></rss>
