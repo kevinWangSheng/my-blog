@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Grpc on Shawn在路上</title><link>https://kevinwangsheng.github.io/my-blog/tags/grpc/</link><description>Recent content in Grpc on Shawn在路上</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 15 Nov 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://kevinwangsheng.github.io/my-blog/tags/grpc/index.xml" rel="self" type="application/rss+xml"/><item><title>protobuf3</title><link>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</link><pubDate>Sat, 15 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</guid><description>&lt;h1 id="protobuf"&gt;protobuf
-&lt;/h1&gt;&lt;p&gt;protobuf 主要用于编写一些&lt;/p&gt;
-&lt;h2 id="关键字"&gt;关键字
-&lt;/h2&gt;&lt;ol&gt;
+&lt;/h1&gt;&lt;h2 id="一些杂碎"&gt;一些杂碎
+&lt;/h2&gt;&lt;p&gt;protobuf 主要用于编写一些&lt;/p&gt;
+&lt;h3 id="关键字"&gt;关键字
+&lt;/h3&gt;&lt;ol&gt;
 &lt;li&gt;option
 option 就是给 protobuf 定义（消息、字段、服务、方法等）添加&amp;quot;配置元数据&amp;quot;，用来控制代码生成行为或提供运行时信息。主要定义场景:&lt;/li&gt;
 &lt;/ol&gt;
@@ -87,8 +88,39 @@ option 就是给 protobuf 定义（消息、字段、服务、方法等）添加
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;ol&gt;
-&lt;li&gt;stream 关键字,生成带有 tokio 的Stream 的方法,返回一个 future&lt;/li&gt;
-&lt;/ol&gt;</description></item><item><title>grpc</title><link>https://kevinwangsheng.github.io/my-blog/posts/grpc/</link><pubDate>Fri, 07 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/grpc/</guid><description>&lt;h1 id="grpc"&gt;grpc
+&lt;li&gt;stream 关键字,生成带有 tokio 的Stream 的方法,返回一个 future
+比如这个:&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class="highlight"&gt;&lt;div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;"&gt;&lt;tr&gt;&lt;td style="vertical-align:top;padding:0;margin:0;border:0;"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;1
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-protobuf" data-lang="protobuf"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#cf222e"&gt;rpc&lt;/span&gt; BidirectionalStreamingEcho&lt;span style="color:#1f2328"&gt;(&lt;/span&gt;stream EchoRequest&lt;span style="color:#1f2328"&gt;)&lt;/span&gt; &lt;span style="color:#cf222e"&gt;returns&lt;/span&gt; &lt;span style="color:#1f2328"&gt;(&lt;/span&gt;stream EchoResponse&lt;span style="color:#1f2328"&gt;)&lt;/span&gt; &lt;span style="color:#1f2328"&gt;{}&lt;/span&gt;&lt;span style="color:#f6f8fa;background-color:#82071e"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;p&gt;生成的 rust 代码如下:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;"&gt;&lt;tr&gt;&lt;td style="vertical-align:top;padding:0;margin:0;border:0;"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;1
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;2
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;3
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;4
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;5
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;6
+&lt;/span&gt;&lt;span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"&gt;7
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%"&gt;
+&lt;pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-rust" data-lang="rust"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#cf222e"&gt;pub&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#cf222e"&gt;async&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#cf222e"&gt;fn&lt;/span&gt; &lt;span style="color:#6639ba"&gt;bidirectional_streaming_echo&lt;/span&gt;&lt;span style="color:#1f2328"&gt;(&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;&amp;amp;&lt;/span&gt;&lt;span style="color:#cf222e"&gt;mut&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#6a737d"&gt;self&lt;/span&gt;&lt;span style="color:#1f2328"&gt;,&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;request: &lt;span style="color:#1f2328"&gt;impl&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;tonic::IntoStreamingRequest&lt;span style="color:#0550ae"&gt;&amp;lt;&lt;/span&gt;Message&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;=&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#cf222e"&gt;super&lt;/span&gt;::EchoRequest&lt;span style="color:#0550ae"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#1f2328"&gt;,&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#1f2328"&gt;)&lt;/span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;-&amp;gt; &lt;span style="color:#1f2328"&gt;std&lt;/span&gt;::result::&lt;span style="color:#6639ba"&gt;Result&lt;/span&gt;&lt;span style="color:#0550ae"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;tonic::Response&lt;span style="color:#0550ae"&gt;&amp;lt;&lt;/span&gt;tonic::codec::Streaming&lt;span style="color:#0550ae"&gt;&amp;lt;&lt;/span&gt;&lt;span style="color:#cf222e"&gt;super&lt;/span&gt;::EchoResponse&lt;span style="color:#0550ae"&gt;&amp;gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#1f2328"&gt;,&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;tonic::Status&lt;span style="color:#1f2328"&gt;,&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#fff"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;</description></item><item><title>grpc</title><link>https://kevinwangsheng.github.io/my-blog/posts/grpc/</link><pubDate>Fri, 07 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/grpc/</guid><description>&lt;h1 id="grpc"&gt;grpc
 &lt;/h1&gt;&lt;h2 id="rust-中的-grpc"&gt;rust 中的 grpc
 &lt;/h2&gt;&lt;p&gt;知名度比较高的就是 tonic(完整正式版还没有发布,看相关开发人说 26 年发布第一版)&lt;/p&gt;
 &lt;p&gt;github: &lt;a class="link" href="https://github.com/hyperium/tonic" target="_blank" rel="noopener"
