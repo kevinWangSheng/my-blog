@@ -7,13 +7,15 @@ tags: ['grpc', 'protobuf']
 
 # protobuf
 
+## 一些杂碎
+
 
 
 protobuf 主要用于编写一些
 
 
 
-## 关键字
+### 关键字
 
 1. option
 option 就是给 protobuf 定义（消息、字段、服务、方法等）添加"配置元数据"，用来控制代码生成行为或提供运行时信息。主要定义场景:
@@ -65,3 +67,23 @@ warning: Option "(some_random_option)" unknown. Ensure that your proto
 
 
 1. stream 关键字,生成带有 tokio 的Stream 的方法,返回一个 future
+比如这个:
+
+```protobuf
+rpc BidirectionalStreamingEcho(stream EchoRequest) returns (stream EchoResponse) {}
+```
+
+ 生成的 rust 代码如下:
+
+```rust
+pub async fn bidirectional_streaming_echo(
+            &mut self,
+            request: impl tonic::IntoStreamingRequest<Message = super::EchoRequest>,
+        ) -> std::result::Result<
+            tonic::Response<tonic::codec::Streaming<super::EchoResponse>>,
+            tonic::Status,
+        > 
+```
+
+
+
