@@ -120,4 +120,9 @@ option 就是给 protobuf 定义（消息、字段、服务、方法等）添加
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt; &lt;/span&gt;&lt;span style="color:#0550ae"&gt;&amp;gt;&lt;/span&gt;&lt;span style="color:#fff"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;</description></item></channel></rss>
+&lt;/div&gt;&lt;h3 id="streaming"&gt;streaming
+&lt;/h3&gt;&lt;p&gt;这里实现一个例子,理解对应的 streaming 的作用和效果&lt;/p&gt;
+&lt;p&gt;例子: streaming server: 客户端发起请求，服务端持续每秒推送一次当前的 CPU 占用率（模拟）
+• 学习点：如何生成异步流，mpsc 通道的使用。&lt;/p&gt;
+&lt;p&gt;Bidirectional Streaming (RemoteShell): 客户端发送指令流，服务端执行并实时返回输出流
+• 学习点：如何同时处理输入流和输出流，所有权的转移。&lt;/p&gt;</description></item></channel></rss>
