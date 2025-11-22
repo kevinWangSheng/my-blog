@@ -87,3 +87,15 @@ pub async fn bidirectional_streaming_echo(
 
 
 
+### streaming 
+
+这里实现一个例子,理解对应的 streaming 的作用和效果
+
+例子: streaming server: 客户端发起请求，服务端持续每秒推送一次当前的 CPU 占用率（模拟） 
+• 学习点：如何生成异步流，mpsc 通道的使用。
+
+Bidirectional Streaming (RemoteShell): 客户端发送指令流，服务端执行并实时返回输出流
+• 学习点：如何同时处理输入流和输出流，所有权的转移。
+
+
+
