@@ -461,7 +461,8 @@ option 就是给 protobuf 定义（消息、字段、服务、方法等）添加
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#fff"&gt;&lt;/span&gt;&lt;span style="color:#1f2328"&gt;}&lt;/span&gt;&lt;span style="color:#fff"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
-&lt;/div&gt;</description></item><item><title>grpc</title><link>https://kevinwangsheng.github.io/my-blog/posts/grpc/</link><pubDate>Fri, 07 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/grpc/</guid><description>&lt;h1 id="grpc"&gt;grpc
+&lt;/div&gt;&lt;h3 id="进阶streaming"&gt;进阶streaming
+&lt;/h3&gt;&lt;p&gt;主要实现一个交互式的 shell, 及 client 发送命令,server 进行回应, 主要是实现一个双向流&lt;/p&gt;</description></item><item><title>grpc</title><link>https://kevinwangsheng.github.io/my-blog/posts/grpc/</link><pubDate>Fri, 07 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/grpc/</guid><description>&lt;h1 id="grpc"&gt;grpc
 &lt;/h1&gt;&lt;h2 id="rust-中的-grpc"&gt;rust 中的 grpc
 &lt;/h2&gt;&lt;p&gt;知名度比较高的就是 tonic(完整正式版还没有发布,看相关开发人说 26 年发布第一版)&lt;/p&gt;
 &lt;p&gt;github: &lt;a class="link" href="https://github.com/hyperium/tonic" target="_blank" rel="noopener"
