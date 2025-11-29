@@ -1,4 +1,78 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Shawn在路上</title><link>https://kevinwangsheng.github.io/my-blog/posts/</link><description>Recent content in Posts on Shawn在路上</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 15 Nov 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://kevinwangsheng.github.io/my-blog/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>protobuf3</title><link>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</link><pubDate>Sat, 15 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</guid><description>&lt;h1 id="protobuf"&gt;protobuf
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Shawn在路上</title><link>https://kevinwangsheng.github.io/my-blog/posts/</link><description>Recent content in Posts on Shawn在路上</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><lastBuildDate>Sat, 29 Nov 2025 00:00:00 +0000</lastBuildDate><atom:link href="https://kevinwangsheng.github.io/my-blog/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>线程</title><link>https://kevinwangsheng.github.io/my-blog/posts/%E7%BA%BF%E7%A8%8B/</link><pubDate>Sat, 29 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/%E7%BA%BF%E7%A8%8B/</guid><description>&lt;h1 id="线程"&gt;线程
+&lt;/h1&gt;&lt;h2 id="物理层"&gt;物理层
+&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;CPU 的“真假”核心：物理核 vs 逻辑核&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;当你买电脑时看到“8核16线程”，这到底意味着什么？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;物理核 (Physical Core)：这是真正的硬件单元，有独立的算术逻辑单元 (ALU) 和一级缓存。&lt;/li&gt;
+&lt;li&gt;逻辑核 (Logical Core / Hyper-Threading)：这是 Intel/AMD 的一种“欺骗”技术。
+✅ 调优启示：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果你的程序是 计算密集型（加密、图像处理、矩阵运算），线程数应该接近 物理核数，而不是逻辑核数。设置过多线程只会增加切换开销，没有任何好处。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id="2-存储墙与-cache-line性能优化的核心"&gt;2. 存储墙与 Cache Line（性能优化的核心）
+&lt;/h3&gt;&lt;p&gt;CPU 的速度比内存快 100 倍以上。如果 CPU 每执行一条指令都要去内存拿数据，那 CPU 99% 的时间都在“摸鱼”。&lt;/p&gt;
+&lt;p&gt;为了解决这个问题，硬件引入了 多级缓存 (L1/L2/L3)。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;L1 Cache：最快，私有（每个核独享）。&lt;/li&gt;
+&lt;li&gt;L2 Cache：很快，私有（或两核共享）。&lt;/li&gt;
+&lt;li&gt;L3 Cache：较快，共享（所有核共享）。&lt;/li&gt;
+&lt;li&gt;主内存 (RAM)：非常慢。
+⚠️ 关键概念：Cache Line (缓存行)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这是绝大多数程序员忽略的地方。CPU 从内存读取数据，不是一个字节一个字节读的，而是一块一块读的。 这一块通常是 64 Bytes。&lt;/p&gt;
+&lt;p&gt;例子：&lt;/p&gt;
+&lt;p&gt;你需要读取一个 int a (4 bytes)。CPU 会把包含 a 的周边 64 字节的数据一次性全搬到缓存里。&lt;/p&gt;
+&lt;h3 id="3-伪共享-false-sharing多线程的隐形杀手"&gt;3. 伪共享 (False Sharing)：多线程的隐形杀手
+&lt;/h3&gt;&lt;p&gt;既然大家是按块（Cache Line）读取的，灾难就来了。&lt;/p&gt;
+&lt;p&gt;场景：&lt;/p&gt;
+&lt;p&gt;内存中有两个变量 x 和 y，它们紧挨着。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;线程 A 运行在 核 1，它只修改 x。&lt;/li&gt;
+&lt;li&gt;线程 B 运行在 核 2，它只修改 y。
+逻辑上，它们互不干扰。但在物理上，它们如果在 同一个 Cache Line 里：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;核 1 修改了 x -&amp;gt; 核 1 的缓存行变脏 (Dirty)。&lt;/li&gt;
+&lt;li&gt;根据 MESI 协议（缓存一致性协议），核 1 必须通知核 2：“嘿，这个缓存行废了（Invalid）！”&lt;/li&gt;
+&lt;li&gt;核 2 想要修改 y，发现缓存行废了，必须强制重新从内存加载。&lt;/li&gt;
+&lt;li&gt;核 2 修改 y -&amp;gt; 通知核 1 缓存失效。&lt;/li&gt;
+&lt;li&gt;死循环：两个核像打乒乓球一样争抢这个缓存行的控制权。
+结果：性能暴跌 10 倍以上，且 CPU 利用率很高（忙着同步缓存），但没干正事。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;✅ 调优/代码启示：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;缓存行填充 (Padding)：在 x 和 y 之间塞入 56 字节的无用数据（凑够 64 字节），强制让它们分布在不同的 Cache Line 里。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id="4-指令重排序-instruction-reordering乱序执行"&gt;4. 指令重排序 (Instruction Reordering)：乱序执行
+&lt;/h3&gt;&lt;p&gt;你以为 CPU 是老老实实按你写的代码顺序执行的吗？不是。&lt;/p&gt;
+&lt;p&gt;为了性能，CPU 会 乱序执行 (Out-of-Order Execution)。&lt;/p&gt;
+&lt;p&gt;代码：&lt;/p&gt;
+&lt;p&gt;codeText&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;a = 1;&lt;/li&gt;
+&lt;li&gt;b = 2;&lt;/li&gt;
+&lt;li&gt;c = a + b;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;CPU 视角：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;第 3 步依赖 1 和 2，必须最后做。&lt;/li&gt;
+&lt;li&gt;但是 1 和 2 谁先谁后无所谓。&lt;/li&gt;
+&lt;li&gt;如果 a 在内存里（慢），b 已经在缓存里（快），CPU 会先执行 2，再执行 1，最后执行 3。
+多线程下的灾难：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在单线程下，这种乱序不影响结果。但在多线程下，另一个线程可能在某个时间点看到 b=2 但 a=0（还没赋值）。这打破了我们逻辑上的因果关系。&lt;/p&gt;
+&lt;p&gt;✅ 调优/代码启示：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这就是为什么上层语言需要 内存屏障 (Memory Barrier/Fence)。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id="os--kernel"&gt;OS Kernel
+&lt;/h2&gt;&lt;h2 id="io"&gt;IO
+&lt;/h2&gt;&lt;h2 id="synchronization"&gt;Synchronization
+&lt;/h2&gt;&lt;h2 id="tuning--architecture"&gt;Tuning &amp;amp; Architecture
+&lt;/h2&gt;</description></item><item><title>protobuf3</title><link>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</link><pubDate>Sat, 15 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</guid><description>&lt;h1 id="protobuf"&gt;protobuf
 &lt;/h1&gt;&lt;h2 id="一些杂碎"&gt;一些杂碎
 &lt;/h2&gt;&lt;p&gt;protobuf 主要用于编写一些&lt;/p&gt;
 &lt;h3 id="关键字"&gt;关键字
