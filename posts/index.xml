@@ -69,10 +69,71 @@
 &lt;p&gt;这就是为什么上层语言需要 内存屏障 (Memory Barrier/Fence)。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h2 id="os--kernel"&gt;OS Kernel
-&lt;/h2&gt;&lt;h2 id="io"&gt;IO
-&lt;/h2&gt;&lt;h2 id="synchronization"&gt;Synchronization
-&lt;/h2&gt;&lt;h2 id="tuning--architecture"&gt;Tuning &amp;amp; Architecture
-&lt;/h2&gt;</description></item><item><title>protobuf3</title><link>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</link><pubDate>Sat, 15 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</guid><description>&lt;h1 id="protobuf"&gt;protobuf
+&lt;/h2&gt;&lt;p&gt;在这一层，一切皆是 “任务” (Task)。内核并不太关心你是 Java 写的还是 C 写的，它只关心怎么把时间分片。&lt;/p&gt;
+&lt;h3 id="1-进程-process-vs-线程-thread-的内核视角"&gt;1. 进程 (Process) vs 线程 (Thread) 的内核视角
+&lt;/h3&gt;&lt;p&gt;教科书上说“进程是资源分配单位，线程是调度单位”。我们要看透本质：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;虚拟内存：每个 进程 都有一个独立的“幻觉”，以为自己独占 4GB（或更多）内存。这是通过 页表 (Page Table) 映射实现的。&lt;/li&gt;
+&lt;li&gt;共享与隔离：
+内核结构 (Linux 为例)：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在 Linux 内核里，线程其实是 轻量级进程 (LWP)。它们都有自己的 task_struct，唯一的区别是线程之间共享了内存地址空间（mm_struct）。&lt;/p&gt;
+&lt;h3 id="2-上下文切换-context-switch并发的隐形税"&gt;2. 上下文切换 (Context Switch)：并发的隐形税
+&lt;/h3&gt;&lt;hr&gt;
+&lt;p&gt;当你启动 1000 个线程，而 CPU 只有 4 个核时，OS 必须不断地把旧线程踢下去，换新线程上来。这个过程叫 上下文切换。&lt;/p&gt;
+&lt;p&gt;这不是免费的，而且很贵。&lt;/p&gt;
+&lt;p&gt;切换过程详解：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;暂停：挂起当前线程。&lt;/li&gt;
+&lt;li&gt;保存：把 CPU 寄存器里的值（PC指针、栈指针、通用寄存器）存回内存（内核栈）。&lt;/li&gt;
+&lt;li&gt;调度：运行调度算法，决定下一个选谁。&lt;/li&gt;
+&lt;li&gt;加载：把下一个线程的寄存器值从内存读回 CPU。&lt;/li&gt;
+&lt;li&gt;恢复：开始执行。
+真正的代价在哪里？&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;除了上述 CPU 指令的开销（微秒级），最大的代价是 缓存污染 (Cache Pollution)：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;线程 A 跑得正欢，L1/L2 缓存里全是它的热数据。&lt;/li&gt;
+&lt;li&gt;突然被切走，换线程 B 上来。&lt;/li&gt;
+&lt;li&gt;线程 B 把缓存填满它的数据。&lt;/li&gt;
+&lt;li&gt;线程 A 再次回来时，发现缓存全空了（Cache Miss），必须重新去慢速内存读。&lt;/li&gt;
+&lt;li&gt;性能暴跌。
+✅ 调优启示：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;避免过度切换：如果你的线程数远大于核心数，且任务都很短，CPU 可能花在“切换”上的时间比“干活”的时间还多。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id="3-调度器-schedulercfs-的秘密"&gt;3. 调度器 (Scheduler)：CFS 的秘密
+&lt;/h3&gt;&lt;p&gt;OS 怎么决定下一个运行谁？Linux 默认使用的是 CFS (Completely Fair Scheduler，完全公平调度器)。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;红黑树：CFS 用一棵红黑树来管理所有等待运行的线程。&lt;/li&gt;
+&lt;li&gt;vruntime (虚拟运行时间)：&lt;/li&gt;
+&lt;li&gt;优先级 (Nice 值)：
+抢占 (Preemption)：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果一个线程跑太久了，或者有一个更高优先级的线程醒了（比如网卡收到了数据），内核会通过 时钟中断 强行把当前线程踢下去。这就是“抢占式调度”。&lt;/p&gt;
+&lt;h3 id="4-内核态-kernel-mode-vs-用户态-user-mode"&gt;4. 内核态 (Kernel Mode) vs 用户态 (User Mode)
+&lt;/h3&gt;&lt;p&gt;这是执行流中最常见的“边界”。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用户态：你的代码跑的地方，权限受限，不能直接碰硬件。&lt;/li&gt;
+&lt;li&gt;内核态：OS 核心代码跑的地方，拥有最高权限。
+系统调用 (Syscall)：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;当你的线程想写文件、发网络包、甚至申请内存时，必须执行 syscall 指令，从用户态跳进内核态。&lt;/p&gt;
+&lt;p&gt;为什么它慢？&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;切换开销：需要保存用户态寄存器，切换堆栈。&lt;/li&gt;
+&lt;li&gt;安全检查：内核必须检查你的参数合不合法。&lt;/li&gt;
+&lt;li&gt;Meltdown/Spectre 补丁：为了防 CPU 漏洞，现代 CPU 在这个边界上的切换成本变得更高了（强制刷新 TLB）。
+✅ 调优启示：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;减少 Syscall：&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id="5-cpu-亲和性-cpu-affinity"&gt;5. CPU 亲和性 (CPU Affinity)
+&lt;/h3&gt;&lt;p&gt;还记得第一章的 Cache Line 吗？&lt;/p&gt;
+&lt;p&gt;如果线程 A 上一次在 Core 1 跑，缓存里都是热数据。下一次调度时，如果 OS 把它调度到了 Core 2，那 Core 1 的热缓存就白费了，Core 2 还要重新预热。&lt;/p&gt;
+&lt;p&gt;亲和性就是 OS 尽量让线程回到上次跑的那个核上。&lt;/p&gt;</description></item><item><title>protobuf3</title><link>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</link><pubDate>Sat, 15 Nov 2025 00:00:00 +0000</pubDate><guid>https://kevinwangsheng.github.io/my-blog/posts/protobuf3/</guid><description>&lt;h1 id="protobuf"&gt;protobuf
 &lt;/h1&gt;&lt;h2 id="一些杂碎"&gt;一些杂碎
 &lt;/h2&gt;&lt;p&gt;protobuf 主要用于编写一些&lt;/p&gt;
 &lt;h3 id="关键字"&gt;关键字
