@@ -1,6 +1,6 @@
 ---
 title: "Untitled"
-date: 2025-12-26
+date: 2025-12-27
 draft: false
 ---
 
