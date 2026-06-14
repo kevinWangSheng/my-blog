@@ -1,16 +1,61 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EntryCard from '../components/EntryCard.astro';
+import { getPublicCollection } from '../lib/content';
+
+const [projects, notes, logs, essays, links] = await Promise.all([
+  getPublicCollection('projects'), getPublicCollection('notes'), getPublicCollection('logs'), getPublicCollection('essays'), getPublicCollection('links')
+]);
+const latest = [...notes.map((entry) => ({ entry, collection: 'notes' as const })), ...logs.map((entry) => ({ entry, collection: 'logs' as const }))]
+  .sort((a, b) => +b.entry.data.date - +a.entry.data.date)
+  .slice(0, 4);
 ---
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Shawn AI Lab Manual</title>
-    <meta name="description" content="Shawn 的 AI 实验手册与个人技术博客重建中。" />
-  </head>
-  <body>
-    <main>
-      <h1>Shawn AI Lab Manual</h1>
-      <p>Astro rebuild scaffold is alive.</p>
-    </main>
-  </body>
-</html>
+<BaseLayout>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="reveal">
+        <div class="eyebrow">Personal system / public notes</div>
+        <h1 class="hero-title">AI Lab <span>Manual</span></h1>
+        <p class="hero-copy">Shawn 的学习自留地与作品入口:这里记录 agent 时代的学习系统、RAG / MCP / context engineering 实验,以及把想法真正落成工具的过程。</p>
+        <div class="cta-row">
+          <a class="button" href="/projects">View projects</a>
+          <a class="button secondary" href="/notes">Read working notes</a>
+        </div>
+      </div>
+      <aside class="panel instrument reveal" aria-label="Lab status panel">
+        <div class="meta-row"><span>Current focus</span><span>agentic learning systems</span></div>
+        <div class="orbit"><span>human judgment core</span></div>
+        <div class="instrument-grid">
+          <div class="metric"><strong>{projects.length}</strong><span>projects</span></div>
+          <div class="metric"><strong>{notes.length}</strong><span>notes</span></div>
+          <div class="metric"><strong>{essays.length}</strong><span>essays</span></div>
+          <div class="metric"><strong>{links.length}</strong><span>sources</span></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="section-head reveal"><div><div class="eyebrow">Learning now</div><h2>What is being calibrated</h2></div><p>短笔记和周志保留“正在生成”的判断,不假装每个想法都已经变成完整文章。</p></div>
+    <div class="card-grid">
+      {latest.map(({ entry, collection }, index) => <EntryCard entry={entry} collection={collection} size={index === 0 ? 'large' : 'normal'} />)}
+    </div>
+  </section>
+
+  <section class="section container">
+    <div class="section-head reveal"><div><div class="eyebrow">Featured projects</div><h2>Evidence, not a résumé</h2></div><p>Projects 是能力入口:系统设计、实现选择、验证习惯和产品判断应该能被看见。</p></div>
+    <div class="card-grid">{projects.slice(0, 3).map((entry, index) => <EntryCard entry={entry} collection="projects" size={index === 0 ? 'large' : 'medium'} />)}</div>
+  </section>
+
+  <section class="section container">
+    <div class="section-head reveal"><div><div class="eyebrow">Essays</div><h2>Long-form synthesis</h2></div><p>当一个判断已经稳定到可以对外解释,它会从 note 变成长文。</p></div>
+    <div class="card-grid">{essays.slice(0, 2).map((entry) => <EntryCard entry={entry} collection="essays" size="medium" />)}</div>
+  </section>
+
+  <section class="section container">
+    <div class="section-head reveal"><div><div class="eyebrow">Links</div><h2>Source shelf</h2></div><p>保留值得复访的来源,并写清楚它为什么进入这个系统。</p></div>
+    <div class="list-stack">
+      {links.slice(0, 4).map((entry) => <a class="panel link-card reveal" href={entry.data.url}><div class="meta-row"><span>{entry.data.category}</span><span>{entry.data.date.toISOString().slice(0,10)}</span></div><h3>{entry.data.title}</h3><p>{entry.data.note}</p></a>)}
+    </div>
+  </section>
+</BaseLayout>

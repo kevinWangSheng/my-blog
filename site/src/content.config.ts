@@ -1,4 +1,6 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro/content/config';
+import { z } from 'astro/zod';
+import { glob } from 'astro/loaders';
 
 const visibility = z.enum(['public', 'draft', 'private']).default('public');
 const source = z.object({
@@ -17,7 +19,7 @@ const shared = {
 };
 
 const projects = defineCollection({
-  type: 'content',
+  loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
     ...shared,
     status: z.enum(['active', 'shipped', 'paused', 'archived']).default('active'),
@@ -29,7 +31,7 @@ const projects = defineCollection({
 });
 
 const notes = defineCollection({
-  type: 'content',
+  loader: glob({ base: './src/content/notes', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
     ...shared,
     topic: z.string().min(1),
@@ -38,7 +40,7 @@ const notes = defineCollection({
 });
 
 const logs = defineCollection({
-  type: 'content',
+  loader: glob({ base: './src/content/logs', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
     ...shared,
     period: z.string().min(1),
@@ -47,7 +49,7 @@ const logs = defineCollection({
 });
 
 const essays = defineCollection({
-  type: 'content',
+  loader: glob({ base: './src/content/essays', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
     ...shared,
     canonical: z.string().url().optional(),
@@ -56,7 +58,7 @@ const essays = defineCollection({
 });
 
 const links = defineCollection({
-  type: 'content',
+  loader: glob({ base: './src/content/links', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
     ...shared,
     url: z.string().url(),

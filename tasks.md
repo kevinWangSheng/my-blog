@@ -54,10 +54,10 @@
 
 ### T03 — 实现站点基础壳与设计 token
 
-- [ ] 从原型提取第一版 `tokens.css`:深色基底、1 个主荧光色、1 个低频强调色、字体、间距、圆角、边框、阴影。
-- [ ] 实现全局样式、基础布局、导航、Footer、内容容器、Markdown 排版。
-- [ ] 实现 `prefers-reduced-motion: reduce` 降级策略。
-- [ ] 不写死散落颜色/间距;页面和组件优先使用 token。
+- [x] 从原型提取第一版 `tokens.css`:深色基底、1 个主荧光色、1 个低频强调色、字体、间距、圆角、边框、阴影。
+- [x] 实现全局样式、基础布局、导航、Footer、内容容器、Markdown 排版。
+- [x] 实现 `prefers-reduced-motion: reduce` 降级策略。
+- [x] 不写死散落颜色/间距;页面和组件优先使用 token。
 
 验收标准:
 - 首页和内容页共享同一套视觉系统。
@@ -66,11 +66,11 @@
 
 ### T04 — 实现首页信息架构
 
-- [ ] 按默认顺序实现首页区块:Hero / Learning Now / Featured Projects / Recent Notes & Logs / Essays / Links / Footer。
-- [ ] Hero 在 5 秒内说明 Shawn 是谁、当前关注什么、站点价值与主要入口。
-- [ ] Projects 作为能力/作品入口拥有更强展示权重。
-- [ ] Notes/Logs 呈现“正在生成”的状态,但不退化成传统博客时间线。
-- [ ] 加入克制的 CSS/SVG/Canvas/IntersectionObserver 视觉与 scroll reveal,不引重动画库。
+- [x] 按默认顺序实现首页区块:Hero / Learning Now / Featured Projects / Recent Notes & Logs / Essays / Links / Footer。
+- [x] Hero 在 5 秒内说明 Shawn 是谁、当前关注什么、站点价值与主要入口。
+- [x] Projects 作为能力/作品入口拥有更强展示权重。
+- [x] Notes/Logs 呈现“正在生成”的状态,但不退化成传统博客时间线。
+- [x] 加入克制的 CSS/SVG/Canvas/IntersectionObserver 视觉与 scroll reveal,不引重动画库。
 
 验收标准:
 - 首页同时表达“学习自留地”和“作品/能力入口”。
@@ -79,11 +79,11 @@
 
 ### T05 — 实现一级页面与内容详情页
 
-- [ ] 实现 About 页面:方向、能力、正在关注、联系方式、代表项目入口。
-- [ ] 实现 Projects、Notes、Logs、Essays、Links 列表页。
-- [ ] 实现 Projects/Notes/Logs/Essays 详情页。
-- [ ] 为各内容类型写清楚差异化文案,避免访客分不清 Notes/Logs/Essays。
-- [ ] 处理 404 和空集合状态。
+- [x] 实现 About 页面:方向、能力、正在关注、联系方式、代表项目入口。
+- [x] 实现 Projects、Notes、Logs、Essays、Links 列表页。
+- [x] 实现 Projects/Notes/Logs/Essays 详情页。
+- [x] 为各内容类型写清楚差异化文案,避免访客分不清 Notes/Logs/Essays。
+- [x] 处理 404 和空集合状态。
 
 验收标准:
 - 所有导航入口可点击到有效页面。
@@ -92,10 +92,10 @@
 
 ### T06 — 实现 RSS 与基础站点元信息
 
-- [ ] 生成全站综合 RSS feed。
-- [ ] feed 初始包含 `essays`、`logs` 和公开 `notes`;projects 是否进入 feed 按内容密度暂不强制。
-- [ ] 添加基础 metadata、OpenGraph、sitemap/robots 的最小可用版本。
-- [ ] 导航和 Footer 暴露 RSS 入口。
+- [x] 生成全站综合 RSS feed。
+- [x] feed 初始包含 `essays`、`logs` 和公开 `notes`;projects 是否进入 feed 按内容密度暂不强制。
+- [x] 添加基础 metadata、OpenGraph、sitemap/robots 的最小可用版本。
+- [x] 导航和 Footer 暴露 RSS 入口。
 
 验收标准:
 - `/rss.xml` 可构建生成且包含示例内容。

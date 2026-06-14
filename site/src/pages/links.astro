@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import { getPublicCollection } from '../lib/content';
+const links = await getPublicCollection('links');
+---
+<BaseLayout title="Links · Shawn AI Lab Manual" description="值得复访的资料、工具和参考源。">
+  <PageHero eyebrow="Source shelf" title="Links" description="不是收藏夹,而是带着使用理由的来源货架。" />
+  <section class="container list-stack">
+    {links.map((entry) => (
+      <a class="panel link-card reveal" href={entry.data.url} target="_blank" rel="noreferrer">
+        <div class="meta-row"><span>{entry.data.category}</span><time datetime={entry.data.date.toISOString()}>{entry.data.date.toISOString().slice(0,10)}</time></div>
+        <h2 style="font-size:clamp(1.8rem,4vw,3rem)">{entry.data.title}</h2>
+        <p>{entry.data.description}</p>
+        <p>{entry.data.note}</p>
+        <div class="meta-row">{entry.data.tags?.map((tag) => <span class="tag">{tag}</span>)}</div>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

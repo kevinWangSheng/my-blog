@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  type?: string;
+}
+const {
+  title = 'Shawn AI Lab Manual',
+  description = 'Shawn 的 AI 实验手册:学习自留地、项目入口和 agent 时代的个人知识实验。',
+  type = 'website'
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://shenghuikevin.github.io');
+const nav = [
+  ['Projects', '/projects'], ['Notes', '/notes'], ['Logs', '/logs'], ['Essays', '/essays'], ['Links', '/links'], ['About', '/about'], ['RSS', '/rss.xml']
+];
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="Shawn AI Lab Manual RSS" href="/rss.xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <nav class="container nav" aria-label="Primary navigation">
+          <a class="brand" href="/" aria-label="Shawn AI Lab Manual home">
+            <strong>AI Lab Manual</strong>
+            <span>Shawn / learning systems</span>
+          </a>
+          <div class="nav-links">
+            {nav.map(([label, href]) => <a href={href}>{label}</a>)}
+          </div>
+        </nav>
+      </header>
+      <main class="site-main">
+        <slot />
+      </main>
+      <footer class="site-footer">
+        <div class="container footer-grid">
+          <span>© {new Date().getFullYear()} Shawn. Built as a local-first Astro lab.</span>
+          <span><a href="/rss.xml">RSS</a> · no deployment cutover before human acceptance</span>
+        </div>
+      </footer>
+    </div>
+    <script is:inline>
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce) {
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) entry.target.classList.toggle('is-visible', entry.isIntersecting);
+        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+      }
+    </script>
+  </body>
+</html>

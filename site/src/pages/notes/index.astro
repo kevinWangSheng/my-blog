@@ -1,0 +1,6 @@
+---
+import ListPage from '../../components/ListPage.astro';
+import { getPublicCollection } from '../../lib/content';
+const entries = await getPublicCollection('notes');
+---
+<ListPage collection="notes" entries={entries} />

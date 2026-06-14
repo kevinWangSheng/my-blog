@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, collectionLabels } from '../lib/content';
+interface Props { entry: any; collection: keyof typeof collectionLabels; Content: any; }
+const { entry, collection, Content } = Astro.props;
+const label = collectionLabels[collection];
+---
+<BaseLayout title={`${entry.data.title} · ${label.title}`} description={entry.data.description} type="article">
+  <article class="container detail-shell">
+    <div class="reading reveal">
+      <div class="eyebrow">{label.eyebrow}</div>
+      <h1>{entry.data.title}</h1>
+      <p style="font-size:1.18rem;margin-top:1rem">{entry.data.description}</p>
+      <div class="prose"><Content /></div>
+    </div>
+    <aside class="panel detail-aside reveal" aria-label="Entry metadata">
+      <div class="meta-row"><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></div>
+      <div class="meta-row" style="margin-top:1rem">{entry.data.tags?.map((tag: string) => <span class="tag">{tag}</span>)}</div>
+      <p style="margin-top:1rem">Collection: {label.title}</p>
+    </aside>
+  </article>
+</BaseLayout>

@@ -1,0 +1,16 @@
+---
+import { entryPath, entrySlug, formatDate, type PublicCollection } from '../lib/content';
+interface Props { entry: any; collection: PublicCollection; size?: 'normal' | 'medium' | 'large'; }
+const { entry, collection, size = 'normal' } = Astro.props;
+const href = entryPath(collection, entry);
+const tags = entry.data.tags?.slice(0, 3) ?? [];
+---
+<a class={`content-card ${size === 'large' ? 'large' : size === 'medium' ? 'medium' : ''} reveal`} href={href}>
+  <div class="meta-row"><span>{collection}</span><span>·</span><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></div>
+  <strong class="card-title">{entry.data.title}</strong>
+  <p class="card-desc">{entry.data.description}</p>
+  <div class="meta-row" aria-label={`Tags for ${entry.data.title}`}>
+    {tags.map((tag: string) => <span class="tag">{tag}</span>)}
+    <span class="tag">/{entrySlug(entry)}</span>
+  </div>
+</a>

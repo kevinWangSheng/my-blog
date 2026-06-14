@@ -1,0 +1,13 @@
+---
+import { getCollection, render } from 'astro:content';
+import DetailPage from '../../components/DetailPage.astro';
+import { entrySlug } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('essays', ({ data }) => data.visibility === 'public');
+  return entries.map((entry) => ({ params: { slug: entrySlug(entry) }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<DetailPage collection="essays" entry={entry} Content={Content} />
