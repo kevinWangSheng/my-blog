@@ -30,10 +30,10 @@
 
 ### T01 — 创建 Astro 新站骨架
 
-- [ ] 在 `site/` 创建最小 Astro 静态站骨架。
-- [ ] 配置 `pnpm` 可在仓库根或 `site/` 内稳定安装/构建;避免生成物进入 git。
-- [ ] 建立基础目录:`src/pages`、`src/layouts`、`src/components`、`src/styles`、`src/lib`、`src/content`、`scripts`、`public`。
-- [ ] 保留旧站根目录文件不作为实现目标。
+- [x] 在 `site/` 创建最小 Astro 静态站骨架。
+- [x] 配置 `pnpm` 可在仓库根或 `site/` 内稳定安装/构建;避免生成物进入 git。
+- [x] 建立基础目录:`src/pages`、`src/layouts`、`src/components`、`src/styles`、`src/lib`、`src/content`、`scripts`、`public`。
+- [x] 保留旧站根目录文件不作为实现目标。
 
 验收标准:
 - `site/` 存在且包含 Astro 项目入口。
