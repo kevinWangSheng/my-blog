@@ -16,7 +16,7 @@
 import { createServer } from 'node:http';
 import { readFile, mkdir, writeFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { extname, join, normalize } from 'node:path';
+import { extname, join, normalize, resolve, relative } from 'node:path';
 import { chromium } from 'playwright';
 import AxeBuilder from '@axe-core/playwright';
 
@@ -38,6 +38,22 @@ const breakpoints = getArg('breakpoints', '375,768,1440')
 if (!serveDir && !urlArg) {
   console.error('ERROR: 需要 --serve <dir> 或 --url <url> 其一');
   process.exit(2);
+}
+assertSafeOutDir(outDir);
+
+
+function assertSafeOutDir(dir) {
+  const root = resolve('.');
+  const target = resolve(dir);
+  const rel = relative(root, target);
+  if (!rel || rel === '..' || rel.startsWith('..' + '/') || rel.startsWith('..' + '\\')) {
+    console.error(`ERROR: --out 必须是仓库内的子目录,收到 ${dir}`);
+    process.exit(2);
+  }
+  if (rel !== 'out' && !rel.startsWith('out/')) {
+    console.error(`ERROR: --out 必须是 out 或位于 out/ 下,避免误删源码目录,收到 ${dir}`);
+    process.exit(2);
+  }
 }
 
 const MIME = {
