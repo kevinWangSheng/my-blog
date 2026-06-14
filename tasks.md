@@ -163,6 +163,22 @@
 - human 只需要看预览和关键截图,不需要自己跑验证。
 - 若 ⑦通过,下一阶段才进入 ⑧发布/cutover;若不通过,按反馈回到具体任务重做。
 
+### T12 — ⑧发布 / CI-CD cutover（仅 ⑦通过后执行）
+
+> 当前阶段不执行。本任务是发布阶段占位,防止后续 agent 提前或遗漏 CI/CD 切换。
+
+- [ ] 在 ⑦结果验收通过后,把旧 Hugo workflows 迁移/替换为 Astro GitHub Pages workflow。
+- [ ] 新 workflow 以 `site/` 为构建根,使用 `pnpm` 安装依赖,构建 `site/dist`。
+- [ ] 优先使用 GitHub Pages 官方链路 / `withastro/action` 等 Astro Pages 方案;不要把 Playwright、axe、Lighthouse UI 自验证塞进部署 CI。
+- [ ] 处理旧站遗留发布源:确认是否停止 Notion→Hugo workflow、是否停止旧 `gh-pages` 发布方式、是否需要清理旧产物跟踪。
+- [ ] 只在 human 明确通过 ⑦后 push / 发布 / cutover。
+
+验收标准:
+- `.github/workflows/` 中不再有会误触发旧 Hugo/Notion 部署的线上链路。
+- GitHub Pages 云端构建 Astro 新站成功,发布产物来自 `site/dist`。
+- 本地 UI 自验证仍只在 ⑥执行,不成为部署 CI gate。
+- 发布后线上站点可访问;RSS、首页、一级页面和示例详情页可打开。
+
 ## 当前下一步
 
-从 T00 开始执行。T00 完成后进入 T01,之后每条任务遵循:实现 → 自验证 → 小提交 → 更新本文件勾选状态。
+从 T00 开始执行。T00 完成后进入 T01,之后每条任务遵循:实现 → 自验证 → 小提交 → 更新本文件勾选状态。T12 只有在 ⑦结果验收通过后才允许执行。
