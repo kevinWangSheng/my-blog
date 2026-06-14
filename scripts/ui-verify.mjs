@@ -72,7 +72,7 @@ async function startStaticServer(dir) {
   return { base: `http://127.0.0.1:${port}`, close: () => new Promise((r) => server.close(r)) };
 }
 
-// ---------- lighthouse(best-effort:失败只记录,不让整轮崩)----------
+// ---------- lighthouse(失败要进入 summary,由主流程判定 ok=false)----------
 async function runLighthouse(url) {
   try {
     const { default: lighthouse } = await import('lighthouse');
@@ -159,7 +159,9 @@ async function main() {
           summary.problems.push(`axe critical/serious @ ${w}px: ${bySeverity('critical')}/${bySeverity('serious')}`);
         }
       } catch (e) {
+        summary.ok = false;
         summary.axe[w] = { error: String(e?.message || e) };
+        summary.problems.push(`axe error @ ${w}px: ${String(e?.message || e)}`);
       }
       await ctx.close();
     }
@@ -170,8 +172,14 @@ async function main() {
   summary.lighthouse = await runLighthouse(targetUrl);
   if (summary.lighthouse?.scores) {
     for (const [cat, val] of Object.entries(summary.lighthouse.scores)) {
-      if (val != null && val < 80) summary.problems.push(`lighthouse ${cat}=${val} (<80)`);
+      if (val != null && val < 80) {
+        summary.ok = false;
+        summary.problems.push(`lighthouse ${cat}=${val} (<80)`);
+      }
     }
+  } else if (summary.lighthouse?.error) {
+    summary.ok = false;
+    summary.problems.push(`lighthouse error: ${summary.lighthouse.error}`);
   }
 
   if (staticSrv) await staticSrv.close();

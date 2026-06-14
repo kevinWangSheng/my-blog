@@ -19,9 +19,9 @@
 
 ### T00 — 建立实现分支与旧站保护点
 
-- [ ] 从当前规划基线创建/切换到 `rebuild` 分支。
-- [ ] 确认旧站当前状态可恢复:已有 git 历史即可;如本地无 `old-site-frozen` tag,创建本地 tag 指向切换前旧站基线。
-- [ ] 不 push tag、不 push 分支。
+- [x] 从当前规划基线创建/切换到 `rebuild` 分支。
+- [x] 确认旧站当前状态可恢复:已有 git 历史即可;如本地无 `old-site-frozen` tag,创建本地 tag 指向切换前旧站基线。
+- [x] 不 push tag、不 push 分支。
 
 验收标准:
 - `git branch --show-current` 输出 `rebuild`。
