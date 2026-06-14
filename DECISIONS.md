@@ -185,3 +185,10 @@
 - 决策:新站实现分支固定为 `rebuild`;包管理器固定为 `pnpm`;提交署名关闭 AI Co-Authored-By,提交信息只描述任务本身;`prototypes/ai-lab-manual-home.html` 作为 UI 视觉基线保留在规划/原型层,Playwright 中间文件和截图属于本地验证产物,不进入正式提交。实现默认不引第三方 UI 组件库、不引 Three.js 或重动画库;若后续需要新增依赖,按项目硬停规则先确认。
 - 取舍:减少实现前分岔,提高 agent 自闭环效率;代价是短期放弃 npm 的默认普适性和重动画库的现成能力,需要用 Astro + CSS/SVG/Canvas/IntersectionObserver 做出足够好的第一版。
 - 推翻条件:如果 pnpm 在当前环境或 GitHub Pages 构建中造成明显摩擦,可改回 npm;如果原型风格无法承载真实内容或性能/a11y 不达标,降低动效和 3D 强度,但不默认换回传统博客模板。
+
+### D-20260614-UI验证驱动方式
+- 状态:已定
+- 背景:`D-20260614-UI验证工具链` 选定 Playwright+axe+lighthouse 后,需决定「固定回路由谁驱动」:Playwright MCP 实时驱动 vs Skill 封装的项目内 CLI 脚本。三个调研 subagent 一致结论:MCP 适合一次性探索,但对「每次 UI 改动跑同一套」存在不确定性、无硬断言、token 爆炸(实测 ~114K vs CLI ~27K)、快照堆积致幻等问题;业界共识是「探索用 MCP、回归用脚本」。
+- 决策:**固定 ⑥ 回路 = Skill + 项目内 CLI 脚本**(`scripts/ui-verify.mjs`,devDep:playwright + @axe-core/playwright + lighthouse + chrome-launcher)。脚本做确定性客观判定(多断点截图 + reduced-motion + 冻结动画 + axe + lighthouse),写 `out/summary.json`;agent **只读 summary 判定、不逐张回喂截图**,截图留 ⑦ human 看。Skill 放**项目级且双 agent 都给**:Claude Code `.claude/skills/ui-verify/`、Codex `.agents/skills/ui-verify/`,共用同一脚本。**Playwright MCP 降为临时探索辅助**(项目级 `.mcp.json`,仅 ad-hoc 调试),不进固定回路。本条细化并取代 `D-20260614-UI验证工具链` 中「视觉自检经 Playwright MCP 截图回喂」一句。
+- 取舍:前期一次性写脚本 + 装 Chromium;换来确定可复现、低 token、可脱离 agent 直接 `pnpm ui-verify`、防回退的客观闸门。
+- 推翻条件:若脚本维护成本过高或固定回路需求消失,回退为纯人工预览 + MCP 探索;若需要 PR 级视觉 gate 再评估接入 CI。

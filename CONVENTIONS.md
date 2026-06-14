@@ -52,16 +52,14 @@
 
 ## UI 自验证回路(⑥)
 
-对应流程 ⑥自验证。每次 UI 改动落地后,agent 自己跑完这套回路才能宣称完成;失败 → 按上面「回退纪律」回到干净点重做,**不层层打补丁**。工具链见 `DECISIONS.md` 的 `D-20260614-UI验证工具链`(Playwright + axe-core,**仅本地、不进部署 CI**)。
+对应流程 ⑥自验证。每次 UI 改动落地后,agent 自己跑完这套回路才能宣称完成;失败 → 按上面「回退纪律」回到干净点重做,**不层层打补丁**。工具链见 `DECISIONS.md` 的 `D-20260614-UI验证工具链`;**驱动方式 = Skill `/ui-verify` + 项目脚本 `scripts/ui-verify.mjs`**(见 `D-20260614-UI验证驱动方式`;Claude `.claude/skills/ui-verify/`、Codex `.agents/skills/ui-verify/` 共用同一脚本;Playwright MCP 仅作临时探索,不进固定回路)。**全程仅本地,不进 ⑧ 部署 CI。**
 
-### 核心回路:改 → 渲染 → 看 → 检查 → 判定
-1. **build / 起服务**:`astro build` 通过(无类型 / 构建错误)+ 起 `astro preview` / `dev`,无 dead link。
-2. **截图自检**:Playwright(经 MCP)在 **≥2 断点**(移动 ~375、桌面 ~1280)截图,回喂多模态模型自查布局 / 溢出 / 截断 / 对齐 / 暗色模式。
-3. **动效自检**:对带 scroll reveal / 光扫 / 层级展开的区块,在**关键滚动位点**分别截图(到达前 / 触发中 / 完成后),验证 reveal 正确、不闪烁、不挡阅读;肉眼 / 录屏确认不掉帧。**克制度判定**:对照 `DECISIONS.md` 的 `D-20260614-UI审美方向`「避免廉价赛博朋克 / 只炫不读」,过炫即回退。
-4. **reduced-motion 降级**:必须实现 `prefers-reduced-motion: reduce` 下的静态 / 弱化版本,并在该模式下截图核验(a11y 硬要求,非可选)。
-5. **a11y 自检**:对构建产物跑 axe(`@axe-core`),无 critical/serious 违规;人工 / agent 复核 alt 文本与标题层级(机器测不到的部分)。
-6. **性能预算(必跑)**:`npx lighthouse` 跑首页 + 一个长文页(移动端档),盯 **CLS / 首屏 / 主线程阻塞**,动效不得掉帧;设软门槛(如 Perf ≥ 目标值),不达标回退收敛动效强度。仍只在本地、不进 CI。
-7. **判定**:任一项失败 → 回退重做,不层层打补丁。
+### 核心回路:改 → 渲染 → 跑脚本 → 判定
+1. **build / 起服务**:`astro build` 通过(无类型 / 构建错误),产出静态 `dist/`。
+2. **跑客观验证脚本(一把做)**:`pnpm ui-verify -- --serve <dist> --path /`(或 Skill `/ui-verify`)。脚本在 **3 断点**(375 / 768 / 1440)截图(reduced-motion + 冻结动画,落盘 `out/`)、跑 **axe**(wcag2a/aa)、跑 **lighthouse**(移动端,perf/a11y/seo/best-practices),汇总写 `out/summary.json`。**agent 只读 `out/summary.json` 判定,不逐张回喂截图**;截图路径留 ⑦ human 看。
+3. **主观自检(脚本判不了的部分)**:动效 reveal 是否正确、不闪、不挡读;克制度(对照 `DECISIONS.md` 的 `D-20260614-UI审美方向`「避免廉价赛博朋克 / 只炫不读」);深色 + 荧光下 Markdown 长文可读性。靠 ⑦ human,或临时用 Playwright MCP 手动探查。
+4. **reduced-motion 降级**:必须实现 `prefers-reduced-motion: reduce` 版本;脚本即在 reduce 模式下截图,核验其渲染成立(a11y 硬要求)。
+5. **判定**:`summary.ok=false`,或出现 axe critical/serious、lighthouse 任一项 < 目标门槛、console error → 回退重做,不打补丁。
 
 ### UI 实现约定
 - 只用 `tokens.css` 的 token,不写死颜色 / 间距值。
@@ -70,4 +68,4 @@
 - **样张即基线**:`tokens.css` 的色板 / 字阶 / 荧光色 / 网格间距从 `prototypes/ai-lab-manual-home.html` 提取;首版页面对照该样张做 ⑦ 验收。
 - 第一版**不引第三方 UI 组件库 / 框架**(纯 Astro + CSS);若要引,命中「新增依赖先问」。
 - 具体 token 取值、断点、页面模板清单属执行层 → 见 `plan.md` / `tasks.md`,不写进本文件。
-- 截图 / axe / lighthouse 的确切命令待 Astro 脚手架建好后回填。
+- 验证命令已就绪:`pnpm ui-verify -- --serve <dir> --path <route>`(对任意静态目录 / 样张可直接跑;Astro 脚手架后对 `dist/` 复用)。已对 `prototypes/ai-lab-manual-home.html` 实跑通过。lighthouse 门槛阈值属执行层,见 `plan.md` / `tasks.md`。
