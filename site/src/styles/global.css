@@ -153,3 +153,14 @@ p { color: var(--ink-soft); margin: 0; }
   .instrument { min-height: auto; }
   .detail-aside { position: relative; top: auto; }
 }
+
+/* Mobile typography refinements found during T10 browser inspection. */
+.hero-title { overflow-wrap: anywhere; }
+.hero-title span { display: block; }
+@media (max-width: 520px) {
+  h1 { font-size: clamp(2.75rem, 14vw, 4.2rem); line-height: 0.98; }
+  .hero-title { font-size: clamp(3.35rem, 16vw, 5rem); }
+  .hero { min-height: auto; }
+  .page-hero { padding-block: var(--space-4); }
+}
+.hero-title span { color: rgba(var(--glow-rgb), 0.075); }
