@@ -1,0 +1,15 @@
+{
+  "name": "my-blog-uiverify",
+  "private": true,
+  "type": "module",
+  "description": "项目级 UI 自验证 harness(Skill+CLI 驱动);Astro 新站脚手架后对 dist/ 复用。",
+  "scripts": {
+    "ui-verify": "node scripts/ui-verify.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.11.3",
+    "chrome-launcher": "^1.2.1",
+    "lighthouse": "^13.4.0",
+    "playwright": "1.58.0"
+  }
+}

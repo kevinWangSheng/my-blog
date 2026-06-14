@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shawn — AI Lab Manual Prototype</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307090f'/%3E%3Cpath d='M16 45 32 12l16 33H16Z' fill='none' stroke='%2370ffc3' stroke-width='4'/%3E%3Ccircle cx='32' cy='34' r='5' fill='%237be7ff'/%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --bg: #07090f;
+      --panel: rgba(12, 17, 28, .78);
+      --panel-strong: rgba(15, 23, 39, .92);
+      --line: rgba(139, 232, 255, .18);
+      --line-hot: rgba(104, 255, 203, .48);
+      --text: #e9f4f8;
+      --muted: #8fa5af;
+      --faint: #53636d;
+      --cyan: #7be7ff;
+      --mint: #70ffc3;
+      --amber: #ffca7a;
+      --violet: #9d8cff;
+      --danger: #ff6f9c;
+      --shadow: 0 0 60px rgba(55, 227, 255, .18), 0 0 120px rgba(112, 255, 195, .08);
+      --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", ui-monospace, Menlo, monospace;
+      --body: "Avenir Next", "Helvetica Neue", system-ui, sans-serif;
+      --serif: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      margin: 0;
+      min-height: 100%;
+      color: var(--text);
+      font-family: var(--body);
+      background:
+        radial-gradient(circle at 14% 8%, rgba(123, 231, 255, .22), transparent 27rem),
+        radial-gradient(circle at 84% 10%, rgba(112, 255, 195, .15), transparent 30rem),
+        radial-gradient(circle at 50% 95%, rgba(157, 140, 255, .16), transparent 32rem),
+        linear-gradient(180deg, #06070b 0%, #090d14 48%, #05070b 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(123, 231, 255, .055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(123, 231, 255, .055) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, black, transparent 78%);
+      opacity: .7;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .12;
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 1px, transparent 1px 4px),
+        radial-gradient(circle, rgba(255,255,255,.55) 0 1px, transparent 1px);
+      background-size: auto, 3px 3px;
+      mix-blend-mode: overlay;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .shell {
+      width: min(1180px, calc(100vw - 40px));
+      margin: 0 auto;
+      padding: 26px 0 80px;
+      position: relative;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      height: 56px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+    }
+
+    .sigil {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--line-hot);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 70% 24%, var(--mint), transparent 20%),
+        linear-gradient(135deg, rgba(123,231,255,.16), rgba(112,255,195,.03));
+      box-shadow: 0 0 24px rgba(112, 255, 195, .25);
+      position: relative;
+    }
+
+    .sigil::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border: 1px solid rgba(255,255,255,.28);
+      transform: rotate(45deg);
+    }
+
+    .navlinks { display: flex; gap: 18px; align-items: center; }
+    .navlinks a { transition: color .18s ease, text-shadow .18s ease; }
+    .navlinks a:hover { color: var(--mint); text-shadow: 0 0 18px rgba(112,255,195,.45); }
+
+    .status-pill {
+      border: 1px solid rgba(112,255,195,.28);
+      color: var(--mint);
+      border-radius: 999px;
+      padding: 8px 11px;
+      background: rgba(112,255,195,.05);
+      box-shadow: inset 0 0 18px rgba(112,255,195,.05);
+    }
+
+    .hero {
+      min-height: 640px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr);
+      gap: 42px;
+      align-items: center;
+      padding: 58px 0 42px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      left: -8vw;
+      right: -8vw;
+      bottom: 70px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(123,231,255,.38), transparent);
+      box-shadow: 0 0 30px rgba(123,231,255,.22);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--mint);
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+    }
+
+    .pulse {
+      width: 8px; height: 8px; border-radius: 99px; background: var(--mint);
+      box-shadow: 0 0 0 0 rgba(112,255,195,.75);
+      animation: pulse 2.1s ease-out infinite;
+    }
+    @keyframes pulse { 70% { box-shadow: 0 0 0 12px rgba(112,255,195,0); } 100% { box-shadow: 0 0 0 0 rgba(112,255,195,0); } }
+
+    h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 500;
+      letter-spacing: -.065em;
+      line-height: .92;
+      font-size: clamp(64px, 9vw, 132px);
+    }
+
+    .h1-accent {
+      display: block;
+      font-family: var(--body);
+      font-weight: 650;
+      letter-spacing: -.08em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(123,231,255,.82);
+      text-shadow: 0 0 34px rgba(123,231,255,.20);
+    }
+
+    .lede {
+      max-width: 640px;
+      margin: 26px 0 0;
+      color: #b8cbd3;
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.55;
+    }
+
+    .lede strong { color: var(--text); font-weight: 650; }
+    .lede .glow { color: var(--mint); text-shadow: 0 0 20px rgba(112,255,195,.25); }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
+    .button {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      padding: 13px 16px;
+      border: 1px solid rgba(123,231,255,.24);
+      background: rgba(123,231,255,.06);
+      color: var(--text);
+      border-radius: 14px;
+      transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+    .button.primary { border-color: rgba(112,255,195,.55); background: linear-gradient(135deg, rgba(112,255,195,.18), rgba(123,231,255,.07)); box-shadow: 0 0 28px rgba(112,255,195,.10); }
+    .button:hover { transform: translateY(-2px); border-color: rgba(112,255,195,.7); box-shadow: 0 0 30px rgba(123,231,255,.13); }
+
+    .lab-card {
+      position: relative;
+      min-height: 520px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.055), transparent 38%),
+        linear-gradient(135deg, rgba(16, 25, 42, .92), rgba(9, 14, 23, .74));
+      border-radius: 30px;
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.08);
+      overflow: hidden;
+      transform: perspective(1100px) rotateY(-7deg) rotateX(4deg);
+    }
+
+    .lab-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      background:
+        linear-gradient(115deg, transparent 0%, rgba(123,231,255,.18) 38%, transparent 48%),
+        radial-gradient(circle at 72% 18%, rgba(112,255,195,.30), transparent 20rem);
+      opacity: .8;
+      pointer-events: none;
+    }
+
+    .lab-card::after {
+      content: "";
+      position: absolute;
+      width: 260px; height: 260px;
+      right: 46px; top: 92px;
+      border-radius: 40%;
+      border: 1px solid rgba(123,231,255,.22);
+      background:
+        radial-gradient(circle, rgba(123,231,255,.14), transparent 58%),
+        conic-gradient(from 80deg, rgba(112,255,195,.0), rgba(112,255,195,.45), rgba(157,140,255,.08), rgba(123,231,255,.35), rgba(112,255,195,.0));
+      filter: blur(.1px);
+      animation: rotate 18s linear infinite;
+      opacity: .74;
+    }
+    @keyframes rotate { to { transform: rotate(360deg); } }
+
+    .card-inner { position: relative; z-index: 2; padding: 24px; height: 100%; display: flex; flex-direction: column; }
+    .card-top { display: flex; align-items: center; justify-content: space-between; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--muted); text-transform: uppercase; }
+    .dots { display: flex; gap: 7px; }
+    .dots span { width: 8px; height: 8px; border-radius: 99px; background: rgba(143,165,175,.45); }
+    .dots span:nth-child(2) { background: var(--amber); box-shadow: 0 0 14px rgba(255,202,122,.35); }
+    .dots span:nth-child(3) { background: var(--mint); box-shadow: 0 0 14px rgba(112,255,195,.35); }
+
+    .instrument {
+      margin-top: 34px;
+      display: grid;
+      gap: 13px;
+      max-width: 290px;
+    }
+    .metric {
+      border: 1px solid rgba(123,231,255,.16);
+      background: rgba(5, 8, 14, .48);
+      border-radius: 16px;
+      padding: 14px;
+      backdrop-filter: blur(12px);
+    }
+    .metric small { display: block; color: var(--faint); font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 8px; }
+    .metric b { font-family: var(--mono); font-size: 18px; color: var(--text); }
+    .bar { height: 5px; border-radius: 99px; background: rgba(123,231,255,.10); overflow: hidden; margin-top: 10px; }
+    .bar i { display: block; height: 100%; width: var(--w); border-radius: inherit; background: linear-gradient(90deg, var(--cyan), var(--mint)); box-shadow: 0 0 16px rgba(112,255,195,.3); }
+
+    .terminal {
+      margin-top: auto;
+      border: 1px solid rgba(112,255,195,.20);
+      background: rgba(0,0,0,.34);
+      border-radius: 18px;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      line-height: 1.8;
+      color: #b9ffe7;
+    }
+    .terminal .muted { color: #61757e; }
+    .terminal .cyan { color: var(--cyan); }
+    .terminal .amber { color: var(--amber); }
+
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin: 50px 0 18px; }
+    .kicker { font-family: var(--mono); color: var(--mint); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 8px; }
+    h2 { margin: 0; font-size: clamp(32px, 4vw, 54px); letter-spacing: -.055em; line-height: 1; }
+    .section-copy { max-width: 430px; color: var(--muted); line-height: 1.7; margin: 0; }
+
+    .grid { display: grid; gap: 16px; }
+    .focus-grid { grid-template-columns: 1.2fr .8fr .8fr; }
+    .project-grid { grid-template-columns: .95fr 1.05fr; align-items: stretch; }
+
+    .panel {
+      border: 1px solid rgba(123,231,255,.16);
+      background: linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.018));
+      border-radius: 24px;
+      padding: 22px;
+      min-height: 180px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    }
+    .panel::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 82% 8%, rgba(123,231,255,.16), transparent 15rem); pointer-events: none; }
+    .panel > * { position: relative; z-index: 1; }
+    .panel .id { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--faint); text-transform: uppercase; }
+    .panel h3 { margin: 22px 0 10px; font-size: 24px; letter-spacing: -.03em; }
+    .panel p { margin: 0; color: #a8bcc5; line-height: 1.65; }
+    .panel.large { min-height: 260px; background: linear-gradient(145deg, rgba(112,255,195,.10), rgba(123,231,255,.035)); }
+    .panel.large h3 { font-size: 34px; max-width: 420px; }
+
+    .project {
+      padding: 30px;
+      min-height: 390px;
+      border-color: rgba(112,255,195,.26);
+      background:
+        radial-gradient(circle at 90% 20%, rgba(112,255,195,.20), transparent 18rem),
+        linear-gradient(145deg, rgba(13,22,36,.94), rgba(8,12,20,.72));
+    }
+    .project h3 { font-size: clamp(34px, 4vw, 58px); letter-spacing: -.06em; line-height: .96; margin: 36px 0 18px; }
+    .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+    .chip { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--cyan); border: 1px solid rgba(123,231,255,.20); background: rgba(123,231,255,.055); padding: 8px 10px; border-radius: 999px; }
+
+    .notes-list { display: grid; gap: 12px; }
+    .note {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 18px;
+      align-items: baseline;
+      border-bottom: 1px solid rgba(123,231,255,.12);
+      padding: 16px 0;
+    }
+    .note time { font-family: var(--mono); color: var(--faint); font-size: 11px; letter-spacing: .1em; }
+    .note strong { display: block; font-size: 18px; margin-bottom: 6px; }
+    .note span { color: var(--muted); line-height: 1.55; }
+
+    .markdown {
+      margin-top: 16px;
+      border: 1px solid rgba(123,231,255,.15);
+      border-radius: 24px;
+      padding: 30px;
+      background: rgba(7, 11, 18, .58);
+    }
+    .markdown h3 { font-family: var(--serif); font-size: 34px; letter-spacing: -.04em; margin: 0 0 12px; }
+    .markdown p { color: #b7c9d0; line-height: 1.82; font-size: 17px; max-width: 760px; }
+    .markdown blockquote { margin: 24px 0; padding: 18px 22px; border-left: 2px solid var(--mint); background: rgba(112,255,195,.055); color: #d8fff0; }
+    code { font-family: var(--mono); color: var(--mint); background: rgba(112,255,195,.08); padding: .1em .35em; border-radius: 6px; }
+
+    .footer { margin-top: 70px; padding-top: 24px; border-top: 1px solid rgba(123,231,255,.14); display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-family: var(--mono); font-size: 12px; }
+
+    @media (max-width: 900px) {
+      .nav { height: auto; align-items: flex-start; }
+      .navlinks { display: none; }
+      .hero { grid-template-columns: 1fr; min-height: auto; padding-top: 38px; }
+      .lab-card { min-height: 430px; transform: none; }
+      .focus-grid, .project-grid { grid-template-columns: 1fr; }
+      .section-head { align-items: flex-start; flex-direction: column; }
+      .footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="nav">
+      <a class="brand" href="#"><span class="sigil"></span><span>SHAWN / LAB MANUAL</span></a>
+      <div class="navlinks">
+        <a href="#focus">Focus</a>
+        <a href="#projects">Projects</a>
+        <a href="#notes">Notes</a>
+        <a href="#essays">Essays</a>
+        <a class="status-pill" href="#">RSS online</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow"><span class="pulse"></span> personal ai research space · build log active</div>
+        <h1>AI Lab <span class="h1-accent">Manual</span></h1>
+        <p class="lede">
+          A public workspace for <strong>learning systems, agent workflows, and tools that make thought operational</strong> — part field notebook, part project console, part evolving map of what I am learning to build.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="#projects">Explore projects</a>
+          <a class="button" href="#focus">Current research</a>
+          <a class="button" href="#notes">Recent notes</a>
+        </div>
+      </div>
+
+      <aside class="lab-card" aria-label="AI lab status preview">
+        <div class="card-inner">
+          <div class="card-top"><span>experiment stack / 06.14</span><div class="dots"><span></span><span></span><span></span></div></div>
+          <div class="instrument">
+            <div class="metric"><small>current axis</small><b>agent memory → reliable action</b><div class="bar"><i style="--w: 73%"></i></div></div>
+            <div class="metric"><small>publishing mode</small><b>markdown · curated · syncable</b><div class="bar"><i style="--w: 58%"></i></div></div>
+            <div class="metric"><small>site role</small><b>learning garden + work signal</b><div class="bar"><i style="--w: 86%"></i></div></div>
+          </div>
+          <div class="terminal">
+            <span class="muted">$ run daily-synthesis</span><br />
+            <span class="cyan">reading</span> notes, projects, transcripts<br />
+            <span class="cyan">extracting</span> reusable judgments<br />
+            <span class="amber">publishing</span> when signal &gt; noise
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="focus">
+      <div class="section-head">
+        <div><div class="kicker">current focus</div><h2>Research loops in motion.</h2></div>
+        <p class="section-copy">The homepage should feel alive without becoming a feed. A few active questions are enough to reveal taste, direction, and momentum.</p>
+      </div>
+      <div class="grid focus-grid">
+        <article class="panel large"><div class="id">EXP-01 · memory systems</div><h3>How agents preserve intent across long work.</h3><p>Context compression, durable state, review gates, and what has to survive when a task spans days instead of minutes.</p></article>
+        <article class="panel"><div class="id">EXP-02 · learning</div><h3>Reading pipelines</h3><p>Turning papers, transcripts, and messy notes into source-backed understanding.</p></article>
+        <article class="panel"><div class="id">EXP-03 · publishing</div><h3>Agent-to-blog flow</h3><p>Markdown output that can be checked, synced, and published without turning into CMS bureaucracy.</p></article>
+      </div>
+    </section>
+
+    <section id="projects">
+      <div class="section-head">
+        <div><div class="kicker">featured projects</div><h2>Systems worth opening.</h2></div>
+        <p class="section-copy">Projects should be displayed like working instruments: what problem they attack, what was built, and what evidence makes them credible.</p>
+      </div>
+      <div class="grid project-grid">
+        <article class="panel project"><div class="id">PROJECT · cockpit</div><h3>Agent control plane for real work.</h3><p>A local system for routing tasks, checking evidence, and keeping the human at judgment points instead of routine execution.</p><div class="meta-row"><span class="chip">control plane</span><span class="chip">browser validation</span><span class="chip">review gates</span></div></article>
+        <div class="panel notes-list" id="notes">
+          <div class="id">recent notes / logs</div>
+          <div class="note"><time>06.14</time><div><strong>UI direction: AI Lab Manual</strong><span>2D information architecture with light 3D atmosphere; cool, but readable.</span></div></div>
+          <div class="note"><time>06.12</time><div><strong>Memory is not just recall</strong><span>Useful agent memory is a boundary object between evidence, intent, and next action.</span></div></div>
+          <div class="note"><time>06.08</time><div><strong>RAG correctness pressure</strong><span>Relevance is not truth; retrieval quality needs a separate evaluation surface.</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="essays">
+      <div class="section-head">
+        <div><div class="kicker">essay preview</div><h2>Readable after the glow fades.</h2></div>
+      </div>
+      <article class="markdown">
+        <h3>Design note: a personal site should reveal the operating system, not just the output.</h3>
+        <p>A portfolio shows finished artifacts. A blog shows posts. The interesting middle ground is a living manual: the questions being investigated, the systems being built, and the taste that decides what is worth publishing.</p>
+        <blockquote>The visual system can feel like a lab, but the writing still has to feel like a person thinking clearly.</blockquote>
+        <p>That means every piece of Markdown — a project note, a log entry, or an essay — should survive without special decoration. The interface can provide atmosphere, but the content must carry the signal.</p>
+      </article>
+    </section>
+
+    <footer class="footer">
+      <span>SHAWN / AI LAB MANUAL / PROTOTYPE-01</span>
+      <span>github · rss · email · links</span>
+    </footer>
+  </main>
+</body>
+</html>

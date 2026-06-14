@@ -3,3 +3,15 @@ resources/_gen/
 .hugo_build.lock
 .DS_Store
 node_modules/
+
+# Astro / Node
+dist/
+.astro/
+.env*
+*.log
+.claude/worktrees/
+
+# Local UI verification artifacts
+.playwright-mcp/
+ai-lab-manual-home-*.png
+out/
