@@ -42,10 +42,10 @@
 
 ### T02 — 建立内容模型与示例内容
 
-- [ ] 建立 Astro content collections schema: `projects`、`notes`、`logs`、`essays`、`links`。
-- [ ] 实现共享最小字段:`title`、`description`、`date`、`updated?`、`tags`、`source?`、`visibility`。
-- [ ] 为各集合添加少量已规划字段:projects/status/role/repo/demo/period; notes/topic/related; logs/period/summary; essays/canonical/series; links/url/category/feed/note。
-- [ ] 添加用于验证 UI 的少量手写样本:1 个项目、2–3 条 notes、1 条 log、1 篇 essay、3–5 个 links。
+- [x] 建立 Astro content collections schema: `projects`、`notes`、`logs`、`essays`、`links`。
+- [x] 实现共享最小字段:`title`、`description`、`date`、`updated?`、`tags`、`source?`、`visibility`。
+- [x] 为各集合添加少量已规划字段:projects/status/role/repo/demo/period; notes/topic/related; logs/period/summary; essays/canonical/series; links/url/category/feed/note。
+- [x] 添加用于验证 UI 的少量手写样本:1 个项目、2–3 条 notes、1 条 log、1 篇 essay、3–5 个 links。
 
 验收标准:
 - Astro build 能校验所有示例内容 schema。
