@@ -104,11 +104,11 @@
 
 ### T07 — 实现 agent 内容检查工具
 
-- [ ] 在 `site/scripts/` 实现 `content:check` 命令。
-- [ ] 支持单篇 Markdown 与目录 + `manifest.json` 两种输入。
-- [ ] 检查 manifest 发布意图、type 映射、front matter 最小字段、slug/path 安全、冲突、标题/摘要/正文非空。
-- [ ] 检查疑似 secrets/token/key、私密标记、禁止发布标记。
-- [ ] 输出机器可读或结构稳定的检查报告,供 agent 决定修正。
+- [x] 在 `site/scripts/` 实现 `content:check` 命令。
+- [x] 支持单篇 Markdown 与目录 + `manifest.json` 两种输入。
+- [x] 检查 manifest 发布意图、type 映射、front matter 最小字段、slug/path 安全、冲突、标题/摘要/正文非空。
+- [x] 检查疑似 secrets/token/key、私密标记、禁止发布标记。
+- [x] 输出机器可读或结构稳定的检查报告,供 agent 决定修正。
 
 验收标准:
 - 合法样本通过 check。
@@ -117,11 +117,11 @@
 
 ### T08 — 实现 agent 内容同步工具
 
-- [ ] 在 `site/scripts/` 实现 `content:sync` 命令。
-- [ ] sync 必须先复用 `content:check`;失败不写入。
-- [ ] 将输入 Markdown 规范化写入 `site/src/content/<collection>/...`。
-- [ ] 规范化 slug/文件名,补齐缺省字段,避免覆盖已有内容;覆盖需要显式参数或失败。
-- [ ] 输出同步报告:写入路径、跳过项、失败原因。
+- [x] 在 `site/scripts/` 实现 `content:sync` 命令。
+- [x] sync 必须先复用 `content:check`;失败不写入。
+- [x] 将输入 Markdown 规范化写入 `site/src/content/<collection>/...`。
+- [x] 规范化 slug/文件名,补齐缺省字段,避免覆盖已有内容;覆盖需要显式参数或失败。
+- [x] 输出同步报告:写入路径、跳过项、失败原因。
 
 验收标准:
 - 单篇 Markdown 可同步到正确 collection。
