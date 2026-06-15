@@ -7,7 +7,7 @@ visibility: public
 topic: "Agent memory"
 related: ["agent-learning-cockpit"]
 source:
-  label: "Personal study note"
+  label: "sample / existing-material-summary"
 ---
 
 长上下文会降低一部分摩擦,但不会自动形成好系统。真正有价值的是知道哪些状态必须被保留,哪些证据只需要短期存在,哪些结论需要回写到稳定记忆里。

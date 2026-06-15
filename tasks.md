@@ -224,13 +224,13 @@
 
 > 返工来源:human 反馈“没有文章什么的可以阅读”。首轮样本只够测试 schema,不够验收真实阅读体验。
 
-- [ ] 至少补足 3 篇可阅读 essays,每篇有明确主题、起承转合和不少于 700 中文字或等效密度;每篇 frontmatter 或正文开头标明内容性质:样例、来自已有材料整理、或真实可公开文章。
-- [ ] 至少补足 6 条 notes,其中至少 3 条能从列表进入详情并有实质正文,不是一句话占位;不得伪造 Shawn 的经历、项目成果、外部评价或未经确认的个人判断。
-- [ ] 至少补足 2 条 logs,能体现阶段变化和当前工作进展。
-- [ ] 每篇新增/补足内容必须标明内容来源类型:`sample` / `existing-material-summary` / `public-original`;若不是 confirmed public original,不得写成 Shawn 已正式发表的真实文章口吻。
-- [ ] 至少 1 篇 essay 必须包含完整 Markdown 阅读结构:二/三级标题、列表、链接、行内 code 或术语标记、blockquote、长段落和中英混排。
-- [ ] 首页、Essays、Notes、Logs 列表能看出内容层次和真实密度;不能只显示一两张卡片。
-- [ ] RSS 包含新增公开 essays/logs/notes,并能从站内发现。
+- [x] 至少补足 3 篇可阅读 essays,每篇有明确主题、起承转合和不少于 700 中文字或等效密度;每篇 frontmatter 或正文开头标明内容性质:样例、来自已有材料整理、或真实可公开文章。
+- [x] 至少补足 6 条 notes,其中至少 3 条能从列表进入详情并有实质正文,不是一句话占位;不得伪造 Shawn 的经历、项目成果、外部评价或未经确认的个人判断。
+- [x] 至少补足 2 条 logs,能体现阶段变化和当前工作进展。
+- [x] 每篇新增/补足内容必须标明内容来源类型:`sample` / `existing-material-summary` / `public-original`;若不是 confirmed public original,不得写成 Shawn 已正式发表的真实文章口吻。
+- [x] 至少 1 篇 essay 必须包含完整 Markdown 阅读结构:二/三级标题、列表、链接、行内 code 或术语标记、blockquote、长段落和中英混排。
+- [x] 首页、Essays、Notes、Logs 列表能看出内容层次和真实密度;不能只显示一两张卡片。
+- [x] RSS 包含新增公开 essays/logs/notes,并能从站内发现。
 
 局部验收标准:
 - `pnpm --dir site build` 能校验全部内容 schema。
@@ -244,8 +244,8 @@
 - 内容密度提升后,首页仍保持清爽宁静,不能变成信息噪声墙。
 
 对抗性验收:
-- [ ] 主 agent 自验证通过后,spawn 独立 subagent 审查:它必须随机打开列表和详情页,判断是否“真的有文章可读”、是否内容空泛、是否 RSS/导航/详情链路完整。
-- [ ] subagent 需尝试找私密/secret/禁止发布风险;若发现风险,本任务不得勾选。
+- [x] 主 agent 自验证通过后,spawn 独立 subagent 审查:它必须随机打开列表和详情页,判断是否“真的有文章可读”、是否内容空泛、是否 RSS/导航/详情链路完整。
+- [x] subagent 需尝试找私密/secret/禁止发布风险;若发现风险,本任务不得勾选。
 
 ### T18 — 访客路径与简历级作品入口验收
 

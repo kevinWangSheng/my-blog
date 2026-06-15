@@ -6,6 +6,8 @@ tags: ["rag", "evaluation"]
 visibility: public
 topic: "Retrieval systems"
 related: []
+source:
+  label: "sample / existing-material-summary"
 ---
 
 RAG 最容易被误解的地方是把“找到了相关段落”当成“回答已经可靠”。检索只是把模型拉回证据附近,并不自动解决来源冲突、时间漂移、引用粒度和用户意图偏差。
