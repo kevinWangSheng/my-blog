@@ -56,10 +56,10 @@
 
 ### 核心回路:改 → 渲染 → 跑脚本 → 判定
 1. **build / 起服务**:`astro build` 通过(无类型 / 构建错误),产出静态 `dist/`。
-2. **跑客观验证脚本(一把做)**:`pnpm ui-verify -- --serve <dist> --path /`(或 Skill `/ui-verify`)。脚本在 **3 断点**(375 / 768 / 1440)截图(reduced-motion + 冻结动画,落盘 `out/`)、跑 **axe**(wcag2a/aa)、跑 **lighthouse**(移动端,perf/a11y/seo/best-practices),汇总写 `out/summary.json`。**agent 只读 `out/summary.json` 判定,不逐张回喂截图**;截图路径留 ⑦ human 看。
-3. **主观自检(脚本判不了的部分)**:动效 reveal 是否正确、不闪、不挡读;克制度(对照 `DECISIONS.md` 的 `D-20260614-UI审美方向修正`:清爽、宁静、留白充足、阅读优先);Markdown 长文可读性。agent 应先用本地浏览器/Playwright MCP 手动探查并留下证据;human 只做 ⑦最终结果验收。
+2. **跑客观验证脚本(一把做)**:`pnpm ui-verify -- --serve <dist> --path /`(或 Skill `/ui-verify`)。脚本在 **3 断点**(375 / 768 / 1440)截图(reduced-motion + 冻结动画,落盘 `out/`)、跑 **axe**(wcag2a/aa)、检查 console error/warning、检查 `document.scrollWidth > document.clientWidth` 横向溢出、跑 **lighthouse**(移动端,perf/a11y/seo/best-practices),汇总写 `out/summary.json`。**agent 只读 `out/summary.json` 判定,不逐张回喂截图**;截图路径留 ⑦ human 看。
+3. **主观/交互自检(脚本判不了的部分)**:动效 reveal 是否正确、不闪、不挡读、下滑显示/上滑消失是否可感知;克制度(对照 `DECISIONS.md` 的 `D-20260614-UI审美方向修正`:清爽、宁静、留白充足、阅读优先);Markdown 长文可读性。agent 应先用本地浏览器/Playwright MCP 手动探查并留下证据;human 只做 ⑦最终结果验收。若要让 reveal 变成可自动断言,实现需提供稳定状态探针(如 `data-reveal-state` 或明确 class 状态),否则不得声称固定 `ui-verify` 已证明 reveal 成立。
 4. **reduced-motion 降级**:必须实现 `prefers-reduced-motion: reduce` 版本;脚本即在 reduce 模式下截图,核验其渲染成立(a11y 硬要求)。
-5. **判定**:`summary.ok=false`,或出现 axe critical/serious、lighthouse 任一项 < 目标门槛、console error → 回退重做,不打补丁。
+5. **判定**:`summary.ok=false`,或出现 axe critical/serious、lighthouse 任一项 < 目标门槛、console error/warning、横向溢出 → 回退重做,不打补丁。
 
 ### UI 实现约定
 - 只用 `tokens.css` 的 token,不写死颜色 / 间距值。

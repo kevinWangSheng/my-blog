@@ -74,7 +74,8 @@ async function startStaticServer(dir) {
       if (p.endsWith('/')) p += 'index.html';
       const filePath = normalize(join(root, p));
       if (!filePath.startsWith(root)) { res.writeHead(403); return res.end('forbidden'); }
-      const target = existsSync(filePath) ? filePath
+      const target = existsSync(join(filePath, 'index.html')) ? join(filePath, 'index.html')
+        : existsSync(filePath) ? filePath
         : existsSync(filePath + '.html') ? filePath + '.html'
         : null;
       if (!target) { res.writeHead(404); return res.end('not found'); }
@@ -121,8 +122,8 @@ async function runLighthouse(url) {
 
 // ---------- main ----------
 async function main() {
-  await rm(outDir, { recursive: true, force: true });
   await mkdir(outDir, { recursive: true });
+  await cleanOwnArtifacts(outDir, breakpoints);
 
   let staticSrv = null;
   let base = urlArg;
@@ -135,7 +136,7 @@ async function main() {
 
   const summary = {
     target: targetUrl, breakpoints, generatedBy: 'ui-verify.mjs',
-    screenshots: {}, axe: {}, lighthouse: null, ok: true, problems: [],
+    screenshots: {}, axe: {}, layout: {}, lighthouse: null, ok: true, problems: [],
   };
 
   const browser = await chromium.launch();
@@ -147,16 +148,56 @@ async function main() {
       });
       const page = await ctx.newPage();
       const consoleErrors = [];
-      page.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text()); });
+      const consoleWarnings = [];
+      page.on('console', (m) => {
+        if (m.type() === 'error') consoleErrors.push(m.text());
+        if (m.type() === 'warning') consoleWarnings.push(m.text());
+      });
 
       const resp = await page.goto(targetUrl, { waitUntil: 'networkidle', timeout: 30000 });
       const status = resp ? resp.status() : 0;
       if (!resp || status >= 400) { summary.ok = false; summary.problems.push(`HTTP ${status} @ ${w}px`); }
 
+      const overflow = await page.evaluate(() => {
+        const doc = document.documentElement;
+        const body = document.body;
+        const clientWidth = doc.clientWidth;
+        const scrollWidth = Math.max(doc.scrollWidth, body?.scrollWidth || 0);
+        const tolerance = 1;
+        const offenders = Array.from(document.body?.querySelectorAll('*') || [])
+          .map((el) => {
+            const rect = el.getBoundingClientRect();
+            return {
+              tag: el.tagName.toLowerCase(),
+              className: typeof el.className === 'string' ? el.className : '',
+              id: el.id || '',
+              left: Math.round(rect.left),
+              right: Math.round(rect.right),
+              width: Math.round(rect.width),
+              text: (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 80),
+            };
+          })
+          .filter((x) => x.width > 0 && (x.right > clientWidth + tolerance || x.left < -tolerance))
+          .slice(0, 12);
+        return {
+          clientWidth,
+          scrollWidth,
+          overflowX: scrollWidth > clientWidth + tolerance,
+          delta: Math.max(0, scrollWidth - clientWidth),
+          offenders,
+        };
+      });
+      summary.layout[w] = { horizontalOverflow: overflow };
+      if (overflow.overflowX) {
+        summary.ok = false;
+        summary.problems.push(`horizontal overflow @ ${w}px: scrollWidth=${overflow.scrollWidth}, clientWidth=${overflow.clientWidth}, delta=${overflow.delta}`);
+      }
+
       const shot = join(outDir, `screen-${w}.png`);
       await page.screenshot({ path: shot, fullPage: true, animations: 'disabled' });
-      summary.screenshots[w] = { file: shot, status, consoleErrors };
+      summary.screenshots[w] = { file: shot, status, consoleErrors, consoleWarnings };
       if (consoleErrors.length) { summary.ok = false; summary.problems.push(`${consoleErrors.length} console error(s) @ ${w}px`); }
+      if (consoleWarnings.length) { summary.ok = false; summary.problems.push(`${consoleWarnings.length} console warning(s) @ ${w}px`); }
 
       // axe a11y
       try {
@@ -206,13 +247,21 @@ async function main() {
   console.log('target:', summary.target);
   for (const w of breakpoints) {
     const a = summary.axe[w] || {};
-    console.log(`  [${w}px] shot=${summary.screenshots[w]?.file} axe=${a.error ? 'ERR' : `${a.total} (crit ${a.critical}/serious ${a.serious})`} consoleErr=${summary.screenshots[w]?.consoleErrors?.length ?? '?'}`);
+    const overflow = summary.layout[w]?.horizontalOverflow;
+    console.log(`  [${w}px] shot=${summary.screenshots[w]?.file} axe=${a.error ? 'ERR' : `${a.total} (crit ${a.critical}/serious ${a.serious})`} consoleErr=${summary.screenshots[w]?.consoleErrors?.length ?? '?'} consoleWarn=${summary.screenshots[w]?.consoleWarnings?.length ?? '?'} overflow=${overflow?.overflowX ? `YES(+${overflow.delta}px)` : 'no'}`);
   }
   console.log('  lighthouse:', summary.lighthouse?.scores ? JSON.stringify(summary.lighthouse.scores) : `ERROR (${summary.lighthouse?.error})`);
   console.log('  problems:', summary.problems.length ? summary.problems.join('; ') : '(none)');
   console.log('  OK:', summary.ok);
   console.log('  详见', join(outDir, 'summary.json'));
   process.exit(summary.ok ? 0 : 1);
+}
+
+async function cleanOwnArtifacts(dir, widths) {
+  await Promise.all([
+    rm(join(dir, 'summary.json'), { force: true }),
+    ...widths.map((w) => rm(join(dir, `screen-${w}.png`), { force: true })),
+  ]);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

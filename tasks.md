@@ -19,6 +19,27 @@
 
 ## 任务列表
 
+## 当前对抗性缺陷清单（返工必须消除）
+
+这些不是“审美偏好”,而是会导致日常 blog 使用和对外展示不成立的阻塞风险。后续 agent 实现前必须先读本节,并在验收摘要中逐条说明是否已消除。
+
+- Blog 骨架存在不等于阅读体验成立。当前版本能 build、路由存在、链接不 404,但文章正文过短、结构单薄,不足以证明 Essays/Notes/Logs/Projects 的真实阅读体验。
+- “Markdown 渲染正常”不能只靠空壳页面判断。必须有真实正文覆盖二/三级标题、段落、列表、链接、行内 code、blockquote、长段落、中文/英文混排,并在详情页实际阅读无压迫感。
+- Projects 不能只是普通列表卡片。作为“另一份简历/作品入口”,项目详情必须展示角色、周期、状态、repo/demo 外链、问题、方案、过程证据和结果/当前进展;否则无法向陌生人证明能力。
+- About 不能只是概念说明。必须让陌生访客 30 秒内知道 Shawn 是谁、当前方向、代表项目、如何继续阅读、如何联系或访问外部主页/GitHub 等公开入口。
+- 首页不能只追视觉冲击或模块存在。它必须提供两条清晰路径:读作品/能力证据,读文章/学习判断;并且首屏在 5 秒内说明站点用途。
+- 验证不能停留在 build / Lighthouse / 无 404。必须按真实访客路径完成端到端使用:首页 → Projects → 项目详情 → About/联系入口 → Essays/Notes → RSS/Links。
+- 对抗性验收不能口头通过。每个返工任务都必须落盘证据,包括验证方案、命令、URL 清单、截图/summary 路径、阻塞项、非阻塞风险和结论。
+
+## 下一个实现 agent 启动规则（禁止人肉传递）
+
+- 下一个实现 agent 进入本仓库后,必须以本节和「当前下一步」为唯一执行入口;不得从历史开放任务、旧 UI 原型、旧站文件或口头上下文推断任务。
+- 当前唯一执行队列是: **T13 → T14 → T18 → T15 → T16 → T17**。物理上更早的历史任务若已标注 superseded,不得重新打开或抢占执行。
+- 实现前第一步必须写 `out/acceptance/T13-plan.md`,内容包括:T13 目标、普通访客使用路径、要跑的命令、要打开的 URL、截图/summary 路径、哪些现象算阻塞。没有 `T13-plan.md`,不得开始改页面、内容或样式。
+- 每个返工任务开始前都必须先写对应 `out/acceptance/Txx-plan.md`;完成后写 `out/acceptance/Txx-main.md`;主 agent 自验证通过后再由独立 subagent 写 `out/acceptance/Txx-adversarial.md`。没有这三类证据,不得勾选该任务。
+- 工具验证是地板,不是终点。`pnpm --dir site build`、`pnpm ui-verify`、无 404、无 console、无横向溢出只能证明基础客观信号;真实阅读、访客路径、作品可信度、reveal 感知必须按 T13/T14/T18/T16 的具体要求另行验证。
+- 如果 agent 发现任务要求与真实页面体验冲突,以真实页面体验失败为准,先记录阻塞项并修正;不得用“任务文字已满足”覆盖实际不可用。
+
 ### T00 — 建立实现分支与旧站保护点
 
 - [x] 从当前规划基线创建/切换到 `rebuild` 分支。
@@ -47,7 +68,7 @@
 - [x] 建立 Astro content collections schema: `projects`、`notes`、`logs`、`essays`、`links`。
 - [x] 实现共享最小字段:`title`、`description`、`date`、`updated?`、`tags`、`source?`、`visibility`。
 - [x] 为各集合添加少量已规划字段:projects/status/role/repo/demo/period; notes/topic/related; logs/period/summary; essays/canonical/series; links/url/category/feed/note。
-- [ ] 添加用于验证 UI 的少量手写样本:1 个项目、2–3 条 notes、1 条 log、1 篇 essay、3–5 个 links。
+- [x] ~~添加用于验证 UI 的少量手写样本:1 个项目、2–3 条 notes、1 条 log、1 篇 essay、3–5 个 links。~~ superseded by T14,不在本历史框继续实现。
 
 验收标准:
 - Astro build 能校验所有示例内容 schema。
@@ -61,7 +82,7 @@
 
 > 历史首轮任务。当前审美 token 返工由 T15 执行;本节旧“深色/荧光/原型提取”口径不再作为当前执行基线。
 
-- [ ] 按 T15 新审美方向重做 `tokens.css`:清爽、宁静、留白充足、阅读优先,不再从旧强 AI Lab Manual 原型提取深色荧光基线。
+- [x] ~~按 T15 新审美方向重做 `tokens.css`:清爽、宁静、留白充足、阅读优先,不再从旧强 AI Lab Manual 原型提取深色荧光基线。~~ superseded by T15,不在本历史框继续实现。
 - [x] 实现全局样式、基础布局、导航、Footer、内容容器、Markdown 排版。
 - [x] 实现 `prefers-reduced-motion: reduce` 降级策略。
 - [x] 不写死散落颜色/间距;页面和组件优先使用 token。
@@ -77,7 +98,7 @@
 - [x] Hero 在 5 秒内说明 Shawn 是谁、当前关注什么、站点价值与主要入口。
 - [x] Projects 作为能力/作品入口拥有更强展示权重。
 - [x] Notes/Logs 呈现“正在生成”的状态,但不退化成传统博客时间线。
-- [ ] 加入克制的 CSS/SVG/Canvas/IntersectionObserver 视觉与 scroll reveal,不引重动画库。
+- [x] ~~加入克制的 CSS/SVG/Canvas/IntersectionObserver 视觉与 scroll reveal,不引重动画库。~~ superseded by T16,不在本历史框继续实现。
 
 验收标准:
 - 首页同时表达“学习自留地”和“作品/能力入口”。
@@ -150,12 +171,12 @@
 
 ### T10 — 首轮视觉/交互自检与收敛
 
-> 历史首轮任务。当前视觉/交互自检由 T13–T17 重新执行;不再按旧“技术审美 / AI Lab Manual”口径验收。
+> 历史首轮任务。当前视觉/交互自检由 T13/T14/T18/T15/T16/T17 重新执行;不再按旧“技术审美 / AI Lab Manual”口径验收。
 
-- [ ] 用浏览器或 Playwright MCP 临时探索首页、移动端、内容页和滚动动效。
-- [ ] 对照 `tasks.md` T13–T17 检查:blog 基本功能、清爽宁静审美、5 秒理解、学习/作品平衡、Markdown 阅读、短 note、Projects 展示强度、移动端美感和 scroll reveal。
-- [ ] 对不达标处回退或重做,不堆补丁。
-- [ ] 形成 ⑦验收材料:本地预览地址、关键截图路径、自验证摘要、已知限制。
+- [x] ~~用浏览器或 Playwright MCP 临时探索首页、移动端、内容页和滚动动效。~~ superseded by T13/T15/T16/T17,不在本历史框继续实现。
+- [x] ~~对照 `tasks.md` T13–T17 检查:blog 基本功能、清爽宁静审美、5 秒理解、学习/作品平衡、Markdown 阅读、短 note、Projects 展示强度、移动端美感和 scroll reveal。~~ superseded by T13/T14/T18/T15/T16/T17。
+- [x] ~~对不达标处回退或重做,不堆补丁。~~ superseded by T17 的双层验收协议。
+- [x] ~~形成 ⑦验收材料:本地预览地址、关键截图路径、自验证摘要、已知限制。~~ superseded by T11/T17。
 
 验收标准:
 - 首页首屏具备清爽、宁静、阅读优先的知识空间气质,且不普通模板化。
@@ -176,17 +197,19 @@
 
 > 返工来源:human 反馈“最基础的 blog 功能、阅读、页面、文字渲染、文章跳转、使用、页面布局都必须先保证”。本任务优先级高于审美和高级动效;它是后续所有体验任务的地基。
 
-- [ ] 明确站点基本路径清单:首页、About、Projects 列表/详情、Notes 列表/详情、Logs 列表/详情、Essays 列表/详情、Links、404、RSS、sitemap;并把最终 URL 清单写入验收摘要,确保可复跑。
-- [ ] 每个导航入口都能打开真实页面;每个列表页至少能进入一个对应详情页;所有详情页有可阅读正文而不是空壳。
-- [ ] Markdown 常见元素渲染正常:段落、二级/三级标题、列表、链接、行内 code、blockquote、长段落、中文/英文混排。
-- [ ] 文字基础可读:桌面和移动端没有横向溢出、正文不贴边、行宽不过长、行距舒适、颜色对比足够。
-- [ ] 站内链接、RSS 链接、sitemap、favicon、404 都可访问,浏览器 console 无 error/warning。
-- [ ] reduced-motion 模式下内容默认可见,不依赖动效才能阅读。
+- [x] 明确站点基本路径清单:首页、About、Projects 列表/详情、Notes 列表/详情、Logs 列表/详情、Essays 列表/详情、Links、404、RSS、sitemap;并把最终 URL 清单写入验收摘要,确保可复跑。
+- [x] 每个导航入口都能打开真实页面;每个列表页至少能进入一个对应详情页;所有详情页有可阅读正文而不是空壳。
+- [x] Markdown 常见元素渲染正常:段落、二级/三级标题、列表、链接、行内 code、blockquote、长段落、中文/英文混排。
+- [x] 至少 1 篇 essay、1 条 note、1 条 log、1 个 project 详情页覆盖上述 Markdown 结构;不能只在组件或空样本中“理论支持”。
+- [x] 文字基础可读:桌面和移动端没有横向溢出、正文不贴边、行宽不过长、行距舒适、颜色对比足够。
+- [x] 站内链接、RSS 链接、sitemap、favicon、404 都可访问,浏览器 console 无 error/warning。
+- [x] reduced-motion 模式下内容默认可见,不依赖动效才能阅读。
 
 局部验收标准:
 - `pnpm --dir site build` 通过,且生成上述页面与详情路由。
 - 用脚本或 Playwright 检查站内链接:所有站内页面/RSS href 无 404;列表到详情的跳转可用。
 - 用浏览器实际打开首页、Essays 列表、至少 2 篇文章详情、Notes 列表、Projects 详情、404、RSS。
+- 按普通访客路径实际走一遍:首页 → Notes 列表 → Note 详情 → Essays 列表 → Essay 详情 → Projects 列表 → Project 详情 → About → RSS。
 - 375/768/1440 三个断点截图无横向滚动条、标题溢出、正文被遮挡或导航不可用。
 
 整体不偏离验收:
@@ -194,8 +217,8 @@
 - 不能为了修布局删除内容类型、隐藏入口或降低 Projects/Notes/Logs/Essays 的区分度。
 
 对抗性验收:
-- [ ] 主 agent 自验证通过后,spawn 独立 subagent 做对抗性测试:它必须按普通访客路径随机点击导航和列表,尝试找 404、空详情、不可读文字、移动端溢出、console error、RSS/sitemap 问题。
-- [ ] subagent 必须输出“阻塞项 / 非阻塞风险 / 已验证证据”;若有阻塞项,本任务不得勾选。
+- [x] 主 agent 自验证通过后,spawn 独立 subagent 做对抗性测试:它必须按普通访客路径随机点击导航和列表,尝试找 404、空详情、不可读文字、移动端溢出、console error、RSS/sitemap 问题。
+- [x] subagent 必须输出“阻塞项 / 非阻塞风险 / 已验证证据”;若有阻塞项,本任务不得勾选。
 
 ### T14 — 内容阅读密度补足
 
@@ -204,6 +227,8 @@
 - [ ] 至少补足 3 篇可阅读 essays,每篇有明确主题、起承转合和不少于 700 中文字或等效密度;每篇 frontmatter 或正文开头标明内容性质:样例、来自已有材料整理、或真实可公开文章。
 - [ ] 至少补足 6 条 notes,其中至少 3 条能从列表进入详情并有实质正文,不是一句话占位;不得伪造 Shawn 的经历、项目成果、外部评价或未经确认的个人判断。
 - [ ] 至少补足 2 条 logs,能体现阶段变化和当前工作进展。
+- [ ] 每篇新增/补足内容必须标明内容来源类型:`sample` / `existing-material-summary` / `public-original`;若不是 confirmed public original,不得写成 Shawn 已正式发表的真实文章口吻。
+- [ ] 至少 1 篇 essay 必须包含完整 Markdown 阅读结构:二/三级标题、列表、链接、行内 code 或术语标记、blockquote、长段落和中英混排。
 - [ ] 首页、Essays、Notes、Logs 列表能看出内容层次和真实密度;不能只显示一两张卡片。
 - [ ] RSS 包含新增公开 essays/logs/notes,并能从站内发现。
 
@@ -211,6 +236,8 @@
 - `pnpm --dir site build` 能校验全部内容 schema。
 - Essays 列表至少 3 篇;Notes 列表至少 6 条;Logs 列表至少 2 条;详情页均可打开。
 - 内容不得包含真实 secrets、私人信息、旧站 Notion 未审核迁移内容、“禁止发布”标记,也不得伪造个人经历、项目成果、客户/用户反馈或外部背书。
+- 内容密度必须由脚本或明确命令统计落证据,不能只靠人工观感。最低阈值:每篇 essay ≥700 中文字或等效密度;至少 3 条 note 详情正文 ≥250 中文字或等效密度;每条 log 详情正文 ≥300 中文字或等效密度;不足阈值必须在验收摘要中说明为什么仍可读且等待 human 判断。
+- 验收摘要必须列出每篇内容的来源类型、路径、字数/等效密度、是否进入 RSS、是否需要 human 后续改写确认。
 
 整体不偏离验收:
 - 示例内容要服务站点定位:AI 学习、agent 系统、项目实践、知识工作流;不要为了凑数写泛泛而谈的博客水文。
@@ -219,6 +246,32 @@
 对抗性验收:
 - [ ] 主 agent 自验证通过后,spawn 独立 subagent 审查:它必须随机打开列表和详情页,判断是否“真的有文章可读”、是否内容空泛、是否 RSS/导航/详情链路完整。
 - [ ] subagent 需尝试找私密/secret/禁止发布风险;若发现风险,本任务不得勾选。
+
+### T18 — 访客路径与简历级作品入口验收
+
+> 返工来源:当前实现虽然具备基础路由,但从实际使用看,还不能稳定满足“日常正常 blog”与“可作为面试/合作场景的另一份简历入口”。本任务专门补齐真实访客路径和作品展示可信度。
+
+- [ ] 首页必须明确提供两条路径:看 Projects/能力证据,看 Essays/Notes/Logs/学习判断;首屏 5 秒内能说明 Shawn 是谁、站点有什么价值、下一步该点哪里。
+- [ ] About 页面必须包含:当前身份/方向、代表项目入口、当前关注、阅读路径说明、至少一种公开联系或外部主页/GitHub 入口;不得只有抽象理念。
+- [ ] Projects 列表与详情必须像作品集入口:至少 1 个项目详情展示 role、period、status、repo/demo 外链、问题背景、解决方案、过程证据、当前结果或下一步。
+- [ ] Notes/Logs/Essays 的差异必须在列表页和详情页都能被普通访客理解:note 是短判断/知识卡片,log 是阶段过程,essay 是成熟长文。
+- [ ] 任一外部链接必须可明确识别用途;如果 repo/demo 暂无真实公开链接,必须显示“暂未公开/本地项目/待补充”,不能伪造。
+- [ ] 首页、About、Projects 不能因为追求 blog 阅读而退化成普通博客模板;仍要服务“学习自留地 + 项目/能力入口”的双目标。
+
+局部验收标准:
+- `pnpm --dir site build` 通过。
+- 用浏览器实际走访客路径 A:首页 → Projects → 项目详情 → repo/demo/外部入口 → About。
+- 用浏览器实际走访客路径 B:首页 → Essays → Essay 详情 → Notes → Note 详情 → Logs → Log 详情 → RSS/Links。
+- 375/768/1440 三个断点下,首页首屏、About、Projects 详情、Essay 详情均无横向溢出、标题压迫、正文不可读或 CTA 不可点。
+
+整体不偏离验收:
+- 不为了“简历化”把站点变成一页式简历;Projects 是能力证据,Essays/Notes/Logs 仍是长期知识空间。
+- 不为了“内容多”牺牲安全边界;不得伪造经历、成果、用户反馈、外部背书或公开链接。
+- 不新增重 UI/动画库、不改旧站部署链路、不提前 cutover。
+
+对抗性验收:
+- [ ] 主 agent 自验证通过后,spawn 独立 subagent 审查:它必须扮演陌生面试官/合作方,判断 30 秒内是否理解 Shawn、是否能找到能力证据、项目详情是否可信、文章是否可读、联系方式/外部入口是否明确。
+- [ ] subagent 必须输出“阻塞项 / 非阻塞风险 / 已验证证据 / 面试官视角结论”;若认为“可以 build 但不能对外展示”,本任务不得勾选。
 
 ### T15 — 审美方向重构:清爽宁静的知识空间
 
@@ -247,6 +300,7 @@
 ### T16 — Scroll reveal 与交互质感重做
 
 > 返工来源:human 反馈没有看到“下滑显示、上滑消失”等高级动作。首轮 IntersectionObserver 存在,但视觉反馈不明显,不能算完成。
+> 验证边界:固定 `ui-verify` 只验证 reduced-motion 静态可读、截图、a11y、console、横向溢出和 Lighthouse;它不证明 reveal 感知成立。T16 必须另用 Playwright MCP / 浏览器自动化 / 本地浏览器实际滚动记录证据。若实现加入稳定状态探针(如 `data-reveal-state` 或可读 class 状态),可用 Playwright 断言滚动前后状态;否则必须在 `out/acceptance/T16-plan.md` 明确人工/浏览器判定方法。
 
 - [ ] 先写清楚 reveal 规则:元素进入视口时柔和显示/位移/层级展开;离开视口时回到待激活状态;上滑回看时可再次自然出现。
 - [ ] 用 CSS + IntersectionObserver 实现,不引入 GSAP/Framer Motion/Three.js 等重动画库。
@@ -256,7 +310,8 @@
 
 局部验收标准:
 - Playwright MCP 或等效浏览器检查证明并记录具体检查方式:初始首屏外的 reveal 元素处于待激活状态;下滑进入后变为可见;上滑离开/回到初始区域后状态按规则切换。
-- 浏览器 console 无 error/warning;动效不导致布局跳动、链接不可点或阅读被遮挡。
+- 如果使用状态探针,验收摘要必须列出被检查的 selector、初始状态、进入视口状态、离开视口状态;如果不使用状态探针,必须保存滚动检查路径、截图/录屏路径或 MCP 观察证据,并说明为何足以判定。
+- 浏览器 console 无 error/warning;动效不导致布局跳动、链接不可点、正文初始不可读或阅读被遮挡。
 - `pnpm ui-verify -- --serve site/dist --path /` 和至少一个长文页通过。
 
 整体不偏离验收:
@@ -269,16 +324,22 @@
 
 ### T17 — 局部 + 整体双层验收协议
 
-- [ ] 为 T13/T14/T15/T16 每个任务保存验收摘要:改动范围、局部验收证据、整体不偏离证据、subagent 对抗结论。
+- [ ] 为 T13/T14/T15/T16/T18 每个任务保存验收摘要:改动范围、局部验收证据、整体不偏离证据、subagent 对抗结论。
+- [ ] 每个返工任务实现前,先写验证方案到 `out/acceptance/Txx-plan.md`:任务目标、使用路径、要跑的命令、要打开的 URL、需要截图/summary 的位置、哪些现象算阻塞。
 - [ ] 每个大任务完成后都运行:build、首页和长文页 UI verify、浏览器人工路径检查;如涉及内容变更,还必须运行内容检查相关命令,否则在验收摘要中记录“未涉及内容变更”。
-- [ ] 每个大任务完成后都检查整体:导航、首页定位、Projects 权重、Notes/Logs/Essays 差异、RSS、移动端、reduced-motion、旧站部署边界。
+- [ ] 每个大任务完成后都检查整体:导航、首页定位、Projects 权重、Notes/Logs/Essays 差异、About/外部入口、RSS、移动端、reduced-motion、旧站部署边界。
+- [ ] 每个返工任务完成后,把主 agent 证据写入 `out/acceptance/Txx-main.md`,把 subagent 对抗结论写入 `out/acceptance/Txx-adversarial.md`。
+- [ ] 如果某项体验无法被工具精确验证,agent 必须在 `Txx-plan.md` 中先定义人工/浏览器验证方法和判定标准,再实现;不得用“工具无法判断”跳过。
+- [ ] 如果验证工具输出通过但真实路径体验失败,以真实路径体验失败为准;不得用 Lighthouse/axe/build 通过覆盖用户路径阻塞项。
 - [ ] 所有返工任务通过后再进入 T11 重新准备 ⑦验收材料。
 
 
 对抗性验收输出模板:
+- 验证方案路径:
 - 执行命令:
 - 访问路径 / URL 清单:
 - 截图 / summary 路径:
+- 实际使用路径结论:
 - 阻塞项:
 - 非阻塞风险:
 - 结论:通过 / 不通过 / 有条件通过
@@ -286,6 +347,7 @@
 验收标准:
 - 每个返工任务都有主 agent 证据和 subagent 对抗验收结论。
 - 若主 agent 与 subagent 结论冲突,默认按未通过处理,继续返工或把冲突点交给 human 判断。
+- `out/acceptance/` 中必须能追溯每个勾选项的证据;没有证据的 checkbox 视为未完成。
 - `tasks.md` 只勾选已经双层验收通过的任务。
 
 ### T12 — ⑧发布 / CI-CD cutover（仅 ⑦通过后执行）
@@ -306,4 +368,4 @@
 
 ## 当前下一步
 
-⑦ human 验收未通过。当前下一步是按 T13 → T14 → T15 → T16 → T17 返工:先保证 blog 基本功能/阅读/跳转/渲染,再补内容阅读密度,再做清爽宁静审美重构,再重做 scroll reveal,最后执行主 agent + subagent 对抗性双层验收。T11 重新通过后才回到 ⑦验收;T12 仍只在 ⑦通过后执行。
+⑦ human 验收未通过。当前下一步是按 T13 → T14 → T18 → T15 → T16 → T17 返工:先保证 blog 基本功能/阅读/跳转/渲染,再补内容阅读密度,再补真实访客路径与简历级作品入口,再做清爽宁静审美重构,再重做 scroll reveal,最后执行主 agent + subagent 对抗性双层验收。T11 重新通过后才回到 ⑦验收;T12 仍只在 ⑦通过后执行。
