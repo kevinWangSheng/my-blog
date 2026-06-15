@@ -410,9 +410,9 @@
 
 ### C04 — 第一批高质量内容发布
 
-- [ ] 优先整理 RAG / Context Engineering / Agent Systems 三个主题簇。
-- [ ] 至少发布 1 篇真正高质量 essay,并配套 3 条 notes / links。
-- [ ] 替换或下线当前 toy/sample 内容中不适合长期公开的部分。
+- [x] 优先整理 RAG / Context Engineering / Agent Systems 三个主题簇。
+- [x] 至少发布 1 篇真正高质量 essay,并配套 3 条 notes / links。
+- [x] 替换或下线当前 toy/sample 内容中不适合长期公开的部分。
 
 验收标准:
 - 新内容通过 `content:check`, build, RSS, route/link 检查。
@@ -432,4 +432,4 @@
 
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `kb-to-blog` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。当前下一步执行 C04:继续围绕 RAG / Context Engineering / Agent Systems 发布第一批高质量内容,至少补齐 3 条 notes / links,并替换或下线不适合长期公开的 toy/sample 内容。之后进入 C05 文章详情推荐。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `kb-to-blog` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。当前下一步执行 C05:为 essay / note / log / project 详情页增加轻量推荐,优先用 series、related frontmatter、shared tags 和 same collection recent。

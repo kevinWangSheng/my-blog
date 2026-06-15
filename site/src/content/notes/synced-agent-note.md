@@ -1,9 +1,9 @@
 ---
 title: "Synced agent note"
-description: "一条通过 content:sync 写入的新 note,用于验证 agent 发布入口。"
+description: "一条通过 content:sync 写入的历史验证 fixture,已从公开内容下线。"
 date: "2026-06-14"
 tags: ["agent", "sync"]
-visibility: "public"
+visibility: "draft"
 topic: "Publishing workflow"
 source:
   label: "sample / sync fixture"
