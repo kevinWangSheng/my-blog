@@ -366,6 +366,69 @@
 - 本地 UI 自验证仍只在 ⑥执行,不成为部署 CI gate。
 - 发布后线上站点可访问;RSS、首页、一级页面和示例详情页可打开。
 
+
+
+## 下一阶段:真实内容体系与 KB 发布管线
+
+> 状态:待执行。发布后第一阶段完成,下一阶段目标是把 KB 中成熟材料转化为 blog 成品内容,并补齐文章推荐与可复用发布 skill。
+
+### C01 — KB 候选池盘点
+
+- [ ] 使用多个 subagent 分区扫描 `/Users/shenghuikevin/kb-vault/output`, `wiki`, `learning/agent-field`。
+- [ ] 生成 `docs/content-pipeline/candidates.md`:候选路径、推荐类型、主题簇、质量信号、公开风险、下一步。
+- [ ] 明确哪些内容可直接改写,哪些只适合作为来源,哪些不适合公开。
+
+验收标准:
+- 至少给出 20 个候选或说明不足原因。
+- 每个候选都有 proposed type: essay / note / log / link / project / source-only。
+- 不把 demo/toy、本地不可公开项目伪装成公开作品。
+
+### C02 — Skill 市场调研与 `kb-to-blog` / `blog-publisher` 能力方案
+
+- [ ] 先使用 `skill-installer` 查询官方 curated / 可用市场 skill,记录候选与不适配原因。
+- [ ] 若存在合适 skill,优先安装/复用,并补齐本项目 wrapper / SOP,不重复造轮子。
+- [ ] 若没有合适 skill,再读取并遵守 `skill-creator` 规范,设计真正可复用的 skill,而不是一次性脚本。
+- [ ] 无论复用还是自建,最终能力都必须包含 subagent 搜索/评估/汇总/对抗审查模板。
+- [ ] 最终能力必须定义质量 rubric、安全检查、human review gate、content:check/sync 接入方式。
+
+验收标准:
+- 有市场查询记录:来源、候选 skill、是否安装/复用、不适配原因。
+- 只有在确认没有合适 skill 后,才进入自建设计。
+- skill / wrapper 有清晰触发条件、边界、输入/输出契约、验证命令和示例输出。
+- 能从 candidates 生成 review-ready 草稿和 manifest,但不绕过 human 审核直接发布。
+
+### C03 — 内容中间发布状态
+
+- [ ] 建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`。
+- [ ] 定义 discovered / candidate / needs-rewrite / review-ready / approved / published / rejected 状态。
+- [ ] 第一批内容先进入 review-ready,经 human 审核后再进入 `site/src/content`。
+
+验收标准:
+- 每篇进入 blog 的内容都能追溯到 KB source 和 review 记录。
+- 未审核内容不进入线上公开内容目录。
+
+### C04 — 第一批高质量内容发布
+
+- [ ] 优先整理 RAG / Context Engineering / Agent Systems 三个主题簇。
+- [ ] 至少发布 1 篇真正高质量 essay,并配套 3 条 notes / links。
+- [ ] 替换或下线当前 toy/sample 内容中不适合长期公开的部分。
+
+验收标准:
+- 新内容通过 `content:check`, build, RSS, route/link 检查。
+- 内容不是 KB 原文搬运,而是面向 blog 读者的成品表达。
+- 来源和内容性质清晰,无隐私/secrets/伪造成果风险。
+
+### C05 — 文章详情推荐
+
+- [ ] 为 essay / note / log / project 详情页增加轻量推荐。
+- [ ] 推荐依据优先级: series > related frontmatter > shared tags > same collection recent。
+- [ ] Project 详情可推荐相关 notes/logs;Essay 可推荐相关 notes/links。
+
+验收标准:
+- 每个详情页至少展示 2–4 个有意义的下一步入口,不足时优雅隐藏。
+- 推荐不破坏移动端阅读和 T15/T16 视觉/动效。
+- build / ui-verify 通过。
+
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。下一步不再是重建返工,而是发布后观察与后续内容迭代:如需继续推进,优先补真实公开内容、联系方式或后续自动内容发布流。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。下一步进入“真实内容体系与 KB 发布管线”:先做 KB 候选池盘点(C01),再设计可复用 `kb-to-blog` / `blog-publisher` skill(C02),建立中间发布状态(C03),发布第一批高质量内容(C04),最后补文章详情推荐(C05)。
