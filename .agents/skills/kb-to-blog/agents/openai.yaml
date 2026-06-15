@@ -1,4 +1,0 @@
-interface:
-  display_name: "KB to Blog"
-  short_description: "Turn KB materials into blog-ready Markdown."
-  default_prompt: "Use $kb-to-blog to turn selected kb-vault material into blog-ready Markdown, sync it after agent self-review, and leave final judgment to human blog review."

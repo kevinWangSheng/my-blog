@@ -1,4 +1,4 @@
-# C02 — `kb-to-blog` / `blog-publisher` skill 调研与能力方案
+# C02 — `blog-publisher` skill 调研与能力方案
 
 > 状态: C02 已完成设计。本文记录 skill 市场查询、候选评估、不适配原因,以及本项目后续应实现的可复用发布能力。  
 > 日期: 2026-06-14。  
@@ -66,21 +66,21 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 
 用户复核后明确:本能力应主要服务 **KB 内容 → blog 内容** 的转换,而不是同步、部署或页面验证。重新按这个角度检查后,结论如下:
 
-1. **现有 `kb` skill 只能可选辅助,不能当作唯一上游**。`kb-to-blog` 的实际取材根是 `/Users/shenghuikevin/kb-vault`;现有 `kb` skill 的 canonical source 是 `/Users/shenghuikevin/dev/AI/llm-kb`,两者不是同一个库。后续 agent 应优先按候选表和文件系统读取 `kb-vault`;只有任务明确涉及 llm-kb CLI 维护/查询时才调用 `kb` skill。
-2. **需要自写 `kb-to-blog` 内容转化 skill**。它负责判断材料是否适合公开、决定 essay/note/log/link/project 形态、把 KB 笔记改写成面向陌生读者的 blog 草稿、做 source tracing/freshness/privacy/no-fabrication 检查,并生成 review-ready 文件。agent 自检通过后还必须生成单独的 publishable Markdown,不能把 review 文件当作 sync 输入。human 最后看 blog 成品。
+1. **现有 `kb` skill 只能可选辅助,不能当作唯一上游**。`blog-publisher` 的实际取材根是 `/Users/shenghuikevin/kb-vault`;现有 `kb` skill 的 canonical source 是 `/Users/shenghuikevin/dev/AI/llm-kb`,两者不是同一个库。后续 agent 应优先按候选表和文件系统读取 `kb-vault`;只有任务明确涉及 llm-kb CLI 维护/查询时才调用 `kb` skill。
+2. **需要自写 `blog-publisher` 内容转化 skill**。它负责判断材料是否适合公开、决定 essay/note/log/link/project 形态、把 KB 笔记改写成面向陌生读者的 blog 草稿、做 source tracing/freshness/privacy/no-fabrication 检查,并生成 review-ready 文件。agent 自检通过后还必须生成单独的 publishable Markdown,不能把 review 文件当作 sync 输入。human 最后看 blog 成品。
 3. **`content-check` / `content-sync` 是下游机械入口**。它们在 agent 自检通过后执行,负责结构校验和写入,不能替代内容判断。真实命令只接受 `--file ... --type ...` 或 `--input <dir>`,manifest 模式固定读取 `<dir>/manifest.json`。
 4. **Notion curated skills 不适配**。`notion-knowledge-capture` 是把对话/笔记写入 Notion wiki;`notion-research-documentation` 是从 Notion sources 生成 briefs/reports;`notion-spec-to-implementation` 是 spec 到任务计划。它们的思想可借鉴,但依赖 Notion MCP 和 Notion database schema,不适合本项目的本地 KB + Astro blog 内容流。
 5. **Playwright / screenshot / ui-verify 不属于此 skill 核心**。它们只在内容进入站点后验证页面可读性/a11y/路由,不是 KB 内容处理能力。
 
-因此最终方案是 **组合式但以自写为主**: 项目级 `kb-to-blog` skill 负责内容转化;候选表和 `kb-vault` 文件系统是主要上游;现有 `kb` skill 只在需要 llm-kb CLI 能力时辅助;下游 `content-check/sync` 负责机械校验和写入。这比安装一个现成 Notion 或研究文档 skill 更贴合当前仓库和内容边界。
+因此最终方案是 **组合式但以自写为主**: 项目级 `blog-publisher` skill 负责内容转化;候选表和 `kb-vault` 文件系统是主要上游;现有 `kb` skill 只在需要 llm-kb CLI 能力时辅助;下游 `content-check/sync` 负责机械校验和写入。这比安装一个现成 Notion 或研究文档 skill 更贴合当前仓库和内容边界。
 
 ## 决策
 
-不安装现有市场 skill。自建项目级 **`kb-to-blog`** skill,并把它定义为内容处理能力: **source discovery / source tracing 主要基于 `docs/content-pipeline/candidates.md` 和 `/Users/shenghuikevin/kb-vault`;现有 `kb` skill 仅作可选辅助;公开化改写由 `kb-to-blog` 负责;agent 自检通过后生成 publishable Markdown + manifest;写入与验证由 `content-check` / `content-sync` / `ui-verify` 在下游负责**。
+不安装现有市场 skill。自建项目级 **`blog-publisher`** skill,并把它定义为内容处理能力: **source discovery / source tracing 主要基于 `docs/content-pipeline/candidates.md` 和 `/Users/shenghuikevin/kb-vault`;现有 `kb` skill 仅作可选辅助;公开化改写由 `blog-publisher` 负责;agent 自检通过后生成 publishable Markdown + manifest;写入与验证由 `content-check` / `content-sync` / `ui-verify` 在下游负责**。
 
-已创建 Codex 项目级 skill: `.agents/skills/kb-to-blog/`。后续如需 Claude Code 同步,可在 C03/C04 追加 `.claude/skills/kb-to-blog/` wrapper 或 import,但本轮先把 Codex 执行入口打通。
+已创建 Codex 项目级 skill: `.agents/skills/blog-publisher/`。后续如需 Claude Code 同步,可在 C03/C04 追加 `.claude/skills/blog-publisher/` wrapper 或 import,但本轮先把 Codex 执行入口打通。
 
-## `kb-to-blog` 能力契约
+## `blog-publisher` 能力契约
 
 ### 触发条件
 
@@ -330,6 +330,6 @@ human_blog_review:
 
 - 已查询官方 curated skills,记录相关候选与不适配原因。
 - 官方 experimental 路径不可用,已记录错误。
-- 已评估本机 `kb` skill、项目 `ui-verify`、`content-check`、`content-sync` 的复用边界: 候选表和 `kb-vault` 文件系统是主上游,`kb` 仅作可选辅助,`kb-to-blog` 做内容处理,同步和 UI 验证是下游。
+- 已评估本机 `kb` skill、项目 `ui-verify`、`content-check`、`content-sync` 的复用边界: 候选表和 `kb-vault` 文件系统是主上游,`kb` 仅作可选辅助,`blog-publisher` 做内容处理,同步和 UI 验证是下游。
 - 未安装市场 skill,因为没有现成能力覆盖“本地 KB → 公开 blog 成品改写 → agent self-review → blog final review”。
-- 已按 skill-creator 原则创建项目级 `.agents/skills/kb-to-blog/`,并定义触发条件、边界、输入/输出契约、阶段流程、质量 rubric、安全检查、agent self-review、final human blog review、publishable Markdown 与 manifest 真实脚本契约、content:check/sync 接入、subagent 对抗审查模板。
+- 已按 skill-creator 原则创建项目级 `.agents/skills/blog-publisher/`,并定义触发条件、边界、输入/输出契约、阶段流程、质量 rubric、安全检查、agent self-review、final human blog review、publishable Markdown 与 manifest 真实脚本契约、content:check/sync 接入、subagent 对抗审查模板。

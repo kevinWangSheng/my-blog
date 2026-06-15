@@ -396,7 +396,7 @@
 - 每个候选都有 proposed type: essay / note / log / link / project / source-only。
 - 不把 demo/toy、本地不可公开项目伪装成公开作品。
 
-### C02 — Skill 市场调研与 `kb-to-blog` / `blog-publisher` 能力方案
+### C02 — Skill 市场调研与 `blog-publisher` 能力方案
 
 - [x] 先使用 `skill-installer` 查询官方 curated / 可用市场 skill,记录候选与不适配原因。
 - [x] 若存在合适 skill,优先安装/复用,并补齐本项目 wrapper / SOP,不重复造轮子。
@@ -408,7 +408,7 @@
 - 有市场查询记录:来源、候选 skill、是否安装/复用、不适配原因。
 - 只有在确认没有合适 skill 后,才进入自建设计。
 - skill / wrapper 有清晰触发条件、边界、输入/输出契约、验证命令和示例输出。
-- `kb-to-blog` 必须以内容处理为核心:KB source tracing、公开化改写、质量 rubric、安全/隐私/伪造成果检查、agent self-review,最终由 human 看 blog 成品。
+- `blog-publisher` 必须以内容处理为核心:KB source tracing、公开化改写、质量 rubric、安全/隐私/伪造成果检查、agent self-review,最终由 human 看 blog 成品。
 - 能从 candidates 生成 review-ready 草稿、publishable Markdown 和 manifest;不需要 sync 前 human 审核,但最终 blog 成品由 human 日常查看,有问题再开返工。
 
 ### C03 — 内容中间发布状态
@@ -450,7 +450,7 @@
 
 - [x] 下线当前公开 Project,不再把低质量项目作为能力入口。
 - [x] 下线 RAG-heavy 的 essay / notes / link,降低 RAG 在公开内容中的权重。
-- [x] 从 KB 中选择更近、更高质量的 Agent Memory / workflow / harness 观点,按 `kb-to-blog` review → manifest → content:check → sync 流程进入站点。
+- [x] 从 KB 中选择更近、更高质量的 Agent Memory / workflow / harness 观点,按 `blog-publisher` review → manifest → content:check → sync 流程进入站点。
 - [x] 调整首页 / About / Projects 空状态,避免继续引导到被下线的项目或 RAG 主线。
 
 验收标准:
@@ -461,4 +461,4 @@
 
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `kb-to-blog` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。C05 文章详情推荐已完成:essay / note / log / project 详情页现在展示轻量 Next reading path,推荐依据覆盖 series、related frontmatter、shared tags、same collection recent,并允许 Essay 推荐相关 notes/links、Project 推荐 notes/logs。验收证据见 `docs/content-pipeline/reviews/C05-verification.md`。C06 内容质量与主题重平衡已完成:下线低质量 Project 和 RAG-heavy 内容,新增 Agent Memory / workflow / harness 方向的高质量观点内容,并调整首页与 About。验收证据见 `docs/content-pipeline/reviews/C06-verification.md`。当前下一步:human 看本地或部署后的 blog 成品;若满意再发布/push,若不满意继续做内容取舍返工。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `blog-publisher` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/blog-publisher/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `blog-publisher` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。C05 文章详情推荐已完成:essay / note / log / project 详情页现在展示轻量 Next reading path,推荐依据覆盖 series、related frontmatter、shared tags、same collection recent,并允许 Essay 推荐相关 notes/links、Project 推荐 notes/logs。验收证据见 `docs/content-pipeline/reviews/C05-verification.md`。C06 内容质量与主题重平衡已完成:下线低质量 Project 和 RAG-heavy 内容,新增 Agent Memory / workflow / harness 方向的高质量观点内容,并调整首页与 About。验收证据见 `docs/content-pipeline/reviews/C06-verification.md`。当前下一步:human 看本地或部署后的 blog 成品;若满意再发布/push,若不满意继续做内容取舍返工。

@@ -55,7 +55,7 @@ docs/content-pipeline/
 1. 使用 `skill-installer` 查询官方 curated / 可用市场 skill。
 2. 评估候选是否能覆盖内容策展、发布前审核、subagent 分工、质量检查、安全检查、blog manifest 生成。
 3. 如果存在合适 skill,优先安装/复用,本项目只补 wrapper / SOP。
-4. 如果没有合适 skill,再按 `skill-creator` 规范设计一个真正可用的 `kb-to-blog` 或 `blog-publisher` skill,而不是临时脚本。
+4. 如果没有合适 skill,再按 `skill-creator` 规范设计一个真正可用的 `blog-publisher` skill,而不是临时脚本。
 
 无论复用还是自建,最终能力的职责都是:
 

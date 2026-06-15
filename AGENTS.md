@@ -46,4 +46,5 @@ AI 编码 agent 的稳定入口,每次进项目先读。只放长期稳定的事
 - `DECISIONS.md`:决策日志全文 + `D-` 格式定义。本文件不复制其内容。
 - `CONVENTIONS.md`:开发与协作规范(git 工作流、多 agent worktree、UI 自验证回路)。对应流程 ⑤实现 / ⑥自验证 / ⑧发布。
 - `research.md`:UI 工作流的 ①研究产出(业界方案 + 评估,完成后归档 `docs/archive/`)。
+- `docs/content-pipeline/agent-publish.md` / `.agents/skills/blog-publisher/`:统一 agent 内容发布入口;所有 KB/draft/research/link/project 内容先过质量门检和 review loop,再 sync/build/preview。
 - 构建 / 预览 / 部署命令:待 Astro 新站脚手架创建后回填确切可跑命令;部署目标已定为 GitHub Pages,但 ⑦验收通过前不切换线上。

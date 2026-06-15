@@ -100,7 +100,7 @@
 
 ## 对 C02/C03 的输入
 
-C02 设计 `kb-to-blog` / `blog-publisher` 能力时,至少应支持:
+C02 设计 `blog-publisher` 能力时,至少应支持:
 
 1. 从本候选表筛选 `candidate` / `needs-rewrite`。
 2. 生成 `docs/content-pipeline/reviews/<slug>.md`,包含来源、改写目标、公开风险、需要核验的事实、human review checklist。

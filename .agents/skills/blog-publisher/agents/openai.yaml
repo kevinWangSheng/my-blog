@@ -1,0 +1,4 @@
+interface:
+  display_name: "Blog Publisher"
+  short_description: "Stage, review, verify, and publish blog content."
+  default_prompt: "Use $blog-publisher to turn this source material into publishable blog content with quality review, local preview, and a human publishing gate."
