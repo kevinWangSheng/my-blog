@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "sandbox-is-execution-boundary.md",
+      "slug": "sandbox-is-execution-boundary",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}

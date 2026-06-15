@@ -19,6 +19,19 @@
 
 ## 任务列表
 
+### C07 — Sandbox 窄主题内容补充
+
+- [x] 从 KB 与近期官方/一手材料中选一个较窄主题:agent sandbox 作为执行边界。
+- [x] 生成 1 篇 essay、2 条 note、1 条 link 的 review + manifest + publishable Markdown。
+- [x] 通过 `content:check` / `content:sync` / Astro build。
+- [x] 对新增长文详情页跑本地 UI 自验证。
+- [x] 不 push、不部署、不 cutover;保留给 human 在本地预览做 ⑦验收。
+
+验收证据:
+- `docs/content-pipeline/reviews/C07-verification.md`
+- 本地预览: `http://127.0.0.1:4327/my-blog/essays/sandbox-is-execution-boundary/`
+
+
 ## 当前对抗性缺陷清单（返工必须消除）
 
 这些不是“审美偏好”,而是会导致日常 blog 使用和对外展示不成立的阻塞风险。后续 agent 实现前必须先读本节,并在验收摘要中逐条说明是否已消除。
