@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.4.6"><title>Agent memory 不是向量库，是写入策略 · Essays</title><meta name="description" content="真正有用的 agent memory 不只是保存聊天历史,而是决定什么状态值得写入、更新、选择、遗忘和审计。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/essays/agent-memory-is-write-policy"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="Agent memory 不是向量库，是写入策略 · Essays"><meta property="og:description" content="真正有用的 agent memory 不只是保存聊天历史,而是决定什么状态值得写入、更新、选择、遗忘和审计。"><meta property="og:type" content="article"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/essays/agent-memory-is-write-policy"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.Aqmvx9C2.css"></head> <body> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn / learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/projects">Projects</a><a href="/my-blog/notes">Notes</a><a href="/my-blog/logs">Logs</a><a href="/my-blog/essays">Essays</a><a href="/my-blog/links">Links</a><a href="/my-blog/about">About</a><a href="/my-blog/rss.xml">RSS</a> </div> </nav> </header> <main class="site-main">  <article class="container detail-shell"> <div class="reading reveal"> <div class="eyebrow">Long-form synthesis</div> <h1>Agent memory 不是向量库，是写入策略</h1> <p class="detail-description">真正有用的 agent memory 不只是保存聊天历史,而是决定什么状态值得写入、更新、选择、遗忘和审计。</p> <p class="type-note">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  <div class="prose"><p>如果把 agent memory 理解成“给 agent 接一个向量数据库”,这个系统从一开始就会偏。</p>
+<p>向量检索能帮 agent 找到相似材料,但 memory 真正困难的部分不是“存在哪里”,而是:什么状态值得写入? 谁有权写? 旧事实如何失效? 冲突如何保留 trace? 下一轮任务只应该选哪些 memory 进上下文? 人如何看见、删除、回滚和审计这些记忆?</p>
+<p>所以我更愿意把 agent memory 定义成一种系统层能力:agent 在长任务、跨会话、跨工具、跨人类协作中保存、更新、选择、压缩、检索和治理状态的能力。</p>
+<h2 id="memory-不是-chat-history">Memory 不是 chat history</h2>
+<p>Chat history 是事件日志。它记录发生过什么,但不自动变成可靠知识。</p>
+<p>一个对话里可能有临时偏好、过期判断、错误尝试、被推翻的方案、一次性的调试输出。直接把整段历史塞进下一次上下文,会让 agent 看起来“记得很多”,但实际上是在把噪声延长寿命。</p>
+<p>更好的 memory 系统至少要区分四类东西。</p>
+<p>第一类是当前任务状态:目标、约束、计划、失败尝试、验证结果、下一步。这类 memory 生命周期短,但准确性要求很高。它回答的是“任务能不能继续”。</p>
+<p>第二类是长期事实:用户偏好、项目约定、实体关系、时间变化。这类 memory 需要来源、更新时间、冲突处理和失效机制。它回答的是“这个事实现在还成立吗”。</p>
+<p>第三类是 episodic trace:上次发生了什么、怎么解决、哪里失败。它不一定应该直接进入下一轮 prompt,但很适合在相似任务出现时被召回。</p>
+<p>第四类是 procedural memory:以后应该怎么做。项目里的 <code>AGENTS.md</code>、技能文件、检查清单、发布流程、反模式记录,都属于这种形态。它比“我记得你喜欢 X”更像真正的经验积累。</p>
+<h2 id="判据是-write-path">判据是 write path</h2>
+<p>我现在判断 RAG 和 memory 的最短判据是 write path。</p>
+<p>RAG 通常是只读的外部证据供应链。它从文档、网页、知识库、数据库里找当前问题所需的材料,再装配进上下文。它可以很复杂,但核心仍然偏 read path。</p>
+<p>Memory 一定有 write path。系统会从自己的运行、互动、失败和人类反馈中写回状态。它不只读取世界,还改变自己未来会看到什么。</p>
+<p>这也是为什么“数据量”不是判据。一个 50k 文档库,如果每晚从外部源重建,agent 从不写它,那仍然更像 RAG。一个只有十条偏好的小文件,如果 agent 会根据长期互动更新它,那就是 memory。</p>
+<blockquote>
+<p>Memory 的难点不是召回相似文本,而是治理系统如何改变自己。</p>
+</blockquote>
+<h2 id="写入比检索更危险">写入比检索更危险</h2>
+<p>Memory write policy 是最容易被低估的部分。</p>
+<p>如果写入太激进,agent 会把临时偏好、一次性约束、误解甚至 prompt injection 写成长期状态。下一次任务再读出来,错误就获得了持久性。</p>
+<p>如果写入太保守,agent 又永远不会积累经验。每次都像第一次合作,人必须反复解释同样的边界和习惯。</p>
+<p>比较健康的策略是让 memory 写入有层级:短期任务状态可以自动保存;长期偏好需要来源和时间;会影响外部行为的规则应该可见、可审计、可回滚;涉及隐私、权限或组织策略的 memory 应该有更强的人类治理。</p>
+<h2 id="selection-才决定它有没有用">Selection 才决定它有没有用</h2>
+<p>存下 memory 不等于 agent 会用好 memory。</p>
+<p>每一轮上下文都有限。真正的工程问题是 selection:当前任务需要哪些 memory,哪些只是历史噪声,哪些应该被压缩,哪些应该被隔离。一个 memory store 如果只能“全部塞进去”或“按相似度取 top-k”,很快会遇到和 naive RAG 类似的问题。</p>
+<p>这也是为什么 2026 的 agent memory 讨论越来越像 context engineering。OpenAI Dreaming、LangGraph memory taxonomy、Anthropic managed agents 这类信号都在指向同一件事:memory 不只是一个后端存储模块,而是运行时上下文管理的一部分。</p>
+<h2 id="好-memory-应该让-agent-像有经验的同事">好 memory 应该让 agent 像有经验的同事</h2>
+<p>我对 agent memory 的期待不是“它记得更多细节”,而是“它少犯同样的错”。</p>
+<p>有经验的同事不会把所有会议记录背下来。他会知道哪些决策已经定了,哪些偏好只是临时的,哪些错误下次要避开,哪些流程必须遵守,哪些地方需要重新确认。</p>
+<p>所以 memory eval 也不应该只测 recall。更有意义的问题是:</p>
+<ul>
+<li>agent 是否能沿用上次已经确认的项目约定?</li>
+<li>agent 是否会把过期事实当成当前事实?</li>
+<li>agent 是否能从失败经历中形成 procedural rule?</li>
+<li>agent 是否能在不暴露私密信息的情况下复用经验?</li>
+<li>human 是否能看见、修正和删除错误 memory?</li>
+</ul>
+<p>如果这些问题没有答案,那所谓 memory 很可能只是一个更长、更隐蔽的 chat history。</p>
+<p>真正的 agent memory 不是“记住一切”。它是让系统知道什么值得留下,什么应该忘掉,以及什么时候必须回到人那里确认。</p></div> <section class="related-section reveal" aria-labelledby="related-heading"> <div class="eyebrow">Next reading path</div> <h2 id="related-heading">继续顺着这条线读</h2> <div class="related-grid"> <a class="related-card" href="/my-blog/essays/sandbox-is-execution-boundary"> <div class="meta-row"> <span>Essays</span> <span>Same series</span> </div> <strong>Agent sandbox 是执行边界，不是安全按钮</strong> <p>让 agent 跑代码之前,先分清 sandbox 能隔离什么、不能替你决定什么,以及为什么凭据和网络边界仍然是产品设计问题。</p> </a><a class="related-card" href="/my-blog/notes/function-calling-is-not-agent-loop"> <div class="meta-row"> <span>Notes</span> <span>Explicitly related</span> </div> <strong>Function calling 是能力，agent loop 是授权</strong> <p>给模型工具不等于让模型控制流程;多数生产系统应该先 workflow,只在必要处给 bounded loop。</p> </a><a class="related-card" href="/my-blog/notes/harness-before-finetune"> <div class="meta-row"> <span>Notes</span> <span>Explicitly related</span> </div> <strong>先投 harness，再谈 fine-tune</strong> <p>如果问题能通过工具、权限、上下文、评估和流程解决, fine-tune 不应该是第一反应。</p> </a><a class="related-card" href="/my-blog/essays/context-engineering-as-lifecycle"> <div class="meta-row"> <span>Essays</span> <span>Shared tag: context-engineering</span> </div> <strong>Context engineering 是生命周期设计</strong> <p>上下文窗口变长并不会自动带来可靠 agent,真正重要的是写入、选择、压缩、隔离和恢复。</p> </a> </div> </section> </div> <aside class="panel detail-aside reveal" aria-label="Entry metadata"> <div class="meta-row"><time datetime="2026-06-15T00:00:00.000Z">Jun 15, 2026</time></div> <div class="meta-row" style="margin-top:1rem"><span class="tag">agent-memory</span><span class="tag">agents</span><span class="tag">context-engineering</span></div> <p style="margin-top:1rem">Collection: Essays</p> <p style="margin-top:0.75rem">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  </aside> </article>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn. Built as a local-first Astro field note.</span> <span><a href="/my-blog/rss.xml">RSS</a> · no deployment cutover before human acceptance</span> </div> </footer> </div> <script>
+      const revealItems = Array.from(document.querySelectorAll('.reveal'));
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        revealItems.forEach((el) => {
+          el.classList.add('is-visible');
+          el.dataset.revealState = 'visible';
+        });
+      } else {
+        revealItems.forEach((el, index) => {
+          el.dataset.revealState = 'idle';
+          el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
+        });
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            const visible = entry.isIntersecting;
+            entry.target.classList.toggle('is-visible', visible);
+            entry.target.dataset.revealState = visible ? 'visible' : 'idle';
+          }
+        }, { threshold: 0.18, rootMargin: '-6% 0px -12% 0px' });
+        revealItems.forEach((el) => observer.observe(el));
+      }
+    </script> </body> </html>
