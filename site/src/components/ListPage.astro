@@ -6,7 +6,7 @@ interface Props { collection: PublicCollection; entries: any[]; }
 const { collection, entries } = Astro.props;
 const label = collectionLabels[collection];
 ---
-<BaseLayout title={`${label.title} · Shawn AI Lab Manual`} description={label.description}>
+<BaseLayout title={`${label.title} · Shawn Field Notes`} description={label.description}>
   <PageHero eyebrow={label.eyebrow} title={label.title} description={label.description} />
   <section class="container list-stack">
     {entries.length === 0 ? (

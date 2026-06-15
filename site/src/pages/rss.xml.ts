@@ -12,7 +12,7 @@ export async function GET(context: any) {
   ].sort((a, b) => +b.entry.data.date - +a.entry.data.date);
 
   return rss({
-    title: 'Shawn AI Lab Manual',
+    title: 'Shawn Field Notes',
     description: 'Learning systems, agent notes, projects, and essays from Shawn.',
     site: context.site,
     items: items.map(({ entry, collection }) => ({
