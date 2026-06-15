@@ -370,7 +370,7 @@
 
 ## 下一阶段:真实内容体系与 KB 发布管线
 
-> 状态:C01 已完成,C02 待执行。发布后第一阶段完成,下一阶段目标是把 KB 中成熟材料转化为 blog 成品内容,并补齐文章推荐与可复用发布 skill。
+> 状态:C01/C02 已完成,C03 待执行。发布后第一阶段完成,下一阶段目标是把 KB 中成熟材料转化为 blog 成品内容,并补齐文章推荐与可复用发布 skill。
 
 ### C01 — KB 候选池盘点
 
@@ -385,11 +385,11 @@
 
 ### C02 — Skill 市场调研与 `kb-to-blog` / `blog-publisher` 能力方案
 
-- [ ] 先使用 `skill-installer` 查询官方 curated / 可用市场 skill,记录候选与不适配原因。
-- [ ] 若存在合适 skill,优先安装/复用,并补齐本项目 wrapper / SOP,不重复造轮子。
-- [ ] 若没有合适 skill,再读取并遵守 `skill-creator` 规范,设计真正可复用的 skill,而不是一次性脚本。
-- [ ] 无论复用还是自建,最终能力都必须包含 subagent 搜索/评估/汇总/对抗审查模板。
-- [ ] 最终能力必须定义质量 rubric、安全检查、human review gate、content:check/sync 接入方式。
+- [x] 先使用 `skill-installer` 查询官方 curated / 可用市场 skill,记录候选与不适配原因。
+- [x] 若存在合适 skill,优先安装/复用,并补齐本项目 wrapper / SOP,不重复造轮子。
+- [x] 若没有合适 skill,再读取并遵守 `skill-creator` 规范,设计真正可复用的 skill,而不是一次性脚本。
+- [x] 无论复用还是自建,最终能力都必须包含 subagent 搜索/评估/汇总/对抗审查模板。
+- [x] 最终能力必须定义质量 rubric、安全检查、human review gate、content:check/sync 接入方式。
 
 验收标准:
 - 有市场查询记录:来源、候选 skill、是否安装/复用、不适配原因。
@@ -431,4 +431,4 @@
 
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`。下一步执行 C02:先查询可复用 skill / 市场能力,再设计 `kb-to-blog` / `blog-publisher` 能力方案;之后进入 C03 中间发布状态、C04 第一批高质量内容、C05 文章详情推荐。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 能力方案已完成,见 `docs/content-pipeline/skill-research.md`。下一步执行 C03:建立 `docs/content-pipeline/reviews/` 与 `manifests/` 的中间发布状态和第一批 review-ready 记录;之后进入 C04 第一批高质量内容、C05 文章详情推荐。
