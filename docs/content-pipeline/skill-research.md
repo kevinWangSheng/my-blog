@@ -6,14 +6,14 @@
 
 ## 目标边界
 
-目标不是“把 KB 自动同步到 blog”,而是建立一个可复用的**内容处理 skill**:把 KB 候选材料转成面向陌生读者的 blog 草稿、review-ready 审稿件和公开风险清单。`content:check` / `content:sync` 是 human 批准后的下游机械闸门,不是这个 skill 的核心。
+目标不是“把 KB 自动同步到 blog”,而是建立一个可复用的**内容处理 skill**:把 KB 候选材料转成面向陌生读者的 blog 草稿、review-ready 审稿件和公开风险清单。`content:check` / `content:sync` 是 agent 自检通过后的下游机械闸门,不是这个 skill 的核心。human review 放在最后看实际 blog 效果。
 
 能力必须覆盖:
 
 1. 从候选池选择素材,保留 source path 和主题簇。
 2. 生成 review 文件,明确公开化目标、质量 rubric、事实核验点和风险。
 3. 按 essay / note / log / link / project 的不同形态改写内容,避免 KB 原文搬运。
-4. 只有 human 审核通过后,才进入 manifest、`content:check`、`content:sync`。
+4. agent 自检和对抗审查无阻塞后,进入 manifest、`content:check`、`content:sync`;human 最后看实际 blog 效果。
 5. 让独立 subagent 对内容质量、隐私、伪造成果、事实刷新和 blog fit 做对抗审查。
 
 ## 市场 / 已有 skill 查询记录
@@ -39,7 +39,7 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 | `transcribe` | 不安装 | 视频/音频转写能力,可供某些 source refresh 使用,但不是发布管线。 |
 | `playwright` / `screenshot` | 非核心,不安装 | 只与发布后页面验证有关;不是 KB→blog 内容处理 skill。项目已有 `ui-verify` 覆盖这类验证。 |
 
-结论: curated 列表里没有一个 skill 直接覆盖本任务真正需要的核心: **从本地 KB 取材,按个人 blog 定位做公开化改写,保留 source tracing,检查隐私/伪造成果/事实 freshness,生成 review-ready 草稿并等待 human gate**。Notion 类 skill 是外部工作区采集/文档化,Playwright 类 skill 是页面验证,security 类 skill 是安全专项;它们都不是 KB→blog 内容处理 skill。
+结论: curated 列表里没有一个 skill 直接覆盖本任务真正需要的核心: **从本地 KB 取材,按个人 blog 定位做公开化改写,保留 source tracing,检查隐私/伪造成果/事实 freshness,生成 review-ready 草稿并通过 agent self-review 后进入 blog 成品阶段**。Notion 类 skill 是外部工作区采集/文档化,Playwright 类 skill 是页面验证,security 类 skill 是安全专项;它们都不是 KB→blog 内容处理 skill。
 
 ### 官方 experimental skills
 
@@ -58,7 +58,7 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 | `kb` skill | 可选辅助,不是主上游 | 适合 llm-kb CLI 相关读/查/维护 | 当前候选来自 `/Users/shenghuikevin/kb-vault`,不是 llm-kb canonical repo;不要让后续 agent 误以为必须通过 `kb` skill 才能读候选。 |
 | `ui-verify` project skill | 下游复用 | 内容进入站点后验证页面/a11y/Lighthouse | 不参与 KB 内容改写;不是 C02 研究重点。 |
 | `site/scripts/content-check.mjs` | 下游硬 gate | 检查 frontmatter、slug、发布意图、secrets/private markers、正文空值等 | 只能验证结构和基础风险;不能替代内容 skill 的编辑判断。 |
-| `site/scripts/content-sync.mjs` | 下游写入入口 | approved + check 通过后把 Markdown 写入内容目录 | 不是内容处理能力;必须在 human approve 后才能调用。 |
+| `site/scripts/content-sync.mjs` | 下游写入入口 | agent-cleared + check 通过后把 Markdown 写入内容目录 | 不是内容处理能力;不再要求 sync 前 human review,但必须先有 agent self-review。 |
 | `docs/content-pipeline/candidates.md` | 复用 | C01 候选池,提供初始 priority 和风险标签 | 不是批准列表。 |
 
 
@@ -67,8 +67,8 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 用户复核后明确:本能力应主要服务 **KB 内容 → blog 内容** 的转换,而不是同步、部署或页面验证。重新按这个角度检查后,结论如下:
 
 1. **现有 `kb` skill 只能可选辅助,不能当作唯一上游**。`kb-to-blog` 的实际取材根是 `/Users/shenghuikevin/kb-vault`;现有 `kb` skill 的 canonical source 是 `/Users/shenghuikevin/dev/AI/llm-kb`,两者不是同一个库。后续 agent 应优先按候选表和文件系统读取 `kb-vault`;只有任务明确涉及 llm-kb CLI 维护/查询时才调用 `kb` skill。
-2. **需要自写 `kb-to-blog` 内容转化 skill**。它负责判断材料是否适合公开、决定 essay/note/log/link/project 形态、把 KB 笔记改写成面向陌生读者的 blog 草稿、做 source tracing/freshness/privacy/no-fabrication 检查,并生成 review-ready 文件。human 批准后还必须生成单独的 publishable Markdown,不能把 review 文件当作 sync 输入。
-3. **`content-check` / `content-sync` 是下游机械入口**。它们只在 human approve 后执行,负责结构校验和写入,不能替代内容判断。真实命令只接受 `--file ... --type ...` 或 `--input <dir>`,manifest 模式固定读取 `<dir>/manifest.json`。
+2. **需要自写 `kb-to-blog` 内容转化 skill**。它负责判断材料是否适合公开、决定 essay/note/log/link/project 形态、把 KB 笔记改写成面向陌生读者的 blog 草稿、做 source tracing/freshness/privacy/no-fabrication 检查,并生成 review-ready 文件。agent 自检通过后还必须生成单独的 publishable Markdown,不能把 review 文件当作 sync 输入。human 最后看 blog 成品。
+3. **`content-check` / `content-sync` 是下游机械入口**。它们在 agent 自检通过后执行,负责结构校验和写入,不能替代内容判断。真实命令只接受 `--file ... --type ...` 或 `--input <dir>`,manifest 模式固定读取 `<dir>/manifest.json`。
 4. **Notion curated skills 不适配**。`notion-knowledge-capture` 是把对话/笔记写入 Notion wiki;`notion-research-documentation` 是从 Notion sources 生成 briefs/reports;`notion-spec-to-implementation` 是 spec 到任务计划。它们的思想可借鉴,但依赖 Notion MCP 和 Notion database schema,不适合本项目的本地 KB + Astro blog 内容流。
 5. **Playwright / screenshot / ui-verify 不属于此 skill 核心**。它们只在内容进入站点后验证页面可读性/a11y/路由,不是 KB 内容处理能力。
 
@@ -76,7 +76,7 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 
 ## 决策
 
-不安装现有市场 skill。自建项目级 **`kb-to-blog`** skill,并把它定义为内容处理能力: **source discovery / source tracing 主要基于 `docs/content-pipeline/candidates.md` 和 `/Users/shenghuikevin/kb-vault`;现有 `kb` skill 仅作可选辅助;公开化改写由 `kb-to-blog` 负责;human 批准后再生成 publishable Markdown + manifest;写入与验证由 `content-check` / `content-sync` / `ui-verify` 在下游负责**。
+不安装现有市场 skill。自建项目级 **`kb-to-blog`** skill,并把它定义为内容处理能力: **source discovery / source tracing 主要基于 `docs/content-pipeline/candidates.md` 和 `/Users/shenghuikevin/kb-vault`;现有 `kb` skill 仅作可选辅助;公开化改写由 `kb-to-blog` 负责;agent 自检通过后生成 publishable Markdown + manifest;写入与验证由 `content-check` / `content-sync` / `ui-verify` 在下游负责**。
 
 已创建 Codex 项目级 skill: `.agents/skills/kb-to-blog/`。后续如需 Claude Code 同步,可在 C03/C04 追加 `.claude/skills/kb-to-blog/` wrapper 或 import,但本轮先把 Codex 执行入口打通。
 
@@ -89,7 +89,7 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 - “从 KB 里找几篇能发 blog 的内容”。
 - “把这个 KB/output/wiki 文件整理成 blog 草稿”。
 - “生成 blog 内容 review-ready 草稿”。
-- “把 approved 的 review 准备成 manifest / sync 输入”。
+- “把 agent-cleared 的 review 准备成 publishable Markdown / manifest / sync 输入”。
 
 不使用于:
 
@@ -104,8 +104,8 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 
 - 候选表条目: `docs/content-pipeline/candidates.md` 中的 source path。
 - 明确 KB source path。
-- 已 human-approved 的 review 文件。
-- 已批准的 manifest。
+- 已 agent-cleared 的 review 文件。
+- 已 agent-cleared 的 manifest。
 
 ### 输出
 
@@ -113,8 +113,8 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 
 1. Discovery / selection: 更新候选表或生成候选摘要。
 2. Review-ready: `docs/content-pipeline/reviews/<slug>.md`。
-3. Approved publishable Markdown: `docs/content-pipeline/manifests/<slug>/<slug>.md`。
-4. Approved manifest directory: `docs/content-pipeline/manifests/<slug>/manifest.json`。
+3. Agent-cleared publishable Markdown: `docs/content-pipeline/manifests/<slug>/<slug>.md`。
+4. Agent-cleared manifest directory: `docs/content-pipeline/manifests/<slug>/manifest.json`。
 5. 下游验证证据: `content:check` / `content:sync` / build / route / UI verify 输出摘要。
 
 ## 阶段流程
@@ -149,26 +149,26 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 - Privacy / secret / forbidden marker checklist。
 - No-fabrication checklist: 不伪造经历、成果、外部背书、公开 repo/demo。
 - Quality rubric score。
-- Human review checklist。
-- Approval status: `draft` / `needs-human-review` / `approved` / `rejected`。
+- Agent review checklist。
+- Status: `draft` / `agent-cleared` / `synced` / `published` / `needs-rework` / `rejected`。
 
-### Stage 4 — Human gate
+### Stage 4 — Agent self-review gate
 
-除非 review 文件明确标记 `approved` 且有 human 批准记录,不得生成 publishable Markdown、可执行 manifest 或调用 `content:sync`。注意:当前脚本不会强制检查 approval,这是 agent 必须执行的流程门。
+除非 review 文件已完成 agent 自检并标记 `agent-cleared`,不得生成 publishable Markdown、可执行 manifest 或调用 `content:sync`。human review 不再卡在这里,而是在最终 blog/result 阶段进行。
 
-推荐 human approval 最小格式:
+推荐 agent review 最小格式:
 
 ```yaml
-approval:
-  status: approved
-  reviewer: human
+agent_review:
+  status: agent-cleared
+  reviewer: agent
   date: YYYY-MM-DD
   notes: "..."
 ```
 
 ### Stage 5 — Generate publishable Markdown and manifest
 
-只对 approved review 生成独立 staging 目录:
+只对 agent-cleared review 生成独立 staging 目录:
 
 ```text
 docs/content-pipeline/manifests/<slug>/
@@ -215,7 +215,7 @@ docs/content-pipeline/manifests/<slug>/
 
 ## 质量 rubric
 
-每项 0-2 分,低于 8/12 不应进入 human approval:
+每项 0-2 分,低于 8/12 不应同步给最终 blog review:
 
 | item | 0 | 1 | 2 |
 |---|---|---|---|
@@ -280,12 +280,24 @@ docs/content-pipeline/manifests/<slug>/
 
 Total: /12
 
-## Human review
+## Agent review
 
 ```yaml
-approval:
-  status: needs-human-review
-  reviewer:
+agent_review:
+  status: draft
+  reviewer: agent
+  date:
+  notes:
+```
+
+## Final human blog review
+
+Human review happens after the content is visible in the blog preview or published site. If there are issues, open a follow-up返工 session rather than blocking manifest/sync here.
+
+```yaml
+human_blog_review:
+  status: pending-final-review
+  reviewer: human
   date:
   notes:
 ```
@@ -298,7 +310,7 @@ approval:
 ```text
 你是独立对抗性审查 agent。请只审查以下 review 草稿和对应 KB source 摘要,不要发布、不要 sync、不要修改旧站部署链路。
 
-目标:判断这篇内容是否可以进入 human review / approved manifest 前一步。
+目标:判断这篇内容是否可以进入 publishable Markdown / manifest / sync 阶段。
 
 必须检查:
 1. 是否是公开成品方向,还是 KB 原文搬运。
@@ -311,13 +323,13 @@ approval:
 - 阻塞项:
 - 非阻塞风险:
 - 建议改写:
-- 是否建议进入 human review: yes/no
+- 是否建议进入 sync 后的最终 blog review: yes/no
 ```
 
 ## C02 验收结论
 
 - 已查询官方 curated skills,记录相关候选与不适配原因。
 - 官方 experimental 路径不可用,已记录错误。
-- 已评估本机 `kb` skill、项目 `ui-verify`、`content-check`、`content-sync` 的复用边界: `kb` 做上游材料能力,`kb-to-blog` 做内容处理,同步和 UI 验证是下游。
-- 未安装市场 skill,因为没有现成能力覆盖“本地 KB → 公开 blog 成品改写 → review-ready → human gate”。
-- 已按 skill-creator 原则创建项目级 `.agents/skills/kb-to-blog/`,并定义触发条件、边界、输入/输出契约、阶段流程、质量 rubric、安全检查、human review gate、publishable Markdown 与 manifest 真实脚本契约、content:check/sync 接入、subagent 对抗审查模板。
+- 已评估本机 `kb` skill、项目 `ui-verify`、`content-check`、`content-sync` 的复用边界: 候选表和 `kb-vault` 文件系统是主上游,`kb` 仅作可选辅助,`kb-to-blog` 做内容处理,同步和 UI 验证是下游。
+- 未安装市场 skill,因为没有现成能力覆盖“本地 KB → 公开 blog 成品改写 → agent self-review → blog final review”。
+- 已按 skill-creator 原则创建项目级 `.agents/skills/kb-to-blog/`,并定义触发条件、边界、输入/输出契约、阶段流程、质量 rubric、安全检查、agent self-review、final human blog review、publishable Markdown 与 manifest 真实脚本契约、content:check/sync 接入、subagent 对抗审查模板。

@@ -1,6 +1,6 @@
 # Publishable Markdown contract
 
-Use this reference only after a review-ready draft exists and the user explicitly asks to prepare approved content for sync.
+Use this reference after a review-ready draft exists and the agent-side review has no blockers. Human review happens later on the rendered blog/result, so do not wait for pre-sync human approval unless the user explicitly asks for that gate.
 
 ## Important boundary
 
@@ -28,7 +28,7 @@ Collection-specific required fields:
 
 ## Recommended staging layout
 
-Use one directory per approved item:
+Use one directory per agent-cleared item:
 
 ```text
 docs/content-pipeline/manifests/<slug>/
@@ -87,4 +87,4 @@ Notes:
 - absence of fabricated achievements or endorsement
 - removal of mentor/internal learning tone
 
-Those remain review/adversarial responsibilities of `$kb-to-blog`.
+Those remain review/adversarial responsibilities of `$kb-to-blog`. Final judgment happens in human blog review after the content is visible.

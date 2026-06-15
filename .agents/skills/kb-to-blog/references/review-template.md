@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: needs-human-review
+- status: draft|agent-cleared|synced|published|needs-rework
 - source paths:
   - /Users/shenghuikevin/kb-vault/...
 - proposed collection: essays|notes|logs|links|projects
@@ -70,12 +70,24 @@ Collection-specific:
 
 Total: /12
 
-## Human review
+## Agent review
 
 ```yaml
-approval:
-  status: needs-human-review
-  reviewer:
+agent_review:
+  status: draft
+  reviewer: agent
+  date:
+  notes:
+```
+
+## Final human blog review
+
+Human review happens after the content is visible in the blog preview or published site. If the human finds problems, open a follow-up返工 session rather than blocking manifest/sync here.
+
+```yaml
+human_blog_review:
+  status: pending-final-review
+  reviewer: human
   date:
   notes:
 ```

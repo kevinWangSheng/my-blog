@@ -1,6 +1,6 @@
 # KB to Blog evaluation
 
-Use this reference when deciding whether a KB-derived draft can enter human review.
+Use this reference when deciding whether a KB-derived draft can become publishable Markdown and be synced for final blog review.
 
 ## Pass/fail gates
 
@@ -14,7 +14,7 @@ A draft is blocked if any item is true:
 
 ## Rubric
 
-Score each item 0-2. Below 8/12 should not enter human review.
+Score each item 0-2. Below 8/12 should not be synced for final blog review.
 
 | item | 0 | 1 | 2 |
 |---|---|---|---|
@@ -42,5 +42,5 @@ Output:
 - blockers:
 - non-blocking risks:
 - recommended edits:
-- should enter human review: yes/no
+- should sync for final blog review: yes/no
 ```

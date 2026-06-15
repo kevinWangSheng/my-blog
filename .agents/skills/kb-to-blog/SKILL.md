@@ -1,20 +1,21 @@
 ---
 name: kb-to-blog
-description: Turn local KB materials from /Users/shenghuikevin/kb-vault into review-ready and, after human approval, publishable Markdown for this Astro blog. Use when Codex needs to select, evaluate, rewrite, or prepare KB-derived blog essays, notes, logs, links, or projects; generate docs/content-pipeline review files; create approved article Markdown and manifest inputs compatible with site/scripts/content-check.mjs and content-sync.mjs; enforce source tracing, freshness checks, privacy/no-fabrication checks, and the human approval gate before any sync or publication.
+description: Turn local KB materials from /Users/shenghuikevin/kb-vault into blog-ready Markdown for this Astro blog. Use when Codex needs to select, evaluate, rewrite, or prepare KB-derived blog essays, notes, logs, links, or projects; generate docs/content-pipeline review files; create article Markdown and manifest inputs compatible with site/scripts/content-check.mjs and content-sync.mjs; enforce source tracing, freshness checks, privacy/no-fabrication checks, agent self-review, and final human review after the content is visible in the blog.
 ---
 
 # KB to Blog
 
-Convert KB material into public blog content. This is a **content transformation and editorial gating** skill. Sync scripts are downstream mechanical gates after human approval.
+Convert KB material into public blog content. This is a **content transformation and editorial gating** skill. Sync scripts are downstream mechanical gates after agent self-review.
 
 ## Core stance
 
 - Blog is the public expression layer; `/Users/shenghuikevin/kb-vault` is the source workspace.
 - Use candidates and the `/Users/shenghuikevin/kb-vault` filesystem as the main source path. Use the existing `kb` skill only for explicit llm-kb CLI tasks; do not assume llm-kb and kb-vault are the same store.
 - Do not copy KB pages directly into `site/src/content`.
-- First produce `docs/content-pipeline/reviews/<slug>.md` with source paths, rewrite plan, safety checks, and human approval status.
-- A review file is not publishable Markdown. After approval, create a separate article `.md` with valid frontmatter and body.
-- Do not run `content:sync`, publish, push, or deploy unless an approved review/manifest exists and the user request explicitly covers that phase.
+- First produce `docs/content-pipeline/reviews/<slug>.md` with source paths, rewrite plan, safety checks, and agent review status.
+- A review file is not publishable Markdown. Create a separate article `.md` with valid frontmatter and body before sync.
+- Do not pause before manifest/sync just to request human approval; human review happens at the final blog/result stage. If the human finds problems, they can open a follow-up返工 session.
+- Do not push or deploy unless the user explicitly asks for that phase.
 
 ## Workflow
 
@@ -47,23 +48,15 @@ Rewrite for an unfamiliar public reader:
 
 Write `docs/content-pipeline/reviews/<slug>.md` using `references/review-template.md`. For scoring and adversarial review, load `references/evaluation.md`.
 
-Set status to `needs-human-review` unless the user explicitly approves.
+Set status to `draft`; set status to `agent-cleared` only after agent self-review finds no blockers.
 
-### 5. Human gate before publishable files
+### 5. Agent self-review before publishable files
 
-Do not generate a syncable manifest or run `content:sync` unless the review file contains human approval, for example:
+Do not generate a syncable manifest or run `content:sync` until the review file is complete and the draft passes `references/evaluation.md` gates. This is an agent quality gate, not a human approval gate.
 
-```yaml
-approval:
-  status: approved
-  reviewer: human
-  date: YYYY-MM-DD
-  notes: "..."
-```
+For non-trivial drafts, use an adversarial subagent before sync when practical. If blockers remain, fix them before syncing.
 
-This is a process gate, not a script-enforced gate. The agent must enforce it.
-
-### 6. After approval only
+### 6. Create publishable files and sync
 
 Create a separate publishable Markdown article and manifest using `references/publishable-markdown.md`.
 
@@ -85,10 +78,10 @@ pnpm --dir site build
 
 Do not pass bare positional paths; the scripts only parse `--key value` arguments.
 
-### 7. Adversarial review
+### 7. Final human blog review
 
-For non-trivial drafts, use an independent subagent after the main draft/review pass. Ask it to find blockers in public value, source grounding, freshness, privacy, fabricated claims, and blog fit.
+After sync/build/verification, report the local/online blog paths and evidence. The human review point is the actual blog result. Do not ask the user to approve intermediate review files unless they explicitly request that workflow.
 
 ## Evaluation
 
-Use `references/evaluation.md` for pass/fail gates, the 12-point rubric, and the adversarial review prompt. Use `references/publishable-markdown.md` before preparing any approved article or manifest.
+Use `references/evaluation.md` for pass/fail gates, the 12-point rubric, and the adversarial review prompt. Use `references/publishable-markdown.md` before preparing any article or manifest.

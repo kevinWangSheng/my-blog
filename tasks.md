@@ -389,24 +389,24 @@
 - [x] 若存在合适 skill,优先安装/复用,并补齐本项目 wrapper / SOP,不重复造轮子。
 - [x] 若没有合适 skill,再读取并遵守 `skill-creator` 规范,设计真正可复用的 skill,而不是一次性脚本。
 - [x] 无论复用还是自建,最终能力都必须包含 subagent 搜索/评估/汇总/对抗审查模板。
-- [x] 最终能力必须定义质量 rubric、安全检查、human review gate、content:check/sync 接入方式。
+- [x] 最终能力必须定义质量 rubric、安全检查、agent self-review、最终 human blog review、content:check/sync 接入方式。
 
 验收标准:
 - 有市场查询记录:来源、候选 skill、是否安装/复用、不适配原因。
 - 只有在确认没有合适 skill 后,才进入自建设计。
 - skill / wrapper 有清晰触发条件、边界、输入/输出契约、验证命令和示例输出。
-- `kb-to-blog` 必须以内容处理为核心:KB source tracing、公开化改写、质量 rubric、安全/隐私/伪造成果检查、human review gate。
-- 能从 candidates 生成 review-ready 草稿和 manifest,但不绕过 human 审核直接发布。
+- `kb-to-blog` 必须以内容处理为核心:KB source tracing、公开化改写、质量 rubric、安全/隐私/伪造成果检查、agent self-review,最终由 human 看 blog 成品。
+- 能从 candidates 生成 review-ready 草稿、publishable Markdown 和 manifest;不需要 sync 前 human 审核,但最终 blog 成品由 human 日常查看,有问题再开返工。
 
 ### C03 — 内容中间发布状态
 
 - [ ] 建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`。
-- [ ] 定义 discovered / candidate / needs-rewrite / review-ready / approved / published / rejected 状态。
-- [ ] 第一批内容先进入 review-ready,经 human 审核后再进入 `site/src/content`。
+- [ ] 定义 discovered / candidate / needs-rewrite / review-ready / agent-cleared / synced / published / needs-rework / rejected 状态。
+- [ ] 第一批内容先进入 review-ready,经 agent self-review / 对抗审查后生成 publishable Markdown 并进入 `site/src/content`;human 最后看 blog 成品。
 
 验收标准:
 - 每篇进入 blog 的内容都能追溯到 KB source 和 review 记录。
-- 未审核内容不进入线上公开内容目录。
+- 未经过 agent self-review 和 `content:check` 的内容不进入站点内容目录;human review 放在最终 blog/result 阶段。
 
 ### C04 — 第一批高质量内容发布
 
@@ -432,4 +432,4 @@
 
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。下一步执行 C03:建立 `docs/content-pipeline/reviews/` 与 `manifests/` 的中间发布状态,并用 `kb-to-blog` 生成第一批 review-ready 记录;之后进入 C04 第一批高质量内容、C05 文章详情推荐。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。下一步执行 C03:建立 `docs/content-pipeline/reviews/` 与 `manifests/` 的中间发布状态,并用 `kb-to-blog` 生成第一批 review-ready / agent-cleared 记录;human 最后看 blog 成品,有问题再开返工。之后进入 C04 第一批高质量内容、C05 文章详情推荐。
