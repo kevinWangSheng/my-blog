@@ -302,11 +302,11 @@
 > 返工来源:human 反馈没有看到“下滑显示、上滑消失”等高级动作。首轮 IntersectionObserver 存在,但视觉反馈不明显,不能算完成。
 > 验证边界:固定 `ui-verify` 只验证 reduced-motion 静态可读、截图、a11y、console、横向溢出和 Lighthouse;它不证明 reveal 感知成立。T16 必须另用 Playwright MCP / 浏览器自动化 / 本地浏览器实际滚动记录证据。若实现加入稳定状态探针(如 `data-reveal-state` 或可读 class 状态),可用 Playwright 断言滚动前后状态;否则必须在 `out/acceptance/T16-plan.md` 明确人工/浏览器判定方法。
 
-- [ ] 先写清楚 reveal 规则:元素进入视口时柔和显示/位移/层级展开;离开视口时回到待激活状态;上滑回看时可再次自然出现。
-- [ ] 用 CSS + IntersectionObserver 实现,不引入 GSAP/Framer Motion/Three.js 等重动画库。
-- [ ] 动效风格匹配“清爽宁静”:轻、慢、细腻,不做强烈扫描线或炫技闪烁。
-- [ ] 卡片、章节标题、正文 metadata 至少三类元素有可感知但克制的 reveal。
-- [ ] reduced-motion 下关闭位移/透明动画,内容默认可见。
+- [x] 先写清楚 reveal 规则:元素进入视口时柔和显示/位移/层级展开;离开视口时回到待激活状态;上滑回看时可再次自然出现。
+- [x] 用 CSS + IntersectionObserver 实现,不引入 GSAP/Framer Motion/Three.js 等重动画库。
+- [x] 动效风格匹配“清爽宁静”:轻、慢、细腻,不做强烈扫描线或炫技闪烁。
+- [x] 卡片、章节标题、正文 metadata 至少三类元素有可感知但克制的 reveal。
+- [x] reduced-motion 下关闭位移/透明动画,内容默认可见。
 
 局部验收标准:
 - Playwright MCP 或等效浏览器检查证明并记录具体检查方式:初始首屏外的 reveal 元素处于待激活状态;下滑进入后变为可见;上滑离开/回到初始区域后状态按规则切换。
@@ -319,8 +319,8 @@
 - 动效服务信息层级,不是为了展示技术。
 
 对抗性验收:
-- [ ] 主 agent 自验证通过后,spawn 独立 subagent 审查:它必须实际滚动页面,报告 reveal 是否可感知、是否上滑消失/回看成立、是否 reduced-motion 友好、是否有性能/阅读干扰。
-- [ ] subagent 若认为“代码有动效但用户感知不到”,本任务不得勾选。
+- [x] 主 agent 自验证通过后,spawn 独立 subagent 审查:它必须实际滚动页面,报告 reveal 是否可感知、是否上滑消失/回看成立、是否 reduced-motion 友好、是否有性能/阅读干扰。
+- [x] subagent 若认为“代码有动效但用户感知不到”,本任务不得勾选。
 
 ### T17 — 局部 + 整体双层验收协议
 
