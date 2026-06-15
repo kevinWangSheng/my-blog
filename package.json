@@ -4,7 +4,9 @@
   "type": "module",
   "description": "项目级 UI 自验证 harness(Skill+CLI 驱动);Astro 新站脚手架后对 dist/ 复用。",
   "scripts": {
-    "ui-verify": "node scripts/ui-verify.mjs"
+    "ui-verify": "node scripts/ui-verify.mjs",
+    "preview:prepare": "node scripts/prepare-local-preview.mjs",
+    "preview:local": "pnpm --dir site build && pnpm preview:prepare && python3 -m http.server 4327 --bind 127.0.0.1 --directory out/ui-serve"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
