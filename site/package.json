@@ -1,0 +1,19 @@
+{
+  "name": "my-blog-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "content:check": "node scripts/content-check.mjs",
+    "content:sync": "node scripts/content-sync.mjs"
+  },
+  "dependencies": {
+    "@astrojs/rss": "latest",
+    "astro": "latest"
+  },
+  "engines": {
+    "node": ">=22.16.0"
+  }
+}

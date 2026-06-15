@@ -11,5 +11,9 @@
     "chrome-launcher": "^1.2.1",
     "lighthouse": "^13.4.0",
     "playwright": "1.58.0"
+  },
+  "packageManager": "pnpm@10.30.1",
+  "engines": {
+    "node": ">=22.16.0"
   }
 }

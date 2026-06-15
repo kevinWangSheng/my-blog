@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from './PageHero.astro';
+import { collectionLabels, entryPath, formatDate, type PublicCollection } from '../lib/content';
+interface Props { collection: PublicCollection; entries: any[]; }
+const { collection, entries } = Astro.props;
+const label = collectionLabels[collection];
+---
+<BaseLayout title={`${label.title} · Shawn Field Notes`} description={label.description}>
+  <PageHero eyebrow={label.eyebrow} title={label.title} description={label.description} />
+  <section class="container list-stack">
+    {entries.length === 0 ? (
+      <article class="panel list-card"><p>这个集合暂时为空。后续 agent 同步内容前,页面仍保持可用。</p></article>
+    ) : entries.map((entry) => (
+      <a class="panel list-card reveal" href={entryPath(collection, entry)}>
+        <div class="meta-row"><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time><span>{collection}</span></div>
+        <div>
+          <h2 style="font-size:clamp(1.8rem,4vw,3rem)">{entry.data.title}</h2>
+          <p>{entry.data.description}</p>
+          <div class="meta-row" style="margin-top:1rem">{entry.data.tags?.map((tag: string) => <span class="tag">{tag}</span>)}</div>
+        </div>
+      </a>
+    ))}
+  </section>
+</BaseLayout>

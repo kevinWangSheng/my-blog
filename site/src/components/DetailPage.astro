@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, collectionLabels } from '../lib/content';
+interface Props { entry: any; collection: keyof typeof collectionLabels; Content: any; }
+const { entry, collection, Content } = Astro.props;
+const label = collectionLabels[collection];
+const typeNotes: Record<string, string> = {
+  projects: 'Project 是能力证据入口:看问题、角色、方案、过程证据和当前进展,不是普通文章列表。',
+  notes: 'Note 是短判断 / 知识卡片:保留正在形成但已经可复用的想法。',
+  logs: 'Log 是阶段过程:记录项目或学习系统怎样变化,避免只剩最终包装。',
+  essays: 'Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。',
+  links: 'Link 是来源货架:说明为什么某个公开资料值得复访。'
+};
+const statusLabel: Record<string, string> = { active: 'Active', shipped: 'Shipped', paused: 'Paused', archived: 'Archived' };
+const isProject = collection === 'projects';
+
+import { sitePath } from '../lib/urls';
+---
+<BaseLayout title={`${entry.data.title} · ${label.title}`} description={entry.data.description} type="article">
+  <article class="container detail-shell">
+    <div class="reading reveal">
+      <div class="eyebrow">{label.eyebrow}</div>
+      <h1>{entry.data.title}</h1>
+      <p class="detail-description">{entry.data.description}</p>
+      <p class="type-note">{typeNotes[collection]}</p>
+
+      {isProject && (
+        <section class="project-proof" aria-label="Project proof summary">
+          <div><span>Role</span><strong>{entry.data.role}</strong></div>
+          <div><span>Period</span><strong>{entry.data.period}</strong></div>
+          <div><span>Status</span><strong>{statusLabel[entry.data.status] ?? entry.data.status}</strong></div>
+          <div><span>Repo / Demo</span><strong>{entry.data.repo || entry.data.demo ? 'Public link available' : '暂未公开 / 本地项目 / 待补充'}</strong></div>
+        </section>
+      )}
+
+      <div class="prose"><Content /></div>
+    </div>
+    <aside class="panel detail-aside reveal" aria-label="Entry metadata">
+      <div class="meta-row"><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></div>
+      <div class="meta-row" style="margin-top:1rem">{entry.data.tags?.map((tag: string) => <span class="tag">{tag}</span>)}</div>
+      <p style="margin-top:1rem">Collection: {label.title}</p>
+      <p style="margin-top:0.75rem">{typeNotes[collection]}</p>
+      {isProject && (
+        <div class="aside-links">
+          {entry.data.repo ? <a class="button secondary" href={entry.data.repo} target="_blank" rel="noreferrer">Open repo</a> : <span class="unavailable">Repo 暂未公开</span>}
+          {entry.data.demo ? <a class="button secondary" href={entry.data.demo} target="_blank" rel="noreferrer">Open demo</a> : <span class="unavailable">Demo 待补充</span>}
+          <a class="button secondary" href={sitePath("/about")}>About Shawn</a>
+        </div>
+      )}
+    </aside>
+  </article>
+</BaseLayout>
