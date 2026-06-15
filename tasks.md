@@ -400,9 +400,9 @@
 
 ### C03 — 内容中间发布状态
 
-- [ ] 建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`。
-- [ ] 定义 discovered / candidate / needs-rewrite / review-ready / agent-cleared / synced / published / needs-rework / rejected 状态。
-- [ ] 第一批内容先进入 review-ready,经 agent self-review / 对抗审查后生成 publishable Markdown 并进入 `site/src/content`;human 最后看 blog 成品。
+- [x] 建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`。
+- [x] 定义 discovered / candidate / needs-rewrite / review-ready / agent-cleared / synced / published / needs-rework / rejected 状态。
+- [x] 第一批内容先进入 review-ready,经 agent self-review / 对抗审查后生成 publishable Markdown 并进入 `site/src/content`;human 最后看 blog 成品。
 
 验收标准:
 - 每篇进入 blog 的内容都能追溯到 KB source 和 review 记录。
@@ -432,4 +432,4 @@
 
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。下一步执行 C03:建立 `docs/content-pipeline/reviews/` 与 `manifests/` 的中间发布状态,并用 `kb-to-blog` 生成第一批 review-ready / agent-cleared 记录;human 最后看 blog 成品,有问题再开返工。之后进入 C04 第一批高质量内容、C05 文章详情推荐。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `kb-to-blog` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。当前下一步执行 C04:继续围绕 RAG / Context Engineering / Agent Systems 发布第一批高质量内容,至少补齐 3 条 notes / links,并替换或下线不适合长期公开的 toy/sample 内容。之后进入 C05 文章详情推荐。

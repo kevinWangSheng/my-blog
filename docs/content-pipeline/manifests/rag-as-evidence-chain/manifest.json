@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "rag-as-evidence-chain.md",
+      "slug": "rag-as-evidence-chain",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}
