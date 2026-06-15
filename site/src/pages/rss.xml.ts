@@ -1,5 +1,6 @@
 import rss from '@astrojs/rss';
 import { getPublicCollection, entryPath } from '../lib/content';
+import { sitePath } from '../lib/urls';
 
 export async function GET(context: any) {
   const [essays, logs, notes] = await Promise.all([
@@ -14,7 +15,7 @@ export async function GET(context: any) {
   return rss({
     title: 'Shawn Field Notes',
     description: 'Learning systems, agent notes, projects, and essays from Shawn.',
-    site: context.site,
+    site: new URL(sitePath('/'), context.site).toString(),
     items: items.map(({ entry, collection }) => ({
       title: entry.data.title,
       description: entry.data.description,

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://shenghuikevin.github.io/sitemap.xml
+Sitemap: https://kevinwangsheng.github.io/my-blog/sitemap.xml

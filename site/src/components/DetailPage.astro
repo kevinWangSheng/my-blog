@@ -13,6 +13,8 @@ const typeNotes: Record<string, string> = {
 };
 const statusLabel: Record<string, string> = { active: 'Active', shipped: 'Shipped', paused: 'Paused', archived: 'Archived' };
 const isProject = collection === 'projects';
+
+import { sitePath } from '../lib/urls';
 ---
 <BaseLayout title={`${entry.data.title} · ${label.title}`} description={entry.data.description} type="article">
   <article class="container detail-shell">
@@ -42,7 +44,7 @@ const isProject = collection === 'projects';
         <div class="aside-links">
           {entry.data.repo ? <a class="button secondary" href={entry.data.repo} target="_blank" rel="noreferrer">Open repo</a> : <span class="unavailable">Repo 暂未公开</span>}
           {entry.data.demo ? <a class="button secondary" href={entry.data.demo} target="_blank" rel="noreferrer">Open demo</a> : <span class="unavailable">Demo 待补充</span>}
-          <a class="button secondary" href="/about">About Shawn</a>
+          <a class="button secondary" href={sitePath("/about")}>About Shawn</a>
         </div>
       )}
     </aside>

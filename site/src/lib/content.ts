@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { sitePath } from './urls';
 
 export type PublicCollection = 'projects' | 'notes' | 'logs' | 'essays' | 'links';
 export type AnyEntry = CollectionEntry<PublicCollection>;
@@ -8,11 +9,11 @@ export function entrySlug(entry: { id: string }) {
 }
 
 export function collectionPath(collection: PublicCollection) {
-  return collection === 'links' ? '/links' : `/${collection}`;
+  return collection === 'links' ? sitePath('/links') : sitePath(`/${collection}`);
 }
 
 export function entryPath(collection: PublicCollection, entry: { id: string }) {
-  if (collection === 'links') return '/links';
+  if (collection === 'links') return sitePath('/links');
   return `${collectionPath(collection)}/${entrySlug(entry)}`;
 }
 

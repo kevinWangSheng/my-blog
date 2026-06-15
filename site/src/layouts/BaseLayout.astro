@@ -11,10 +11,12 @@ const {
   description = 'Shawn 的 AI 学习自留地、项目入口和 agent 时代的个人知识手札。',
   type = 'website'
 } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://shenghuikevin.github.io');
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://kevinwangsheng.github.io');
 const nav = [
   ['Projects', '/projects'], ['Notes', '/notes'], ['Logs', '/logs'], ['Essays', '/essays'], ['Links', '/links'], ['About', '/about'], ['RSS', '/rss.xml']
 ];
+
+import { sitePath } from '../lib/urls';
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -25,8 +27,8 @@ const nav = [
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/rss.xml" />
+    <link rel="icon" href={sitePath("/favicon.ico")} />
+    <link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href={sitePath("/rss.xml")} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={type} />
@@ -37,12 +39,12 @@ const nav = [
     <div class="site-shell">
       <header class="site-header">
         <nav class="container nav" aria-label="Primary navigation">
-          <a class="brand" href="/" aria-label="Shawn Field Notes home">
+          <a class="brand" href={sitePath("/")} aria-label="Shawn Field Notes home">
             <strong>Shawn Field Notes</strong>
             <span>Shawn / learning systems</span>
           </a>
           <div class="nav-links">
-            {nav.map(([label, href]) => <a href={href}>{label}</a>)}
+            {nav.map(([label, href]) => <a href={sitePath(href)}>{label}</a>)}
           </div>
         </nav>
       </header>
@@ -52,7 +54,7 @@ const nav = [
       <footer class="site-footer">
         <div class="container footer-grid">
           <span>© {new Date().getFullYear()} Shawn. Built as a local-first Astro field note.</span>
-          <span><a href="/rss.xml">RSS</a> · no deployment cutover before human acceptance</span>
+          <span><a href={sitePath("/rss.xml")}>RSS</a> · no deployment cutover before human acceptance</span>
         </div>
       </footer>
     </div>

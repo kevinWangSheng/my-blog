@@ -9,6 +9,8 @@ const [projects, notes, logs, essays, links] = await Promise.all([
 const latest = [...notes.map((entry) => ({ entry, collection: 'notes' as const })), ...logs.map((entry) => ({ entry, collection: 'logs' as const }))]
   .sort((a, b) => +b.entry.data.date - +a.entry.data.date)
   .slice(0, 4);
+
+import { sitePath } from '../lib/urls';
 ---
 <BaseLayout>
   <section class="hero">
@@ -18,12 +20,12 @@ const latest = [...notes.map((entry) => ({ entry, collection: 'notes' as const }
         <h1 class="hero-title">Shawn <span>Field Notes</span></h1>
         <p class="hero-copy">Shawn 的学习自留地与作品入口:这里用 Projects 证明系统构建能力,用 Essays / Notes / Logs 公开 AI 学习、agent 工作流和知识系统判断。</p>
         <div class="cta-row">
-          <a class="button" href="/projects">看 Projects / 能力证据</a>
-          <a class="button secondary" href="/essays">读 Essays / 学习判断</a>
+          <a class="button" href={sitePath("/projects")}>看 Projects / 能力证据</a>
+          <a class="button secondary" href={sitePath("/essays")}>读 Essays / 学习判断</a>
         </div>
         <div class="path-grid" aria-label="Primary visitor paths">
-          <a class="path-card" href="/projects"><strong>能力证据路径</strong><span>从项目、角色、过程证据和下一步判断 Shawn 怎样把系统做出来。</span></a>
-          <a class="path-card" href="/essays"><strong>学习判断路径</strong><span>从长文、短 note 和阶段 log 理解 AI 学习与 agent 系统的判断。</span></a>
+          <a class="path-card" href={sitePath("/projects")}><strong>能力证据路径</strong><span>从项目、角色、过程证据和下一步判断 Shawn 怎样把系统做出来。</span></a>
+          <a class="path-card" href={sitePath("/essays")}><strong>学习判断路径</strong><span>从长文、短 note 和阶段 log 理解 AI 学习与 agent 系统的判断。</span></a>
         </div>
       </div>
       <aside class="panel instrument reveal" aria-label="Field status panel">
