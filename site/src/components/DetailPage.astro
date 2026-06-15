@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { formatDate, collectionLabels } from '../lib/content';
-interface Props { entry: any; collection: keyof typeof collectionLabels; Content: any; }
-const { entry, collection, Content } = Astro.props;
+import { formatDate, collectionLabels, type RelatedEntry } from '../lib/content';
+interface Props { entry: any; collection: keyof typeof collectionLabels; Content: any; related?: RelatedEntry[]; }
+const { entry, collection, Content, related = [] } = Astro.props;
 const label = collectionLabels[collection];
 const typeNotes: Record<string, string> = {
   projects: 'Project 是能力证据入口:看问题、角色、方案、过程证据和当前进展,不是普通文章列表。',
@@ -34,6 +34,24 @@ import { sitePath } from '../lib/urls';
       )}
 
       <div class="prose"><Content /></div>
+      {related.length > 0 && (
+        <section class="related-section reveal" aria-labelledby="related-heading">
+          <div class="eyebrow">Next reading path</div>
+          <h2 id="related-heading">继续顺着这条线读</h2>
+          <div class="related-grid">
+            {related.map((item) => (
+              <a class="related-card" href={item.path} target={item.external ? '_blank' : undefined} rel={item.external ? 'noreferrer' : undefined}>
+                <div class="meta-row">
+                  <span>{collectionLabels[item.collection].title}</span>
+                  <span>{item.reason}</span>
+                </div>
+                <strong>{item.title}</strong>
+                <p>{item.description}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
     <aside class="panel detail-aside reveal" aria-label="Entry metadata">
       <div class="meta-row"><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></div>

@@ -150,6 +150,51 @@ p { color: var(--ink-soft); margin: 0; }
 .project-proof strong { display: block; margin-top: 0.35rem; color: var(--ink); line-height: 1.35; }
 .aside-links { display: grid; gap: 0.6rem; margin-top: 1rem; }
 .unavailable { display: inline-flex; min-height: 2.4rem; align-items: center; padding: 0.25rem 0.75rem; border: 1px dashed var(--line-strong); border-radius: 999px; color: var(--ink-muted); font-family: var(--font-ui); font-size: 0.82rem; }
+.related-section {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+.related-section h2 {
+  margin-top: 0.35rem;
+  font-size: clamp(1.8rem, 4vw, 3.4rem);
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: var(--space-3);
+}
+.related-card {
+  display: grid;
+  gap: 0.65rem;
+  min-height: 12rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,0.7), rgba(var(--glow-rgb),0.045)),
+    rgba(255,255,255,0.52);
+  text-decoration: none;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+.related-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--line-strong);
+  box-shadow: var(--shadow-glow);
+}
+.related-card strong {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+}
+.related-card p {
+  margin-top: auto;
+  font-size: 0.96rem;
+  line-height: 1.62;
+}
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
@@ -166,7 +211,7 @@ p { color: var(--ink-soft); margin: 0; }
   .detail-aside { position: relative; top: auto; }
 }
 @media (max-width: 640px) {
-  .path-grid, .project-proof { grid-template-columns: 1fr; }
+  .path-grid, .project-proof, .related-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 520px) {
   h1 { font-size: clamp(2.55rem, 13vw, 4rem); line-height: 1.02; }

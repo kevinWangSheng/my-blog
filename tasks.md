@@ -421,9 +421,9 @@
 
 ### C05 — 文章详情推荐
 
-- [ ] 为 essay / note / log / project 详情页增加轻量推荐。
-- [ ] 推荐依据优先级: series > related frontmatter > shared tags > same collection recent。
-- [ ] Project 详情可推荐相关 notes/logs;Essay 可推荐相关 notes/links。
+- [x] 为 essay / note / log / project 详情页增加轻量推荐。
+- [x] 推荐依据优先级: series > related frontmatter > shared tags > same collection recent。
+- [x] Project 详情可推荐相关 notes/logs;Essay 可推荐相关 notes/links。
 
 验收标准:
 - 每个详情页至少展示 2–4 个有意义的下一步入口,不足时优雅隐藏。
@@ -432,4 +432,4 @@
 
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `kb-to-blog` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。当前下一步执行 C05:为 essay / note / log / project 详情页增加轻量推荐,优先用 series、related frontmatter、shared tags 和 same collection recent。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `kb-to-blog` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。C05 文章详情推荐已完成:essay / note / log / project 详情页现在展示轻量 Next reading path,推荐依据覆盖 series、related frontmatter、shared tags、same collection recent,并允许 Essay 推荐相关 notes/links、Project 推荐 notes/logs。验收证据见 `docs/content-pipeline/reviews/C05-verification.md`。当前 C03-C05 已完成;下一步应由 human 看 blog 成品,若满意再决定是否发布/push,或开新任务继续清理 sample 内容。
