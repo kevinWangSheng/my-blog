@@ -2,7 +2,7 @@
 
 ## Current status
 
-返工队列 T13 → T14 → T18 → T15 → T16 → T17 已完成双层验收。当前进入 T11:human ⑦ 结果验收准备。尚未 push、尚未部署、尚未 cutover,旧 Hugo 部署链路未改。
+返工队列 T13 → T14 → T18 → T15 → T16 → T17 已完成双层验收。当前进入 T11:human ⑦ 结果验收准备。已在 human ⑦验收通过后发布到 GitHub Pages。旧 Hugo/Notion workflow 已移除,新 workflow 构建 `site/dist` 并发布到 `gh-pages`。
 
 ## Local preview
 
@@ -47,3 +47,15 @@ All four final UI summaries report: Lighthouse performance/accessibility/best-pr
 - GitHub 是当前唯一公开外部入口;更多联系方式需要 human 明确后再加入。
 - UI 自验证只在本地 ⑥ 跑,未加入部署 CI。
 - T12 发布 / GitHub Pages cutover 只在 ⑦ 通过后执行。
+
+
+## Live URL
+
+- https://kevinwangsheng.github.io/my-blog/
+- RSS: https://kevinwangsheng.github.io/my-blog/rss.xml
+- Sitemap: https://kevinwangsheng.github.io/my-blog/sitemap.xml
+
+## Deployment evidence
+
+- GitHub Actions run `27522304477` completed successfully.
+- Live checks returned HTTP 200 for home, Projects, project detail, About, essay detail, RSS, and sitemap.

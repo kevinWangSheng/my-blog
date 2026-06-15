@@ -354,11 +354,11 @@
 
 > 当前阶段不执行。本任务是发布阶段占位,防止后续 agent 提前或遗漏 CI/CD 切换。
 
-- [ ] 在 ⑦结果验收通过后,把旧 Hugo workflows 迁移/替换为 Astro GitHub Pages workflow。
-- [ ] 新 workflow 以 `site/` 为构建根,使用 `pnpm` 安装依赖,构建 `site/dist`。
-- [ ] 优先使用 GitHub Pages 官方链路 / `withastro/action` 等 Astro Pages 方案;不要把 Playwright、axe、Lighthouse UI 自验证塞进部署 CI。
-- [ ] 处理旧站遗留发布源:确认是否停止 Notion→Hugo workflow、是否停止旧 `gh-pages` 发布方式、是否需要清理旧产物跟踪。
-- [ ] 只在 human 明确通过 ⑦后 push / 发布 / cutover。
+- [x] 在 ⑦结果验收通过后,把旧 Hugo workflows 迁移/替换为 Astro GitHub Pages workflow。
+- [x] 新 workflow 以 `site/` 为构建根,使用 `pnpm` 安装依赖,构建 `site/dist`。
+- [x] 优先使用 GitHub Pages 官方链路 / `withastro/action` 等 Astro Pages 方案;不要把 Playwright、axe、Lighthouse UI 自验证塞进部署 CI。(官方 Pages deploy 被仓库 environment 规则拒绝后,改用现有 `gh-pages` branch 发布 `site/dist`,未加入 UI 自验证到 CI。)
+- [x] 处理旧站遗留发布源:确认是否停止 Notion→Hugo workflow、是否停止旧 `gh-pages` 发布方式、是否需要清理旧产物跟踪。
+- [x] 只在 human 明确通过 ⑦后 push / 发布 / cutover。
 
 验收标准:
 - `.github/workflows/` 中不再有会误触发旧 Hugo/Notion 部署的线上链路。
