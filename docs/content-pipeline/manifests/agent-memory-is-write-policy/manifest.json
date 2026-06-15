@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "agent-memory-is-write-policy.md",
+      "slug": "agent-memory-is-write-policy",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}

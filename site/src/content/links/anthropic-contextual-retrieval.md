@@ -3,7 +3,7 @@ title: "Anthropic Contextual Retrieval"
 description: "一个说明现代 RAG 不只靠向量相似度的官方工程来源:给 chunk 补上下文,再结合 BM25 和 reranking。"
 date: "2026-06-15"
 tags: ["rag", "retrieval", "context-engineering"]
-visibility: "public"
+visibility: "draft"
 url: "https://www.anthropic.com/engineering/contextual-retrieval"
 category: "essay"
 note: "官方工程文章,适合作为 RAG evidence-chain 的 retrieval/indexing 案例。"

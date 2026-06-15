@@ -3,7 +3,7 @@ title: "RAG 评估要先拆开 retrieval 和 answer"
 description: "最终答案错了,不等于模型或 RAG 整体错了;先看正确证据有没有进入上下文。"
 date: "2026-06-15"
 tags: ["rag", "evaluation", "context-engineering"]
-visibility: "public"
+visibility: "draft"
 topic: "RAG evaluation"
 related: ["rag-as-evidence-chain"]
 ---

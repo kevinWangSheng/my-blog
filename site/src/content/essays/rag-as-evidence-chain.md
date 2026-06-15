@@ -3,7 +3,7 @@ title: "RAG 不是向量库，而是证据链工程"
 description: "把 RAG 从 embedding + top-k 的旧印象中拿出来,重新理解为外部证据进入模型上下文的选择、装配、引用和评估链条。"
 date: "2026-06-15"
 tags: ["rag", "context-engineering", "retrieval", "ai-systems"]
-visibility: "public"
+visibility: "draft"
 series: "Knowledge systems"
 ---
 很多人第一次理解 RAG,都会从一个很直接的流程开始:把文档切成 chunk,做 embedding,放进向量数据库;用户提问时再把问题 embedding,取最相似的 top-k chunk,塞进 prompt,让模型回答。

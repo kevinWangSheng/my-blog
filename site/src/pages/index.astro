@@ -18,23 +18,23 @@ import { sitePath } from '../lib/urls';
       <div class="reveal">
         <div class="eyebrow">Personal system / public notes</div>
         <h1 class="hero-title">Shawn <span>Field Notes</span></h1>
-        <p class="hero-copy">Shawn 的学习自留地与作品入口:这里用 Projects 证明系统构建能力,用 Essays / Notes / Logs 公开 AI 学习、agent 工作流和知识系统判断。</p>
+        <p class="hero-copy">Shawn 的学习自留地:这里先公开 AI 学习、agent workflow、memory 和知识系统判断;项目入口暂时收窄,只保留足够公开且质量过线的内容。</p>
         <div class="cta-row">
-          <a class="button" href={sitePath("/projects")}>看 Projects / 能力证据</a>
-          <a class="button secondary" href={sitePath("/essays")}>读 Essays / 学习判断</a>
+          <a class="button" href={sitePath("/essays")}>读 Essays / 长文判断</a>
+          <a class="button secondary" href={sitePath("/notes")}>看 Notes / 短观点</a>
         </div>
         <div class="path-grid" aria-label="Primary visitor paths">
-          <a class="path-card" href={sitePath("/projects")}><strong>能力证据路径</strong><span>从项目、角色、过程证据和下一步判断 Shawn 怎样把系统做出来。</span></a>
-          <a class="path-card" href={sitePath("/essays")}><strong>学习判断路径</strong><span>从长文、短 note 和阶段 log 理解 AI 学习与 agent 系统的判断。</span></a>
+          <a class="path-card" href={sitePath("/essays")}><strong>长文判断路径</strong><span>从 agent memory、学习系统和工作流文章理解当前形成的判断。</span></a>
+          <a class="path-card" href={sitePath("/notes")}><strong>短观点路径</strong><span>从 note 快速进入 function calling、harness、review gate 等具体判断。</span></a>
         </div>
       </div>
       <aside class="panel instrument reveal" aria-label="Field status panel">
-        <div class="meta-row"><span>Current focus</span><span>agentic learning systems</span></div>
+        <div class="meta-row"><span>Current focus</span><span>agent memory / workflow</span></div>
         <div class="orbit"><span>human judgment core</span></div>
         <div class="instrument-grid">
-          <div class="metric"><strong>{projects.length}</strong><span>projects</span></div>
           <div class="metric"><strong>{notes.length}</strong><span>notes</span></div>
           <div class="metric"><strong>{essays.length}</strong><span>essays</span></div>
+          <div class="metric"><strong>{logs.length}</strong><span>logs</span></div>
           <div class="metric"><strong>{links.length}</strong><span>sources</span></div>
         </div>
       </aside>
@@ -46,11 +46,6 @@ import { sitePath } from '../lib/urls';
     <div class="card-grid">
       {latest.map(({ entry, collection }, index) => <EntryCard entry={entry} collection={collection} size={index === 0 ? 'large' : 'normal'} />)}
     </div>
-  </section>
-
-  <section class="section container">
-    <div class="section-head reveal"><div><div class="eyebrow">Featured projects</div><h2>Evidence, not a résumé</h2></div><p>Projects 是能力入口:系统设计、实现选择、验证习惯和产品判断应该能被看见。</p></div>
-    <div class="card-grid">{projects.slice(0, 3).map((entry, index) => <EntryCard entry={entry} collection="projects" size={index === 0 ? 'large' : 'medium'} />)}</div>
   </section>
 
   <section class="section container">

@@ -3,7 +3,7 @@ title: "什么时候 GraphRAG 值得上"
 description: "GraphRAG 的判断标准不是文档多,而是答案是否必须依赖关系结构和跨文档综合。"
 date: "2026-06-15"
 tags: ["rag", "graphrag", "architecture"]
-visibility: "public"
+visibility: "draft"
 topic: "RAG architecture"
 related: ["rag-as-evidence-chain"]
 ---

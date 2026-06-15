@@ -3,7 +3,7 @@ title: "Agent Learning Cockpit"
 description: "一个把研究、阅读、复盘和产出连成闭环的个人学习控制台。"
 date: 2026-06-10
 tags: ["agent", "learning", "workflow"]
-visibility: public
+visibility: draft
 status: active
 role: "产品设计 / 系统架构 / 实现"
 period: "2026 — now"

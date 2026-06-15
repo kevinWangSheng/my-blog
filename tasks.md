@@ -430,6 +430,22 @@
 - 推荐不破坏移动端阅读和 T15/T16 视觉/动效。
 - build / ui-verify 通过。
 
+
+### C06 — 内容质量与主题重平衡
+
+> 来源:human 反馈当前公开项目质量不够高,文章方向不应过度偏 RAG,应从 KB 中挑更近、更高质量的观点。
+
+- [x] 下线当前公开 Project,不再把低质量项目作为能力入口。
+- [x] 下线 RAG-heavy 的 essay / notes / link,降低 RAG 在公开内容中的权重。
+- [x] 从 KB 中选择更近、更高质量的 Agent Memory / workflow / harness 观点,按 `kb-to-blog` review → manifest → content:check → sync 流程进入站点。
+- [x] 调整首页 / About / Projects 空状态,避免继续引导到被下线的项目或 RAG 主线。
+
+验收标准:
+- 下线内容不再生成公开 route / RSS。
+- 新内容通过 `content:check`, `content:sync`, build, route/RSS 检查。
+- 首页不再把 Projects 作为第一 CTA;About 不再引用下线项目。
+- UI 自验证通过。
+
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `kb-to-blog` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。C05 文章详情推荐已完成:essay / note / log / project 详情页现在展示轻量 Next reading path,推荐依据覆盖 series、related frontmatter、shared tags、same collection recent,并允许 Essay 推荐相关 notes/links、Project 推荐 notes/logs。验收证据见 `docs/content-pipeline/reviews/C05-verification.md`。当前 C03-C05 已完成;下一步应由 human 看 blog 成品,若满意再决定是否发布/push,或开新任务继续清理 sample 内容。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `kb-to-blog` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。C05 文章详情推荐已完成:essay / note / log / project 详情页现在展示轻量 Next reading path,推荐依据覆盖 series、related frontmatter、shared tags、same collection recent,并允许 Essay 推荐相关 notes/links、Project 推荐 notes/logs。验收证据见 `docs/content-pipeline/reviews/C05-verification.md`。C06 内容质量与主题重平衡已完成:下线低质量 Project 和 RAG-heavy 内容,新增 Agent Memory / workflow / harness 方向的高质量观点内容,并调整首页与 About。验收证据见 `docs/content-pipeline/reviews/C06-verification.md`。当前下一步:human 看本地或部署后的 blog 成品;若满意再发布/push,若不满意继续做内容取舍返工。

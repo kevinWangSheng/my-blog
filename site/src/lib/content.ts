@@ -133,7 +133,7 @@ export const collectionLabels: Record<PublicCollection, { title: string; eyebrow
   projects: {
     title: 'Projects',
     eyebrow: 'Capability evidence',
-    description: '能看出系统设计、产品判断和实际构建能力的作品入口。'
+    description: '项目入口会保持克制:只有足够公开、质量过线、证据完整的项目才会展示。'
   },
   notes: {
     title: 'Notes',

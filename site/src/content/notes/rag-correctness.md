@@ -3,7 +3,7 @@ title: "RAG 的相关性不等于正确性"
 description: "检索能找到相似文本,但系统仍然需要证据约束、冲突处理和回答校准。"
 date: 2026-06-11
 tags: ["rag", "evaluation"]
-visibility: public
+visibility: draft
 topic: "Retrieval systems"
 related: []
 source:
