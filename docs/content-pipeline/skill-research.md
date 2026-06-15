@@ -61,6 +61,19 @@ python3 /Users/shenghuikevin/.codex/skills/.system/skill-installer/scripts/list-
 | `site/scripts/content-sync.mjs` | 下游写入入口 | approved + check 通过后把 Markdown 写入内容目录 | 不是内容处理能力;必须在 human approve 后才能调用。 |
 | `docs/content-pipeline/candidates.md` | 复用 | C01 候选池,提供初始 priority 和风险标签 | 不是批准列表。 |
 
+
+## 内容处理视角复查结论
+
+用户复核后明确:本能力应主要服务 **KB 内容 → blog 内容** 的转换,而不是同步、部署或页面验证。重新按这个角度检查后,结论如下:
+
+1. **现有 `kb` skill 要复用,但它是上游材料能力**。它负责从 llm-kb vault 查找、读取、维护和验证 KB 状态;不负责把内容改写成公开 blog 成品,也不承担 publishing judge。
+2. **需要自写 `kb-to-blog` 内容转化 skill**。它负责判断材料是否适合公开、决定 essay/note/log/link/project 形态、把 KB 笔记改写成面向陌生读者的 blog 草稿、做 source tracing/freshness/privacy/no-fabrication 检查,并生成 review-ready 文件。
+3. **`content-check` / `content-sync` 是下游机械入口**。它们只在 human approve 后执行,负责结构校验和写入,不能替代内容判断。
+4. **Notion curated skills 不适配**。`notion-knowledge-capture` 是把对话/笔记写入 Notion wiki;`notion-research-documentation` 是从 Notion sources 生成 briefs/reports;`notion-spec-to-implementation` 是 spec 到任务计划。它们的思想可借鉴,但依赖 Notion MCP 和 Notion database schema,不适合本项目的本地 KB + Astro blog 内容流。
+5. **Playwright / screenshot / ui-verify 不属于此 skill 核心**。它们只在内容进入站点后验证页面可读性/a11y/路由,不是 KB 内容处理能力。
+
+因此最终方案是 **组合式**: `kb` skill + 项目级自写 `kb-to-blog` skill + 下游 `content-check/sync`。这比安装一个现成 Notion 或研究文档 skill 更贴合当前仓库和内容边界。
+
 ## 决策
 
 不安装现有市场 skill。自建项目级 **`kb-to-blog`** skill,并把它定义为内容处理能力: **source discovery / source tracing 结合 `kb` skill,公开化改写由 `kb-to-blog` 负责,写入与验证由 `content-check` / `content-sync` / `ui-verify` 在下游负责**。
