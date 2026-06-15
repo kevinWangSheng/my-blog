@@ -1,0 +1,4 @@
+interface:
+  display_name: "KB to Blog"
+  short_description: "Turn KB materials into review-ready blog drafts."
+  default_prompt: "Turn selected KB material into a review-ready blog draft with source tracing, safety checks, and a human approval gate."

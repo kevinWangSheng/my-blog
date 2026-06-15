@@ -395,6 +395,7 @@
 - 有市场查询记录:来源、候选 skill、是否安装/复用、不适配原因。
 - 只有在确认没有合适 skill 后,才进入自建设计。
 - skill / wrapper 有清晰触发条件、边界、输入/输出契约、验证命令和示例输出。
+- `kb-to-blog` 必须以内容处理为核心:KB source tracing、公开化改写、质量 rubric、安全/隐私/伪造成果检查、human review gate。
 - 能从 candidates 生成 review-ready 草稿和 manifest,但不绕过 human 审核直接发布。
 
 ### C03 — 内容中间发布状态
@@ -431,4 +432,4 @@
 
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 能力方案已完成,见 `docs/content-pipeline/skill-research.md`。下一步执行 C03:建立 `docs/content-pipeline/reviews/` 与 `manifests/` 的中间发布状态和第一批 review-ready 记录;之后进入 C04 第一批高质量内容、C05 文章详情推荐。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `kb-to-blog` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/kb-to-blog/`。下一步执行 C03:建立 `docs/content-pipeline/reviews/` 与 `manifests/` 的中间发布状态,并用 `kb-to-blog` 生成第一批 review-ready 记录;之后进入 C04 第一批高质量内容、C05 文章详情推荐。
