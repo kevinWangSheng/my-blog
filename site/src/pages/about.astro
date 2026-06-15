@@ -2,14 +2,33 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 ---
-<BaseLayout title="About · Shawn AI Lab Manual" description="Shawn 的方向、能力和当前关注。">
-  <PageHero eyebrow="Operator notes" title="About Shawn" description="我关心的是怎样把学习、agent、知识系统和真实产品连成可验证的闭环。" />
+<BaseLayout title="About · Shawn AI Lab Manual" description="Shawn 的方向、代表项目、阅读路径和公开入口。">
+  <PageHero eyebrow="Operator notes" title="About Shawn" description="我在构建面向 AI 时代的学习系统:让 agent 承担可验证的执行,让人保留方向、判断和最终验收。" />
   <section class="reading prose reveal">
-    <p>这个站点不是传统博客模板,也不是一页式简历。它是一个公开实验手册:记录我如何学习 AI 系统,如何把判断落成工具,以及如何让 agent 承担重复执行,让人保留真正重要的判断。</p>
-    <h2>Current focus</h2>
-    <p>Agent memory、context engineering、RAG 评估、MCP / browser control、AI 时代的学习系统,以及能被本地验证回路约束的前端体验。</p>
+    <p>这个站点不是传统博客模板,也不是一页式简历。它是 Shawn 的公开知识空间:记录 AI 学习、agent 工作流、知识系统和产品化实验如何从问题变成工具,也让陌生访客能快速找到能力证据。</p>
+
+    <h2>Current direction</h2>
+    <p>当前关注 agent memory、context engineering、RAG 评估、MCP / browser control、AI 时代的学习系统,以及能被本地验证回路约束的前端体验。这里的内容大多处于 sample / project draft 阶段,用于搭建第一版公开表达和发布管线。</p>
+
+    <h2>Representative project</h2>
+    <p><a href="/projects/agent-learning-cockpit">Agent Learning Cockpit</a> 是当前代表项目入口:它把研究、阅读、判断校准、复盘和发布整理成一个可由 agent 协助执行、由人验收的闭环。项目详情页会说明角色、周期、状态、问题、方案、过程证据和下一步,而不是只放一个漂亮卡片。</p>
+
     <h2>How to read this site</h2>
-    <p>Projects 看能力证据;Notes 看正在生成的判断;Logs 看过程;Essays 看长文综合;Links 看来源货架。</p>
-    <div class="cta-row"><a class="button" href="/projects">代表项目</a><a class="button secondary" href="/rss.xml">订阅 RSS</a></div>
+    <ul>
+      <li><strong>Projects</strong>:先看能力证据和系统设计取舍。</li>
+      <li><strong>Essays</strong>:读相对完整的长文判断。</li>
+      <li><strong>Notes</strong>:看短判断、知识卡片和正在形成的概念。</li>
+      <li><strong>Logs</strong>:看阶段过程,理解项目和学习如何变化。</li>
+      <li><strong>Links</strong>:看进入这个系统的公开来源货架。</li>
+    </ul>
+
+    <h2>Public entry</h2>
+    <p>如果你只想快速判断这个站点是否与你相关,建议先看 Projects,再读一篇 Essay。公开外部入口目前保留为 GitHub;更多联系渠道会在正式上线前由 human 确认后再补充,避免伪造或暴露私人信息。</p>
+    <div class="cta-row">
+      <a class="button" href="/projects/agent-learning-cockpit">代表项目</a>
+      <a class="button secondary" href="/essays">阅读长文</a>
+      <a class="button secondary" href="https://github.com/shenghuikevin" target="_blank" rel="noreferrer">GitHub</a>
+      <a class="button secondary" href="/rss.xml">订阅 RSS</a>
+    </div>
   </section>
 </BaseLayout>
