@@ -61,7 +61,7 @@ For review-ready drafts, rewrite for an unfamiliar public reader:
 
 ### 4. Create a review file
 
-Write `docs/content-pipeline/reviews/<slug>.md` using `references/review-template.md`.
+Write `docs/content-pipeline/reviews/<slug>.md` using `references/review-template.md`. For scoring and adversarial review, load `references/evaluation.md`.
 
 A review file must contain:
 
@@ -109,15 +109,6 @@ For non-trivial drafts, use an independent subagent after the main draft/review 
 - fabricated achievements, external backing, repo/demo links, or project results
 - mismatch with the blog's positioning: AI learning, agent systems, project practice, knowledge workflows
 
-## Rubric
+## Evaluation
 
-Score each 0-2; below 8/12 should not enter human approval.
-
-| item | check |
-|---|---|
-| Public value | A stranger can tell what judgment/method/map they gain. |
-| Source grounding | Key claims trace to KB paths and refreshed sources when needed. |
-| Rewrite maturity | It reads as a public blog draft, not copied KB notes. |
-| Safety/privacy | No secrets, private markers, personal data, or fabricated claims. |
-| Freshness | Fast-moving facts are refreshed or explicitly marked. |
-| Blog fit | It supports the site's AI learning / agent systems / project practice identity. |
+Use `references/evaluation.md` for pass/fail gates, the 12-point rubric, and the adversarial review prompt.
