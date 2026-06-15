@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.4.6"><title>Projects · Shawn Field Notes</title><meta name="description" content="能看出系统设计、产品判断和实际构建能力的作品入口。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/projects"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="Projects · Shawn Field Notes"><meta property="og:description" content="能看出系统设计、产品判断和实际构建能力的作品入口。"><meta property="og:type" content="website"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/projects"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.C5iBCpSO.css"></head> <body> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn / learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/projects">Projects</a><a href="/my-blog/notes">Notes</a><a href="/my-blog/logs">Logs</a><a href="/my-blog/essays">Essays</a><a href="/my-blog/links">Links</a><a href="/my-blog/about">About</a><a href="/my-blog/rss.xml">RSS</a> </div> </nav> </header> <main class="site-main">  <section class="page-hero"> <div class="container reveal"> <div class="eyebrow">Capability evidence</div> <h1>Projects</h1> <p>能看出系统设计、产品判断和实际构建能力的作品入口。</p> </div> </section> <section class="container list-stack"> <a class="panel list-card reveal" href="/my-blog/projects/agent-learning-cockpit"> <div class="meta-row"><time datetime="2026-06-10T00:00:00.000Z">Jun 10, 2026</time><span>projects</span></div> <div> <h2 style="font-size:clamp(1.8rem,4vw,3rem)">Agent Learning Cockpit</h2> <p>一个把研究、阅读、复盘和产出连成闭环的个人学习控制台。</p> <div class="meta-row" style="margin-top:1rem"><span class="tag">agent</span><span class="tag">learning</span><span class="tag">workflow</span></div> </div> </a> </section>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn. Built as a local-first Astro field note.</span> <span><a href="/my-blog/rss.xml">RSS</a> · no deployment cutover before human acceptance</span> </div> </footer> </div> <script>
+      const revealItems = Array.from(document.querySelectorAll('.reveal'));
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        revealItems.forEach((el) => {
+          el.classList.add('is-visible');
+          el.dataset.revealState = 'visible';
+        });
+      } else {
+        revealItems.forEach((el, index) => {
+          el.dataset.revealState = 'idle';
+          el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
+        });
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            const visible = entry.isIntersecting;
+            entry.target.classList.toggle('is-visible', visible);
+            entry.target.dataset.revealState = visible ? 'visible' : 'idle';
+          }
+        }, { threshold: 0.18, rootMargin: '-6% 0px -12% 0px' });
+        revealItems.forEach((el) => observer.observe(el));
+      }
+    </script> </body> </html>

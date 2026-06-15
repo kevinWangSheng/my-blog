@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kevinwangsheng.github.io/my-blog/sitemap.xml

@@ -1,0 +1,35 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.4.6"><title>Review gate 不是拖慢 agent,而是产品设计 · Notes</title><meta name="description" content="真正需要人的地方应该被设计成清晰验收点,而不是让人承担重复检查。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/notes/review-gates-are-product-design"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="Review gate 不是拖慢 agent,而是产品设计 · Notes"><meta property="og:description" content="真正需要人的地方应该被设计成清晰验收点,而不是让人承担重复检查。"><meta property="og:type" content="article"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/notes/review-gates-are-product-design"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.C5iBCpSO.css"></head> <body> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn / learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/projects">Projects</a><a href="/my-blog/notes">Notes</a><a href="/my-blog/logs">Logs</a><a href="/my-blog/essays">Essays</a><a href="/my-blog/links">Links</a><a href="/my-blog/about">About</a><a href="/my-blog/rss.xml">RSS</a> </div> </nav> </header> <main class="site-main">  <article class="container detail-shell"> <div class="reading reveal"> <div class="eyebrow">Working memory</div> <h1>Review gate 不是拖慢 agent,而是产品设计</h1> <p class="detail-description">真正需要人的地方应该被设计成清晰验收点,而不是让人承担重复检查。</p> <p class="type-note">Note 是短判断 / 知识卡片:保留正在形成但已经可复用的想法。</p>  <div class="prose"><p>很多 agent 工作流的问题,不是自动化不够,而是 review gate 放错了位置。人不应该被要求反复运行 build、数链接、检查截图路径,这些是 agent 和脚本能承担的地板工作。人真正应该判断的是方向是否正确、公开边界是否安全、体验是否符合目标。</p>
+<h2 id="好的-gate-长什么样">好的 gate 长什么样</h2>
+<p>一个好的 review gate 应该让人看到少量高价值证据:入口 URL、关键截图、验证 summary、已知限制和下一步真实选择。它不应该要求人从日志海里自己捞结论,也不应该让 agent 用一句“已验证”代替证据。</p>
+<ul>
+<li>低风险、本地、可回退的执行由 agent 自己完成;</li>
+<li>可客观判断的问题用命令和脚本先筛掉;</li>
+<li>需要审美、方向、安全边界的部分交给 human;</li>
+<li>每次 gate 之后,决策要写回稳定文件,避免下一个 agent 重开讨论。</li>
+</ul>
+<blockquote>
+<p>Review gate 的目标不是制造等待,而是保护人的判断力不被低价值检查消耗。</p>
+</blockquote>
+<p>这个博客重建里的 ②决策和 ⑦验收就是两个不同 gate。前者决定方向,后者判断结果;中间的实现、验证、修复都应该由 agent 自闭环。这样人仍然掌握方向,但不需要成为工具链操作员。</p></div> </div> <aside class="panel detail-aside reveal" aria-label="Entry metadata"> <div class="meta-row"><time datetime="2026-06-13T00:00:00.000Z">Jun 13, 2026</time></div> <div class="meta-row" style="margin-top:1rem"><span class="tag">agents</span><span class="tag">workflow</span><span class="tag">review</span></div> <p style="margin-top:1rem">Collection: Notes</p> <p style="margin-top:0.75rem">Note 是短判断 / 知识卡片:保留正在形成但已经可复用的想法。</p>  </aside> </article>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn. Built as a local-first Astro field note.</span> <span><a href="/my-blog/rss.xml">RSS</a> · no deployment cutover before human acceptance</span> </div> </footer> </div> <script>
+      const revealItems = Array.from(document.querySelectorAll('.reveal'));
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        revealItems.forEach((el) => {
+          el.classList.add('is-visible');
+          el.dataset.revealState = 'visible';
+        });
+      } else {
+        revealItems.forEach((el, index) => {
+          el.dataset.revealState = 'idle';
+          el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
+        });
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            const visible = entry.isIntersecting;
+            entry.target.classList.toggle('is-visible', visible);
+            entry.target.dataset.revealState = visible ? 'visible' : 'idle';
+          }
+        }, { threshold: 0.18, rootMargin: '-6% 0px -12% 0px' });
+        revealItems.forEach((el) => observer.observe(el));
+      }
+    </script> </body> </html>
