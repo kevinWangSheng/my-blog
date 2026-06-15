@@ -9,6 +9,8 @@
 - proposed slug:
 - source type: existing-material-summary|public-original|source-only-derived|sample
 - target reader:
+- planned publishable markdown path: docs/content-pipeline/manifests/<slug>/<slug>.md
+- planned manifest dir: docs/content-pipeline/manifests/<slug>/
 
 ## Public framing
 
@@ -21,6 +23,24 @@
 ### Remove / anonymize
 
 ### Add / refresh
+
+## Required publishable frontmatter plan
+
+Shared:
+
+- title:
+- description:
+- date:
+- tags:
+- visibility: public
+
+Collection-specific:
+
+- essays: canonical?, series?
+- notes: topic
+- logs: period, summary
+- links: url, category, note
+- projects: status, role, period, repo?, demo?
 
 ## Fact refresh checklist
 
