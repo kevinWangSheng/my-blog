@@ -370,13 +370,13 @@
 
 ## 下一阶段:真实内容体系与 KB 发布管线
 
-> 状态:待执行。发布后第一阶段完成,下一阶段目标是把 KB 中成熟材料转化为 blog 成品内容,并补齐文章推荐与可复用发布 skill。
+> 状态:C01 已完成,C02 待执行。发布后第一阶段完成,下一阶段目标是把 KB 中成熟材料转化为 blog 成品内容,并补齐文章推荐与可复用发布 skill。
 
 ### C01 — KB 候选池盘点
 
-- [ ] 使用多个 subagent 分区扫描 `/Users/shenghuikevin/kb-vault/output`, `wiki`, `learning/agent-field`。
-- [ ] 生成 `docs/content-pipeline/candidates.md`:候选路径、推荐类型、主题簇、质量信号、公开风险、下一步。
-- [ ] 明确哪些内容可直接改写,哪些只适合作为来源,哪些不适合公开。
+- [x] 使用多个 subagent 分区扫描 `/Users/shenghuikevin/kb-vault/output`, `wiki`, `learning/agent-field`。
+- [x] 生成 `docs/content-pipeline/candidates.md`:候选路径、推荐类型、主题簇、质量信号、公开风险、下一步。
+- [x] 明确哪些内容可直接改写,哪些只适合作为来源,哪些不适合公开。
 
 验收标准:
 - 至少给出 20 个候选或说明不足原因。
@@ -431,4 +431,4 @@
 
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。下一步进入“真实内容体系与 KB 发布管线”:先做 KB 候选池盘点(C01),再设计可复用 `kb-to-blog` / `blog-publisher` skill(C02),建立中间发布状态(C03),发布第一批高质量内容(C04),最后补文章详情推荐(C05)。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`。下一步执行 C02:先查询可复用 skill / 市场能力,再设计 `kb-to-blog` / `blog-publisher` 能力方案;之后进入 C03 中间发布状态、C04 第一批高质量内容、C05 文章详情推荐。
