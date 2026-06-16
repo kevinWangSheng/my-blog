@@ -1,10 +1,10 @@
 import { getPublicCollection, entryPath } from '../lib/content';
 import { sitePath } from '../lib/urls';
 
-const staticRoutes = ['/', '/about', '/projects', '/notes', '/logs', '/essays', '/links', '/rss.xml'];
+const staticRoutes = ['/', '/about', '/projects', '/notes', '/essays', '/links', '/rss.xml'];
 
 export async function GET({ site }: { site: URL }) {
-  const collections = ['projects', 'notes', 'logs', 'essays'] as const;
+  const collections = ['projects', 'notes', 'essays'] as const;
   const dynamicRoutes = (await Promise.all(collections.map(async (collection) => {
     const entries = await getPublicCollection(collection);
     return entries.map((entry) => entryPath(collection, entry));

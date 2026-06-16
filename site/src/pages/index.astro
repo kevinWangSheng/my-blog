@@ -3,10 +3,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EntryCard from '../components/EntryCard.astro';
 import { getPublicCollection } from '../lib/content';
 
-const [projects, notes, logs, essays, links] = await Promise.all([
-  getPublicCollection('projects'), getPublicCollection('notes'), getPublicCollection('logs'), getPublicCollection('essays'), getPublicCollection('links')
+const [projects, notes, essays, links] = await Promise.all([
+  getPublicCollection('projects'), getPublicCollection('notes'), getPublicCollection('essays'), getPublicCollection('links')
 ]);
-const latest = [...notes.map((entry) => ({ entry, collection: 'notes' as const })), ...logs.map((entry) => ({ entry, collection: 'logs' as const }))]
+const latest = notes.map((entry) => ({ entry, collection: 'notes' as const }))
   .sort((a, b) => +b.entry.data.date - +a.entry.data.date)
   .slice(0, 4);
 
@@ -34,7 +34,6 @@ import { sitePath } from '../lib/urls';
         <div class="instrument-grid">
           <div class="metric"><strong>{notes.length}</strong><span>notes</span></div>
           <div class="metric"><strong>{essays.length}</strong><span>essays</span></div>
-          <div class="metric"><strong>{logs.length}</strong><span>logs</span></div>
           <div class="metric"><strong>{links.length}</strong><span>sources</span></div>
         </div>
       </aside>
@@ -42,7 +41,7 @@ import { sitePath } from '../lib/urls';
   </section>
 
   <section class="section container">
-    <div class="section-head reveal"><div><div class="eyebrow">Learning now</div><h2>What is being calibrated</h2></div><p>短笔记和周志保留“正在生成”的判断,不假装每个想法都已经变成完整文章。</p></div>
+    <div class="section-head reveal"><div><div class="eyebrow">Learning now</div><h2>What is being calibrated</h2></div><p>短笔记保留“正在生成”的判断,不假装每个想法都已经变成完整文章。</p></div>
     <div class="card-grid">
       {latest.map(({ entry, collection }, index) => <EntryCard entry={entry} collection={collection} size={index === 0 ? 'large' : 'normal'} />)}
     </div>

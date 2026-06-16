@@ -3,12 +3,11 @@ import { getPublicCollection, entryPath } from '../lib/content';
 import { sitePath } from '../lib/urls';
 
 export async function GET(context: any) {
-  const [essays, logs, notes] = await Promise.all([
-    getPublicCollection('essays'), getPublicCollection('logs'), getPublicCollection('notes')
+  const [essays, notes] = await Promise.all([
+    getPublicCollection('essays'), getPublicCollection('notes')
   ]);
   const items = [
     ...essays.map((entry) => ({ entry, collection: 'essays' as const })),
-    ...logs.map((entry) => ({ entry, collection: 'logs' as const })),
     ...notes.map((entry) => ({ entry, collection: 'notes' as const }))
   ].sort((a, b) => +b.entry.data.date - +a.entry.data.date);
 
