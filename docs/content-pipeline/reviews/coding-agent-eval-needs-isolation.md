@@ -156,6 +156,7 @@ Total: 17/18
 | Missing environment/trace evidence emphasis | Added runtime/evidence to rubric and workflow; added current OpenAI agent eval and Codex non-interactive sources. | yes |
 | Public article was drafted in English | Rewrote title, description, and body in Chinese while preserving source links and checked-date labels. | yes |
 | Live list/home links omitted trailing slash and 404ed on GitHub Pages | Updated `sitePath()` to add trailing slash for page routes while preserving static assets such as `.xml` and `.ico`. | yes |
+| Published article appeared blank until scrolling because reveal content defaulted to opacity 0 | Changed reveal styling so content is visible by default and animation is progressive enhancement only; verified computed opacity for article shell, h1, and first paragraph is 1. | yes |
 
 ## Agent review
 
@@ -185,6 +186,7 @@ human_blog_review:
 - content:sync: passed, wrote `site/src/content/essays/coding-agent-eval-needs-isolation.md`
 - build: passed after Chinese rewrite and trailing-slash route fix, `pnpm --dir site build`; generated `/essays/coding-agent-eval-needs-isolation/index.html`
 - preview URL: local preview verified at `/my-blog/essays/coding-agent-eval-needs-isolation/`; list/home generated hrefs now include a single trailing slash
-- ui-verify if run: passed, `pnpm ui-verify -- --serve out/ui-serve --path /my-blog/essays/coding-agent-eval-needs-isolation/`; `out/summary.json` ok=true, axe 0, console errors/warnings 0, overflow no, Lighthouse 100/100/100/100
+- ui-verify if run: passed after reveal visibility fix, `pnpm ui-verify -- --serve out/ui-serve --path /my-blog/essays/coding-agent-eval-needs-isolation/`; `out/summary.json` ok=true, axe 0, console errors/warnings 0, overflow no, Lighthouse 100/100/100/100
+- live-readability probe: passed locally with normal Playwright viewport 390x844; `.reading`, `h1`, and first paragraph computed `opacity: 1`, `visibility: visible`, nonzero height
 - leak check: passed; no matches for `/Users/`, `kb-vault`, `docs/content-pipeline`, private/confidential/forbidden-publish markers in staged markdown, synced source, or generated HTML
 - rejection cleanup if needed: pending
