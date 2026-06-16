@@ -1,4 +1,4 @@
-# Review: Coding Agent Eval Needs Isolation
+# Review: 评审 Coding Agent：关键不是多一个 Agent，而是隔离
 
 ## Metadata
 
@@ -34,8 +34,8 @@
 
 ## Public thesis
 
-- memorable sentence: The useful unit of agent review is not "another agent"; it is an isolated reviewer judging a frozen artifact, runtime evidence, and traceable sources against a clear rubric.
-- reader decision helped: Decide when to use a same-session subagent, a fresh session, or a formal eval/rubric for coding-agent planning and decision review.
+- memorable sentence: 有效评审不靠 agent 数量，而靠隔离、冻结 artifact、运行证据和明确 rubric。
+- reader decision helped: 帮读者判断什么时候用同会话 subagent、什么时候新开会话/`codex exec`、什么时候该做正式 rubric/eval。
 - strongest counterpoint / edge case: For tiny reversible tasks, a second agent may add token cost and friction without catching anything that tests or a diff review would catch.
 
 ## Draft direction
@@ -77,8 +77,8 @@ Write a practical essay, not a survey. Start from the common mistake: treating "
 
 Shared:
 
-- title: "Evaluate Coding Agents by Isolation, Not Headcount"
-- description: "When to use a subagent, a fresh session, or a formal rubric to review coding-agent planning and decisions."
+- title: "评审 Coding Agent：关键不是多一个 Agent，而是隔离"
+- description: "什么时候用 subagent、什么时候新开会话、什么时候该把评审做成正式 rubric。"
 - date: 2026-06-16
 - tags: ["agents", "evals", "coding-agents", "workflow"]
 - visibility: public
@@ -154,6 +154,8 @@ Total: 17/18
 | Evidence labels sounded too settled | Changed headings to docs support / eval guidance / research caveats and kept hierarchy as practical inference. | yes |
 | Missing concrete failure case | Added bad/good reviewer packet example. | yes |
 | Missing environment/trace evidence emphasis | Added runtime/evidence to rubric and workflow; added current OpenAI agent eval and Codex non-interactive sources. | yes |
+| Public article was drafted in English | Rewrote title, description, and body in Chinese while preserving source links and checked-date labels. | yes |
+| Live list/home links omitted trailing slash and 404ed on GitHub Pages | Updated `sitePath()` to add trailing slash for page routes while preserving static assets such as `.xml` and `.ico`. | yes |
 
 ## Agent review
 
@@ -181,8 +183,8 @@ human_blog_review:
 
 - content:check: passed before sync, `pnpm --dir site content:check -- --input ../docs/content-pipeline/manifests/coding-agent-eval-needs-isolation`; after sync the same manifest check correctly reports target-exists conflict because `site/src/content/essays/coding-agent-eval-needs-isolation.md` is already present
 - content:sync: passed, wrote `site/src/content/essays/coding-agent-eval-needs-isolation.md`
-- build: passed on `rebuild`, `pnpm --dir site build`; generated `/essays/coding-agent-eval-needs-isolation/index.html`
-- preview URL: Astro preview verified at `http://localhost:4321/my-blog/essays/coding-agent-eval-needs-isolation` (`trailingSlash: "never"`)
-- ui-verify if run: passed on `rebuild`, `pnpm ui-verify -- --url http://localhost:4321 --path /my-blog/essays/coding-agent-eval-needs-isolation`; `out/summary.json` ok=true, axe 0, console errors/warnings 0, overflow no, Lighthouse 100/100/100/100
+- build: passed after Chinese rewrite and trailing-slash route fix, `pnpm --dir site build`; generated `/essays/coding-agent-eval-needs-isolation/index.html`
+- preview URL: local preview verified at `/my-blog/essays/coding-agent-eval-needs-isolation/`; list/home generated hrefs now include a single trailing slash
+- ui-verify if run: passed, `pnpm ui-verify -- --serve out/ui-serve --path /my-blog/essays/coding-agent-eval-needs-isolation/`; `out/summary.json` ok=true, axe 0, console errors/warnings 0, overflow no, Lighthouse 100/100/100/100
 - leak check: passed; no matches for `/Users/`, `kb-vault`, `docs/content-pipeline`, private/confidential/forbidden-publish markers in staged markdown, synced source, or generated HTML
 - rejection cleanup if needed: pending

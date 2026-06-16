@@ -14,7 +14,7 @@ export function collectionPath(collection: PublicCollection) {
 
 export function entryPath(collection: PublicCollection, entry: { id: string }) {
   if (collection === 'links') return sitePath('/links');
-  return `${collectionPath(collection)}/${entrySlug(entry)}`;
+  return `${collectionPath(collection)}${entrySlug(entry)}/`;
 }
 
 export function formatDate(date: Date | string) {
