@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.4.6"><title>Evaluate Coding Agents by Isolation, Not Headcount · Essays</title><meta name="description" content="When to use a subagent, a fresh session, or a formal rubric to review coding-agent planning and decisions."><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/essays/coding-agent-eval-needs-isolation"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="Evaluate Coding Agents by Isolation, Not Headcount · Essays"><meta property="og:description" content="When to use a subagent, a fresh session, or a formal rubric to review coding-agent planning and decisions."><meta property="og:type" content="article"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/essays/coding-agent-eval-needs-isolation"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.C4t5yOAk.css"></head> <body> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn / learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/projects">Projects</a><a href="/my-blog/notes">Notes</a><a href="/my-blog/logs">Logs</a><a href="/my-blog/essays">Essays</a><a href="/my-blog/links">Links</a><a href="/my-blog/about">About</a><a href="/my-blog/rss.xml">RSS</a> </div> </nav> </header> <main class="site-main">  <article class="container detail-shell"> <div class="reading reveal"> <div class="eyebrow">Long-form synthesis</div> <h1>Evaluate Coding Agents by Isolation, Not Headcount</h1> <p class="detail-description">When to use a subagent, a fresh session, or a formal rubric to review coding-agent planning and decisions.</p> <p class="type-note">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  <div class="prose"><p>The tempting rule is simple: if one coding agent made the plan, ask another agent to evaluate it.</p>
+<p>That is useful, but it is not the real mechanism. The real mechanism is <strong>reviewer independence</strong>: a reviewer should inspect a frozen artifact, with bounded context, against an explicit rubric. A second agent that inherits all of the first agent’s framing can still rubber-stamp the wrong thing. A fresh evaluator with a bad task description can still be noisy. A formal eval with a vague rubric can still produce false confidence.</p>
+<p>So the first question is not “Should this be a subagent or a new session?” It is:</p>
+<ol>
+<li>What artifact is being judged?</li>
+<li>What context should the reviewer see, and what context should it not see?</li>
+<li>What counts as pass, revise, or block?</li>
+<li>What trace or runtime evidence proves the reviewer is judging what actually happened?</li>
+<li>Who keeps final decision authority?</li>
+</ol>
+<p>Only after that does the execution shape become obvious.</p>
+<h2 id="the-three-useful-review-modes">The Three Useful Review Modes</h2>
+<p>For day-to-day coding-agent work, a useful operating model has three levels.</p>
+<h3 id="1-same-session-subagent-cheap-friction-for-local-skepticism">1. Same-session subagent: cheap friction for local skepticism</h3>
+<p>Use this when the task is local, reversible, and already bounded:</p>
+<ul>
+<li>review a plan before implementation;</li>
+<li>inspect a diff for missed edge cases;</li>
+<li>check whether a task list matches acceptance criteria;</li>
+<li>run a factual/source pass on an article or design note;</li>
+<li>explore a codebase slice without flooding the main conversation.</li>
+</ul>
+<p>This is the everyday sweet spot. Claude Code describes subagents as specialized assistants that run in their own context window and return a summary, which is exactly the property you want when exploration output would pollute the main thread. OpenAI’s Codex docs similarly frame subagents as useful for highly parallel work such as codebase exploration or multi-step feature plans, while warning that subagents consume more tokens than comparable single-agent runs.</p>
+<p>The limitation is subtle: a same-session subagent is isolated in context, but not necessarily independent in framing. The parent agent chooses the prompt, the artifact, and the question. If the parent asks, “confirm this plan is good,” the review is already compromised. The prompt should sound more like:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Review this frozen plan as a skeptical staff engineer.</span></span>
+<span class="line"><span>Return PASS / REVISE / BLOCK.</span></span>
+<span class="line"><span>Focus on missing requirements, unsafe assumptions, unverified claims,</span></span>
+<span class="line"><span>bad sequencing, and tests that would not prove the stated acceptance criteria.</span></span>
+<span class="line"><span>Do not rewrite the plan unless you identify a blocker.</span></span></code></pre>
+<p>That is not bureaucracy. It is the difference between a reviewer and a cheerleader.</p>
+<p>Here is the small failure mode to avoid:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Bad review packet:</span></span>
+<span class="line"><span>"Check whether this plan looks good. I think it covers the requirements."</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Likely result:</span></span>
+<span class="line"><span>"Looks good. Maybe add tests."</span></span></code></pre>
+<p>That is not an eval. It is a politeness ritual. A better packet is narrower and colder:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Artifact: plan.md</span></span>
+<span class="line"><span>Goal: implement the content publishing path without changing deploy behavior.</span></span>
+<span class="line"><span>Constraints: no new dependencies, no publish, no local paths in public prose.</span></span>
+<span class="line"><span>Evidence available: source links, manifest draft, content-check output.</span></span>
+<span class="line"><span>Rubric: PASS / REVISE / BLOCK for goal fit, privacy, source freshness,</span></span>
+<span class="line"><span>verification, rollback, and human decision gates.</span></span>
+<span class="line"><span>Reviewer instruction: try to block publication if any claim is unsupported.</span></span></code></pre>
+<p>The same second model can produce much better review simply because the task became judgeable.</p>
+<h3 id="2-fresh-session-or-headless-run-stronger-independence-for-high-impact-choices">2. Fresh session or headless run: stronger independence for high-impact choices</h3>
+<p>Use a fresh session, a headless run, or <code>codex exec</code> when the review target is not just a patch, but a direction:</p>
+<ul>
+<li>architecture decisions;</li>
+<li>technology stack choices;</li>
+<li>deployment or migration plans;</li>
+<li>irreversible cleanup;</li>
+<li>long-lived repo rules;</li>
+<li>anything where the first agent may have become attached to its own plan.</li>
+</ul>
+<p>The fresh evaluator should not read the whole prior conversation. Give it a small packet:</p>
+<ul>
+<li>goal;</li>
+<li>constraints;</li>
+<li>frozen proposal;</li>
+<li>relevant files or source links;</li>
+<li>acceptance criteria;</li>
+<li>known uncertainty;</li>
+<li>what kind of answer you want: pass, revise, block, or compare alternatives.</li>
+</ul>
+<p>This is more expensive than a subagent, but it buys a cleaner read. A non-interactive run can also leave event output or structured results that are easier to archive than a live chat turn. It also makes the review durable: the next agent can inspect the artifact instead of reconstructing the argument from chat history.</p>
+<p>The important move is to freeze the artifact first. If the evaluator reviews a moving conversation, it will evaluate the social momentum of the session. If it reviews a file, it can attack the actual plan.</p>
+<h3 id="3-formal-rubric-or-eval-for-repeated-gates">3. Formal rubric or eval: for repeated gates</h3>
+<p>If the same judgment recurs, do not keep improvising with “ask another agent.” Turn it into a rubric.</p>
+<p>Examples:</p>
+<ul>
+<li>Does this implementation satisfy the acceptance criteria?</li>
+<li>Does this article have source freshness and no private leakage?</li>
+<li>Does this migration plan include rollback?</li>
+<li>Does this PR introduce auth, secrets, data-loss, or compatibility risk?</li>
+<li>Does this agent output distinguish checked facts, inference, and recommendation?</li>
+</ul>
+<p>Anthropic’s agent-eval guidance is useful here: tasks should be unambiguous enough that two domain experts would independently reach the same pass/fail verdict; eval trials should start from isolated environments; graders should prefer output quality over brittle tool-call paths; LLM judges need calibration against human experts; and for multi-component work, separate rubrics or isolated judges per dimension can be better than one giant judge.</p>
+<p>That maps cleanly to coding-agent practice. A good reviewer prompt is just a small eval harness, and for coding agents it should include environment and trace evidence, not just the final answer:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Artifact: plan.md</span></span>
+<span class="line"><span>Runtime/evidence:</span></span>
+<span class="line"><span>- clean worktree status</span></span>
+<span class="line"><span>- tests/build command output</span></span>
+<span class="line"><span>- relevant logs or trace summary</span></span>
+<span class="line"><span>- files the agent changed or proposes to change</span></span>
+<span class="line"><span>Rubric:</span></span>
+<span class="line"><span>- Goal fit: pass/revise/block</span></span>
+<span class="line"><span>- Missing constraints: pass/revise/block</span></span>
+<span class="line"><span>- Evidence quality: pass/revise/block</span></span>
+<span class="line"><span>- Implementation risk: pass/revise/block</span></span>
+<span class="line"><span>- Verification plan: pass/revise/block</span></span>
+<span class="line"><span>- Human decision required: yes/no</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>Rules:</span></span>
+<span class="line"><span>- If evidence is missing, say "unverified"; do not infer.</span></span>
+<span class="line"><span>- If a blocker exists, stop at BLOCK and explain the smallest fix.</span></span>
+<span class="line"><span>- Do not reward a plan for sounding complete.</span></span></code></pre>
+<p>Once this exists, the question “which agent should eval?” becomes less mystical. Any capable reviewer can run the gate, and the record is legible.</p>
+<h2 id="what-the-evidence-actually-supports">What the Evidence Actually Supports</h2>
+<p>As of 2026-06-16, I would grade the evidence like this.</p>
+<p><strong>Docs support the mechanism, not the hype:</strong> subagents are a real tool for context separation and parallel work. Claude Code and Codex both document this pattern. Codex also documents code review as another high-signal pass on pull requests, focused on serious issues and guided by repository instructions.</p>
+<p><strong>Eval guidance supports the discipline:</strong> agent evaluation quality depends on task clarity, isolated trials, good graders, transcript review, and calibration. OpenAI’s current agent workflow eval guidance also points toward traces and datasets when debugging becomes repeatable evaluation. This is not specific to coding-agent planning, but it transfers well because planning review is a grading problem: does this artifact satisfy the user’s goal under the real constraints?</p>
+<p><strong>Research gives caveats, not a universal recipe:</strong> multi-agent debate can improve factuality or reasoning in some settings. The 2023 multiagent debate paper reported gains on mathematical, strategic, and factual tasks. But this does not prove that every coding plan benefits from debate.</p>
+<p><strong>The caution signs matter:</strong> newer controlled work on multi-agent debate finds that intrinsic reasoning strength and group diversity dominate, while debate structure alone gives limited gains; it also identifies failure modes such as majority pressure suppressing independent correction. LLM-as-judge research also reports self-preference bias: judge models can systematically favor or disfavor their own outputs, which is one reason to distrust “the same reasoning path grades itself” as a final gate.</p>
+<p><strong>Practical inference, not proven law:</strong> for coding-agent planning, same-session subagents are usually the best default; fresh sessions are better for high-impact decisions; formal rubrics are better for repeated quality gates. I have not found a definitive study proving this exact hierarchy. It is an engineering synthesis from current tool docs, eval guidance, and known LLM judge/debate failure modes.</p>
+<h2 id="a-practical-decision-table">A Practical Decision Table</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Situation</th><th>Best reviewer shape</th><th>Why</th></tr></thead><tbody><tr><td>Small local implementation plan</td><td>Same-session subagent</td><td>Low friction, enough context isolation, catches obvious omissions.</td></tr><tr><td>Diff review after coding</td><td>Same-session subagent or built-in review command</td><td>The artifact is concrete and reversible.</td></tr><tr><td>Architecture or stack decision</td><td>Fresh session / separate <code>codex exec</code></td><td>Stronger framing independence.</td></tr><tr><td>Release, deploy, migration, deletion</td><td>Fresh session plus human gate</td><td>High blast radius needs a separate audit and explicit human judgment.</td></tr><tr><td>Recurring content/source/security gate</td><td>Formal rubric, possibly LLM judge plus spot human review</td><td>Repeatability matters more than improvisation.</td></tr><tr><td>Competing designs</td><td>Multiple agents with separate briefs, then synthesis</td><td>Parallelism helps if each agent explores a genuinely different path.</td></tr><tr><td>Tiny obvious fix</td><td>No second agent</td><td>Tests, diff, and proportional checks are enough.</td></tr></tbody></table>
+<p>The anti-pattern is using more agents to compensate for unclear ownership. If nobody knows what “good” means, three agents will produce three confident paragraphs and no ground truth.</p>
+<h2 id="the-minimal-workflow">The Minimal Workflow</h2>
+<p>For planning and decision review, this is the smallest loop that feels reliable:</p>
+<ol>
+<li>Main agent drafts a plan or decision note.</li>
+<li>Main agent freezes it in a file or clearly bounded message.</li>
+<li>Reviewer agent gets only the artifact, relevant sources, constraints, runtime evidence, and rubric.</li>
+<li>Reviewer returns <code>PASS</code>, <code>REVISE</code>, or <code>BLOCK</code>.</li>
+<li>Main agent revises or records the objection.</li>
+<li>Human decides only at the real judgment gate.</li>
+</ol>
+<p>For code implementation, I would extend it:</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>implement</span></span>
+<span class="line"><span>-> run tests/build/checks</span></span>
+<span class="line"><span>-> freeze diff + evidence</span></span>
+<span class="line"><span>-> reviewer agent checks risks and acceptance criteria</span></span>
+<span class="line"><span>-> fix blockers</span></span>
+<span class="line"><span>-> human review only if the decision is genuinely human-owned</span></span></code></pre>
+<p>This keeps the human out of courier work without pretending the agent can approve its own assumptions.</p>
+<h2 id="the-rule">The Rule</h2>
+<p>Use a subagent when you need a quick skeptical pass.</p>
+<p>Use a fresh session when you need independence from the original framing.</p>
+<p>Use a formal rubric when the judgment will repeat.</p>
+<p>Use a human when the decision changes direction, risk, ownership, or public exposure.</p>
+<p>And do not count agents. Count isolation, evidence, rubric clarity, and whether the reviewer is allowed to say no.</p>
+<h2 id="sources-checked">Sources Checked</h2>
+<ul>
+<li><a href="https://code.claude.com/docs/en/sub-agents">Claude Code: Create custom subagents</a>, checked 2026-06-16.</li>
+<li><a href="https://code.claude.com/docs/en/best-practices">Claude Code best practices</a>, checked 2026-06-16.</li>
+<li><a href="https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents">Anthropic: Demystifying evals for AI agents</a>, checked 2026-06-16.</li>
+<li><a href="https://developers.openai.com/codex/subagents">OpenAI Codex: Subagents</a>, checked 2026-06-16.</li>
+<li><a href="https://developers.openai.com/codex/noninteractive">OpenAI Codex: Non-interactive mode</a>, checked 2026-06-16.</li>
+<li><a href="https://developers.openai.com/codex/integrations/github">OpenAI Codex: Code review in GitHub</a>, checked 2026-06-16.</li>
+<li><a href="https://developers.openai.com/codex/learn/best-practices">OpenAI Codex best practices</a>, checked 2026-06-16.</li>
+<li><a href="https://developers.openai.com/api/docs/guides/agent-evals">OpenAI: Evaluate agent workflows</a>, checked 2026-06-16.</li>
+<li><a href="https://arxiv.org/abs/2305.14325">Improving Factuality and Reasoning in Language Models through Multiagent Debate</a>, arXiv 2023.</li>
+<li><a href="https://arxiv.org/abs/2511.07784">Can LLM Agents Really Debate?</a>, arXiv 2025.</li>
+<li><a href="https://openreview.net/forum?id=Sx038qxjek">CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing</a>, ICLR 2024.</li>
+<li><a href="https://arxiv.org/abs/2604.22891">Quantifying and Mitigating Self-Preference Bias of LLM Judges</a>, arXiv 2026.</li>
+<li><a href="https://www.promptfoo.dev/docs/guides/evaluate-coding-agents/">Promptfoo: Evaluate Coding Agents</a>, checked 2026-06-16 as third-party practice guidance.</li>
+</ul></div> <section class="related-section reveal" aria-labelledby="related-heading"> <div class="eyebrow">Next reading path</div> <h2 id="related-heading">继续顺着这条线读</h2> <div class="related-grid"> <a class="related-card" href="/my-blog/notes/function-calling-is-not-agent-loop"> <div class="meta-row"> <span>Notes</span> <span>Shared tag: agents</span> </div> <strong>Function calling 是能力，agent loop 是授权</strong> <p>给模型工具不等于让模型控制流程;多数生产系统应该先 workflow,只在必要处给 bounded loop。</p> </a><a class="related-card" href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noreferrer"> <div class="meta-row"> <span>Links</span> <span>Shared tag: agents</span> </div> <strong>Anthropic Building Effective Agents</strong> <p>官方 agent 架构地基:先区分 workflow 和 agent,从简单可组合模式开始,不要默认追求全自动 loop。</p> </a><a class="related-card" href="/my-blog/notes/review-gates-are-product-design"> <div class="meta-row"> <span>Notes</span> <span>Shared tag: agents</span> </div> <strong>Review gate 不是拖慢 agent,而是产品设计</strong> <p>真正需要人的地方应该被设计成清晰验收点,而不是让人承担重复检查。</p> </a><a class="related-card" href="/my-blog/essays/agent-memory-is-write-policy"> <div class="meta-row"> <span>Essays</span> <span>Shared tag: agents</span> </div> <strong>Agent memory 不是向量库，是写入策略</strong> <p>真正有用的 agent memory 不只是保存聊天历史,而是决定什么状态值得写入、更新、选择、遗忘和审计。</p> </a> </div> </section> </div> <aside class="panel detail-aside reveal" aria-label="Entry metadata"> <div class="meta-row"><time datetime="2026-06-16T00:00:00.000Z">Jun 16, 2026</time></div> <div class="meta-row" style="margin-top:1rem"><span class="tag">agents</span><span class="tag">evals</span><span class="tag">coding-agents</span><span class="tag">workflow</span></div> <p style="margin-top:1rem">Collection: Essays</p> <p style="margin-top:0.75rem">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  </aside> </article>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn. Built as a local-first Astro field note.</span> <span><a href="/my-blog/rss.xml">RSS</a> · no deployment cutover before human acceptance</span> </div> </footer> </div> <script>
+      const revealItems = Array.from(document.querySelectorAll('.reveal'));
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        revealItems.forEach((el) => {
+          el.classList.add('is-visible');
+          el.dataset.revealState = 'visible';
+        });
+      } else {
+        revealItems.forEach((el, index) => {
+          el.dataset.revealState = 'idle';
+          el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
+        });
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            const visible = entry.isIntersecting;
+            entry.target.classList.toggle('is-visible', visible);
+            entry.target.dataset.revealState = visible ? 'visible' : 'idle';
+          }
+        }, { threshold: 0.18, rootMargin: '-6% 0px -12% 0px' });
+        revealItems.forEach((el) => observer.observe(el));
+      }
+    </script> </body> </html>
