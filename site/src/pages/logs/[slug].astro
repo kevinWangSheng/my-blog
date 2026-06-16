@@ -1,0 +1,12 @@
+---
+import { getCollection, render } from 'astro:content';
+import DetailPage from '../../components/DetailPage.astro';
+import { entrySlug, getRelatedEntries } from '../../lib/content';
+export async function getStaticPaths() {
+  const entries = await getCollection('logs', ({ data }) => data.visibility === 'public');
+  return Promise.all(entries.map(async (entry) => ({ params: { slug: entrySlug(entry) }, props: { entry, related: await getRelatedEntries('logs', entry) } })));
+}
+const { entry, related } = Astro.props;
+const { Content } = await render(entry);
+---
+<DetailPage collection="logs" entry={entry} Content={Content} related={related} />

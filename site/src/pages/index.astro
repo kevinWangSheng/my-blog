@@ -3,8 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import EntryCard from '../components/EntryCard.astro';
 import { getPublicCollection } from '../lib/content';
 
-const [projects, notes, essays, links] = await Promise.all([
-  getPublicCollection('projects'), getPublicCollection('notes'), getPublicCollection('essays'), getPublicCollection('links')
+const [projects, notes, logs, essays, links] = await Promise.all([
+  getPublicCollection('projects'), getPublicCollection('notes'), getPublicCollection('logs'), getPublicCollection('essays'), getPublicCollection('links')
 ]);
 const latest = notes.map((entry) => ({ entry, collection: 'notes' as const }))
   .sort((a, b) => +b.entry.data.date - +a.entry.data.date)
@@ -33,6 +33,7 @@ import { sitePath } from '../lib/urls';
         <div class="orbit"><span>human judgment core</span></div>
         <div class="instrument-grid">
           <div class="metric"><strong>{notes.length}</strong><span>notes</span></div>
+          <div class="metric"><strong>{logs.length}</strong><span>logs</span></div>
           <div class="metric"><strong>{essays.length}</strong><span>essays</span></div>
           <div class="metric"><strong>{links.length}</strong><span>sources</span></div>
         </div>

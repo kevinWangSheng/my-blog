@@ -1,7 +1,7 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { sitePath } from './urls';
 
-export type PublicCollection = 'projects' | 'notes' | 'essays' | 'links';
+export type PublicCollection = 'projects' | 'notes' | 'logs' | 'essays' | 'links';
 export type AnyEntry = CollectionEntry<PublicCollection>;
 
 export function entrySlug(entry: { id: string }) {
@@ -59,6 +59,7 @@ function sameSeries(current: AnyEntry, candidate: AnyEntry) {
 function targetCollections(collection: PublicCollection): PublicCollection[] {
   if (collection === 'essays') return ['essays', 'notes', 'links'];
   if (collection === 'notes') return ['notes', 'essays', 'links'];
+  if (collection === 'logs') return ['logs', 'notes', 'essays'];
   if (collection === 'projects') return ['projects', 'notes', 'essays'];
   return ['links', 'essays', 'notes'];
 }
@@ -138,6 +139,11 @@ export const collectionLabels: Record<PublicCollection, { title: string; eyebrow
     title: 'Notes',
     eyebrow: 'Working memory',
     description: '短而密的阶段性判断,保留正在形成的想法和可复用的概念。'
+  },
+  logs: {
+    title: 'Logs',
+    eyebrow: 'Process records',
+    description: '阶段记录和 devlog。当前没有公开 log,后续只放对读者有价值的项目或学习过程记录。'
   },
   essays: {
     title: 'Essays',

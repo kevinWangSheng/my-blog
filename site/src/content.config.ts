@@ -39,6 +39,15 @@ const notes = defineCollection({
   })
 });
 
+const logs = defineCollection({
+  loader: glob({ base: './src/content/logs', pattern: '**/*.{md,mdx}' }),
+  schema: z.object({
+    ...shared,
+    period: z.string().min(1),
+    summary: z.string().min(1)
+  })
+});
+
 const essays = defineCollection({
   loader: glob({ base: './src/content/essays', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
@@ -59,4 +68,4 @@ const links = defineCollection({
   })
 });
 
-export const collections = { projects, notes, essays, links };
+export const collections = { projects, notes, logs, essays, links };
