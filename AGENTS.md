@@ -4,9 +4,9 @@ AI 编码 agent 的稳定入口,每次进项目先读。只放长期稳定的事
 
 ## 仓库现状(开工前必读)
 
-- 这是一个 solo 个人博客,**正在从零重建**。技术栈已定为 **Astro 自建静态站**;部署目标已定为 GitHub Pages;内容源长期方向是 agent 从多源整理为显式 Markdown / manifest 输入后同步进 blog(见 `DECISIONS.md` 的 `D-20260613-技术栈选型`、`D-20260613-内容源与发布流`、`D-20260614-部署目标`、`D-20260614-发布中间格式细节`)。
-- **当前 worktree 里的文件是「旧站」**(一个待替换的既有实现)。新站工作目录尚未建立,由首个实现任务创建。**不要把旧站文件当作要改的目标**;旧站非显然的坑见 `DECISIONS.md` 的 `D-旧站遗留`。
-- **当前阶段的唯一事实来源 = `tasks.md`**:它不存在 ⇒ 尚未进入实现,任何「实现类」请求都要先回到 ①研究 / ②决策。
+- 这是一个 solo 个人博客。当前实现是 **Astro 自建静态站**,源码根为 `site/`,部署目标为 GitHub Pages,线上产物来自 `site/dist` 发布到 `gh-pages` 分支。
+- 旧 Notion → Hugo 同步链路已废弃并从当前项目中移除。不要恢复 `.gitmodules`、`scripts/notion-sync.py`、根目录 `assets/`、`content/`、`themes/`、`resources/`、`public/` 这类旧站实现;旧内容如需参考,从 Git 历史恢复或人工挑选后走新的内容管线。
+- 内容源长期方向是 agent 从 KB / draft / research / links / project notes 整理为显式 Markdown / manifest,再进入 `site/src/content`。统一入口见 `docs/content-pipeline/agent-publish.md` 和 `.agents/skills/blog-publisher/`。
 
 ## 开发流程(暂定)
 
@@ -31,12 +31,12 @@ AI 编码 agent 的稳定入口,每次进项目先读。只放长期稳定的事
 
 ## 边界
 
-- ✅ 总是:开工前用 `tasks.md` 确认当前阶段;实现后自己跑验证再宣称完成;每完成一条任务做一次小而可回退的提交。
+- ✅ 总是:实现前检查真实文件和当前状态;实现后自己跑验证再宣称完成;内容发布类任务走 `blog-publisher` / review / manifest / `content:check` / `content:sync`。
 - ⚠️ 先问(命中即停,**优先级高于「不中途问」**;属安全确认,不算流程门):任何 ②决策类选择(技术栈 / 内容源 / 部署);新增依赖;删除文件。
 - 🚫 禁止:
   - 把 secrets 写入仓库或提交 → 改用环境变量 / 本地未跟踪文件。(此规则后续应由 pre-commit hook 强制,散文仅作兜底。)
-  - **cutover 前改动旧站的部署链路**(旧站 CI / 部署分支)→ 冻结旧站,新站走独立并行链路,⑦ 验收通过后才在 ⑧ 切换,保证重建期线上不坏。
-  - 未经 ⑦ 验收就发布 / 切换上线 → 先走 ⑦,通过再 ⑧。
+  - 恢复旧 Notion/Hugo 自动同步或旧站部署链路。
+  - 未经明确请求就发布 / 推送生产变更。日常内容和 UI 改动可本地验证;push/deploy 需要用户明确要求或当前任务已包含发布。
   - 把执行层 todo / 当前任务计划塞进本文件 → 放 `tasks.md` / `plan.md`。
   - UI 验证套件(Playwright 截图 / axe / Lighthouse)塞进 ⑧ 部署 CI → 只在本地 ⑥自验证 跑,保护冻结期发布链路(详见 `CONVENTIONS.md` 的「UI 自验证回路」、`DECISIONS.md` 的 `D-20260614-UI验证工具链`)。
 
@@ -47,4 +47,5 @@ AI 编码 agent 的稳定入口,每次进项目先读。只放长期稳定的事
 - `CONVENTIONS.md`:开发与协作规范(git 工作流、多 agent worktree、UI 自验证回路)。对应流程 ⑤实现 / ⑥自验证 / ⑧发布。
 - `research.md`:UI 工作流的 ①研究产出(业界方案 + 评估,完成后归档 `docs/archive/`)。
 - `docs/content-pipeline/agent-publish.md` / `.agents/skills/blog-publisher/`:统一 agent 内容发布入口;所有 KB/draft/research/link/project 内容先过质量门检和 review loop,再 sync/build/preview。
-- 构建 / 预览 / 部署命令:待 Astro 新站脚手架创建后回填确切可跑命令;部署目标已定为 GitHub Pages,但 ⑦验收通过前不切换线上。
+- `docs/deployment.md`:当前 CI/CD、部署边界和旧 Notion/Hugo 废弃说明。
+- 构建:`pnpm --dir site build`;机械检查:`pnpm ci:sanity`;本地 UI 自验证:`pnpm ui-verify -- --serve out/ui-serve --path /my-blog/`;部署由 `.github/workflows/deploy.yml` 发布 `site/dist` 到 `gh-pages`。

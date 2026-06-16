@@ -1,13 +1,13 @@
 # CONVENTIONS.md
 
-开发与协作规范(稳定层)。`AGENTS.md` 引用本文件;对应流程的 ⑤实现 / ⑧发布。技术栈 = Astro 静态站(见 `DECISIONS.md`)。命令里凡涉及具体脚本的,待 Astro 脚手架建好后回填确切形式。
+开发与协作规范(稳定层)。`AGENTS.md` 引用本文件;对应流程的 ⑤实现 / ⑧发布。技术栈 = Astro 静态站(见 `DECISIONS.md`)。
 
 ## Git 工作流
 
-### 分支模型(重建期)
-- `main` = **当前部署源**(现仍是旧站,继续服役直到 cutover)。
-- 旧站冻结:打 tag `old-site-frozen` 钉住旧站最后状态;旧站不再收 commit。
-- 新站在 **`rebuild`** 分支上推进;经 ⑦验收 后在 ⑧ 把部署源切到新站(合并 `rebuild` → `main`)。
+### 分支模型
+- `main` = 当前 Astro 站部署源。
+- `gh-pages` = GitHub Actions 发布的静态产物分支,不要手改。
+- 旧 Hugo/Notion 站只作为 Git 历史中的可恢复基线,不再作为工作区实现目标。
 - 日常:在当前工作分支上**小步提交**,一个任务 = 一个(或少数)聚焦提交。
 
 ### 提交
@@ -17,14 +17,13 @@
 - 署名:关闭 AI Co-Authored-By(Claude Code 设 `attribution: false`);提交信息保持任务本身可读,不额外写 AI 归属。
 
 ### push / 发布(对应人工门)
-- 🚫 agent 不 push、不部署。
-- push → ⑦人工结果验收 通过之后。
-- 部署(GitHub Pages)→ ⑧发布,由 CI(`withastro/action`)在云端构建 `dist` 并部署。
+- push / deploy 需要用户明确请求,或当前任务已经明确包含发布。
+- GitHub Actions 分两层:`CI` 跑 build + sanity,`Deploy Astro site to GitHub Pages` 构建 `site/dist` 并发布到 `gh-pages`。
 - PR:solo 不强制;如想"合并前再过一道 diff",可用 PR 作自我 review gate。
 
 ### .gitignore(Astro)
 - 必含:`dist/` `.astro/` `node_modules/` `.env*` `*.log` `.DS_Store` `.claude/worktrees/`。
-- 🚫 构建产物不进 git(`dist` 由 CI 生成)。注:Astro 里**源** `public/`(图标、robots.txt 等)本应跟踪;旧站那条"`public/` 误跟踪"是把**产物**塞进了版本控制,cutover 时用 `git rm -r --cached` 处理。
+- 🚫 构建产物不进 git(`dist` 由 CI 生成)。根目录旧 Hugo `public/` 产物已经废弃;如需 Astro 静态源资产,放在 `site/public/`。
 
 ### 回退纪律
 - 未提交、要丢弃 → `git restore`;想暂存试别的 → `git stash`(**保留失败信息**,别直接丢)。

@@ -2,7 +2,7 @@
 
 ## Current status
 
-返工队列 T13 → T14 → T18 → T15 → T16 → T17 已完成双层验收。当前进入 T11:human ⑦ 结果验收准备。已在 human ⑦验收通过后发布到 GitHub Pages。旧 Hugo/Notion workflow 已移除,新 workflow 构建 `site/dist` 并发布到 `gh-pages`。
+返工队列 T13 → T14 → T18 → T15 → T16 → T17 已完成双层验收。已在 human ⑦验收通过后发布到 GitHub Pages。旧 Hugo/Notion 管线已从当前项目移除,当前 CI/CD 只构建 Astro `site/dist` 并发布到 `gh-pages`。
 
 ## Local preview
 
@@ -45,8 +45,8 @@ All four final UI summaries report: Lighthouse performance/accessibility/best-pr
 
 - 内容仍是第一版 sample / draft / existing-material-summary,可在 ⑦ 前由 human 判断是否需要替换为更真实公开材料。
 - GitHub 是当前唯一公开外部入口;更多联系方式需要 human 明确后再加入。
-- UI 自验证只在本地 ⑥ 跑,未加入部署 CI。
-- T12 发布 / GitHub Pages cutover 只在 ⑦ 通过后执行。
+- UI 自验证只在本地 ⑥ 跑,不加入部署 CI。
+- 当前部署链路见 `docs/deployment.md`。
 
 
 ## Live URL

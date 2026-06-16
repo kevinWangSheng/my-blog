@@ -363,19 +363,21 @@
 - `out/acceptance/` 中必须能追溯每个勾选项的证据;没有证据的 checkbox 视为未完成。
 - `tasks.md` 只勾选已经双层验收通过的任务。
 
-### T12 — ⑧发布 / CI-CD cutover（仅 ⑦通过后执行）
+### T12 — ⑧发布 / CI-CD cutover
 
-> 当前阶段不执行。本任务是发布阶段占位,防止后续 agent 提前或遗漏 CI/CD 切换。
+> 状态:已执行。当前 CI/CD 已切换为 Astro-only:CI build/sanity,Deploy 在 CI 成功后发布 `site/dist` 到 `gh-pages`。
 
 - [x] 在 ⑦结果验收通过后,把旧 Hugo workflows 迁移/替换为 Astro GitHub Pages workflow。
 - [x] 新 workflow 以 `site/` 为构建根,使用 `pnpm` 安装依赖,构建 `site/dist`。
-- [x] 优先使用 GitHub Pages 官方链路 / `withastro/action` 等 Astro Pages 方案;不要把 Playwright、axe、Lighthouse UI 自验证塞进部署 CI。(官方 Pages deploy 被仓库 environment 规则拒绝后,改用现有 `gh-pages` branch 发布 `site/dist`,未加入 UI 自验证到 CI。)
+- [x] 使用 GitHub Pages 发布 Astro `site/dist`;不要把 Playwright、axe、Lighthouse UI 自验证塞进部署 CI。(官方 Pages environment 链路曾被仓库规则拒绝,当前采用 `gh-pages` branch 发布 `site/dist`,未加入 UI 自验证到 CI。)
 - [x] 处理旧站遗留发布源:确认是否停止 Notion→Hugo workflow、是否停止旧 `gh-pages` 发布方式、是否需要清理旧产物跟踪。
+- [x] 清理旧 Notion/Hugo 工作区残留,新增独立 CI workflow 和 `pnpm ci:sanity`,防止后续 agent 恢复旧同步/旧站部署语义。
 - [x] 只在 human 明确通过 ⑦后 push / 发布 / cutover。
 
 验收标准:
 - `.github/workflows/` 中不再有会误触发旧 Hugo/Notion 部署的线上链路。
 - GitHub Pages 云端构建 Astro 新站成功,发布产物来自 `site/dist`。
+- CI 只做 Astro build + 机械 sanity check;内容同步仍由 `blog-publisher` / review / manifest / `content:check` / `content:sync` 负责。
 - 本地 UI 自验证仍只在 ⑥执行,不成为部署 CI gate。
 - 发布后线上站点可访问;RSS、首页、一级页面和示例详情页可打开。
 
@@ -461,4 +463,4 @@
 
 ## 当前下一步
 
-⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `blog-publisher` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/blog-publisher/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `blog-publisher` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。C05 文章详情推荐已完成:essay / note / log / project 详情页现在展示轻量 Next reading path,推荐依据覆盖 series、related frontmatter、shared tags、same collection recent,并允许 Essay 推荐相关 notes/links、Project 推荐 notes/logs。验收证据见 `docs/content-pipeline/reviews/C05-verification.md`。C06 内容质量与主题重平衡已完成:下线低质量 Project 和 RAG-heavy 内容,新增 Agent Memory / workflow / harness 方向的高质量观点内容,并调整首页与 About。验收证据见 `docs/content-pipeline/reviews/C06-verification.md`。当前下一步:human 看本地或部署后的 blog 成品;若满意再发布/push,若不满意继续做内容取舍返工。
+⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。当前 CI/CD 只认 Astro `site/`:CI 跑 install/build/`pnpm ci:sanity`,Deploy 构建 `site/dist` 并发布到 `gh-pages`;旧 Notion→Hugo 管线已从当前工作区移除。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `blog-publisher` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/blog-publisher/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `blog-publisher` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。C05 文章详情推荐已完成:essay / note / log / project 详情页现在展示轻量 Next reading path,推荐依据覆盖 series、related frontmatter、shared tags、same collection recent,并允许 Essay 推荐相关 notes/links、Project 推荐 notes/logs。验收证据见 `docs/content-pipeline/reviews/C05-verification.md`。C06 内容质量与主题重平衡已完成:下线低质量 Project 和 RAG-heavy 内容,新增 Agent Memory / workflow / harness 方向的高质量观点内容,并调整首页与 About。验收证据见 `docs/content-pipeline/reviews/C06-verification.md`。当前下一步:继续做公开内容取舍和质量返工;新内容仍必须走 `blog-publisher` → review → manifest → `content:check` → `content:sync`。
