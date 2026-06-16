@@ -130,6 +130,8 @@ p { color: var(--ink-soft); margin: 0; }
 .prose p, .prose ul, .prose ol, .prose blockquote { margin-block: 1.05em; color: var(--ink-soft); }
 .prose a { color: var(--glow); }
 .prose code { font-family: var(--font-mono); background: rgba(var(--glow-rgb),0.08); border: 1px solid rgba(var(--glow-rgb),0.14); padding: 0.1rem 0.28rem; border-radius: 0.35rem; }
+.prose pre { max-width: 100%; overflow-x: auto; padding: 1rem; border: 1px solid rgba(var(--glow-rgb),0.14); border-radius: var(--radius-sm); background: rgba(var(--glow-rgb),0.06); }
+.prose pre code { display: block; min-width: max-content; padding: 0; border: 0; background: transparent; }
 .prose blockquote { border-left: 2px solid var(--amber); padding-left: 1rem; color: var(--ink-soft); background: rgba(var(--amber-rgb),0.06); }
 .detail-shell { display: grid; grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.28fr); gap: var(--space-4); align-items: start; }
 .detail-aside { position: sticky; top: 96px; padding: var(--space-2); }
