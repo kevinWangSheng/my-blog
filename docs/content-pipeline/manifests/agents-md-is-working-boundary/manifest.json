@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "agents-md-is-working-boundary.md",
+      "slug": "agents-md-is-working-boundary",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}
