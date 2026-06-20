@@ -18,7 +18,7 @@ import { sitePath } from '../lib/urls';
 ---
 <BaseLayout title={`${entry.data.title} · ${label.title}`} description={entry.data.description} type="article">
   <article class="container detail-shell">
-    <div class="reading reveal reveal--static">
+    <div class="reading">
       <div class="eyebrow">{label.eyebrow}</div>
       <h1>{entry.data.title}</h1>
       <p class="detail-description">{entry.data.description}</p>
@@ -35,9 +35,7 @@ import { sitePath } from '../lib/urls';
 
       <div class="prose"><Content /></div>
       {related.length > 0 && (
-        <section class="related-section reveal" aria-labelledby="related-heading">
-          <div class="eyebrow">Next reading path</div>
-          <h2 id="related-heading">继续顺着这条线读</h2>
+        <section class="related-section reveal" aria-label="Related entries">
           <div class="related-grid">
             {related.map((item) => (
               <a class="related-card" href={item.path} target={item.external ? '_blank' : undefined} rel={item.external ? 'noreferrer' : undefined}>

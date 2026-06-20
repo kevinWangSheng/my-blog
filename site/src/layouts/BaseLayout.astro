@@ -34,6 +34,33 @@ import { sitePath } from '../lib/urls';
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonical} />
     <meta name="twitter:card" content="summary_large_image" />
+    <style is:inline>
+      html,
+      body,
+      .site-shell,
+      main,
+      article,
+      section,
+      .reading,
+      .prose,
+      .prose :where(p, h1, h2, h3, h4, h5, h6, li, blockquote, code, pre, span, strong, em, a) {
+        -webkit-user-select: text !important;
+        user-select: text !important;
+      }
+      .reading,
+      .prose {
+        cursor: text;
+        pointer-events: auto !important;
+        -webkit-touch-callout: default !important;
+      }
+      body::selection,
+      .reading::selection,
+      .prose::selection,
+      .prose :where(p, h1, h2, h3, h4, h5, h6, li, blockquote, code, pre, span, strong, em, a)::selection {
+        background: #234d3f !important;
+        color: #fffdf7 !important;
+      }
+    </style>
   </head>
   <body>
     <div class="site-shell">
