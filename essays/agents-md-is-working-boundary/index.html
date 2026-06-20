@@ -1,0 +1,417 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.4.6"><title>AGENTS.md 到底该写什么 · Essays</title><meta name="description" content="AGENTS.md 给 coding agent 写开工边界。先讲它是什么,再用公开项目原文拆解哪些内容真的会改变 agent 的下一步动作。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/essays/agents-md-is-working-boundary"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="AGENTS.md 到底该写什么 · Essays"><meta property="og:description" content="AGENTS.md 给 coding agent 写开工边界。先讲它是什么,再用公开项目原文拆解哪些内容真的会改变 agent 的下一步动作。"><meta property="og:type" content="article"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/essays/agents-md-is-working-boundary"><meta name="twitter:card" content="summary_large_image"><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.CxHjYenX.css"></head> <body> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn / learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/projects/">Projects</a><a href="/my-blog/notes/">Notes</a><a href="/my-blog/logs/">Logs</a><a href="/my-blog/essays/">Essays</a><a href="/my-blog/links/">Links</a><a href="/my-blog/about/">About</a><a href="/my-blog/rss.xml">RSS</a> </div> </nav> </header> <main class="site-main">  <article class="container detail-shell"> <div class="reading reveal reveal--static"> <div class="eyebrow">Long-form synthesis</div> <h1>AGENTS.md 到底该写什么</h1> <p class="detail-description">AGENTS.md 给 coding agent 写开工边界。先讲它是什么,再用公开项目原文拆解哪些内容真的会改变 agent 的下一步动作。</p> <p class="type-note">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  <div class="prose"><p>我前面写 AGENTS.md 这篇时，犯了一个很典型的问题：我把结论讲出来了，但证据给得不够。</p>
+<p>读者如果还不知道 AGENTS.md 是什么，前一版开头太快。读者如果想判断“这些公开项目到底怎么写”，前一版又太像我替大家消化过的二手总结。这样会有一个问题：文章看起来顺，但不够能让人信。</p>
+<p>所以这一版我换个写法。</p>
+<p>先讲背景：AGENTS.md 是什么、为什么会需要它、它和 README / 当前任务计划 / local 指令有什么区别。然后看公开项目原文。比如 Codex 关心 Bazel 和 snapshot，我会直接把 Codex AGENTS.md 里的相关段落摘出来，再解释它为什么值得学。后面再回到我们自己写 AGENTS.md 时应该怎么落地。</p>
+<p>这篇文章的主张很简单：AGENTS.md 不该从模板开始写。它应该从项目里反复出错、反复需要确认、反复需要验证的地方长出来。</p>
+<h2 id="agentsmd-是什么">AGENTS.md 是什么</h2>
+<p>可以先把它理解成：给 coding agent 的项目级工作说明。</p>
+<p>README 通常写给人看，回答“这个项目是什么、怎么跑起来、怎么贡献”。AGENTS.md 更像 agent 开工前的边界文件，回答的是另一组问题：</p>
+<ul>
+<li>真实源码在哪里？</li>
+<li>哪些目录已经废弃？</li>
+<li>动手前要先看什么？</li>
+<li>哪些命令可以直接跑？</li>
+<li>哪些命令有风险，要先问人？</li>
+<li>改完之后怎样才算验证过？</li>
+<li>哪些内容不能写进仓库、测试、日志、PR 描述？</li>
+</ul>
+<p>这个差别很重要。人类维护者通常知道项目历史，知道某个旧目录已经不用了，知道某个测试会打真实云资源，知道某个 generated file 不能手改。agent 不知道。它看到一个仓库，只能从文件名、搜索结果、上下文和指令里推断。</p>
+<p>AGENTS.md 的价值就在这里：把“只有项目里的人知道的工作边界”提前写给 agent。</p>
+<p>我现在会把这类指令分成三层：</p>
+<ol>
+<li>
+<p>团队共享的 AGENTS.md<br>
+放项目事实、命令、验证、安全、发布、生成文件、迁移、公共 API 这些所有维护者都该遵守的东西。</p>
+</li>
+<li>
+<p>local / 用户级指令<br>
+放个人偏好，比如用中文回复、汇报格式、本机端口、本地脚本、自己喜欢的协作方式。</p>
+</li>
+<li>
+<p>当前任务计划<br>
+放这次要改什么、当前卡在哪里、preview 跑在哪个端口、review blocker 是什么。</p>
+</li>
+</ol>
+<p>这三层不能混。把当前任务计划塞进 AGENTS.md，未来 agent 会被旧状态带偏。把个人聊天偏好塞进团队文件，别人会看不懂。把团队安全边界只放在 local 指令里，换人换机器就丢了。</p>
+<h2 id="一条好规则要能改变动作">一条好规则要能改变动作</h2>
+<p>我判断 AGENTS.md 有没有用，会先问一个很粗的问题：这条规则会不会改变 agent 的下一步动作？</p>
+<p>比如：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Follow best practices.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Be careful with database changes.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Keep the UI clean.</span></span></code></pre>
+<p>这些话都对，但不够。agent 看完还是不知道该搜哪个目录、跑哪个命令、什么时候停下来。</p>
+<p>更有用的是这种：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Before adding a helper, search existing helpers in libs/, shared/, and test-support/.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Do not edit applied migrations. Create a new migration and verify migrate/rollback.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> For layout changes, run ui-verify on the affected route and report axe, console, overflow, and Lighthouse results.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Ask before adding production dependencies.</span></span></code></pre>
+<p>这些句子有触发条件、有动作、有验证或停手点。它们会改变 agent 的下一步。</p>
+<p>下面看公开项目。为了避免“我替你总结”的感觉，我会先放原文摘录，再讲我从里面学到什么。</p>
+<h2 id="大仓库先解决去哪里改">大仓库先解决“去哪里改”</h2>
+<p>大型仓库里，agent 最容易输在起点。它可能搜到一个名字相似的旧目录，或者在一个巨大的 monorepo 里改错 package。</p>
+<p>Cloudflare Workers SDK 的 AGENTS.md 直接放了一张 “WHERE TO LOOK” 表。原文是这样：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#79B8FF;font-weight:bold">## WHERE TO LOOK</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">| Task                                           | Location                                       | Notes                                                            |</span></span>
+<span class="line"><span style="color:#E1E4E8">| ---------------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------- |</span></span>
+<span class="line"><span style="color:#E1E4E8">| Add/modify a CLI command                       | </span><span style="color:#79B8FF">`packages/wrangler/src/`</span><span style="color:#E1E4E8">                       | Commands registered in </span><span style="color:#79B8FF">`src/index.ts`</span><span style="color:#E1E4E8"> (2k+ line yargs tree)      |</span></span>
+<span class="line"><span style="color:#E1E4E8">| Change local dev behavior                      | </span><span style="color:#79B8FF">`packages/miniflare/src/`</span><span style="color:#E1E4E8">                      | </span><span style="color:#79B8FF">`src/index.ts`</span><span style="color:#E1E4E8"> is the main </span><span style="color:#79B8FF">`Miniflare`</span><span style="color:#E1E4E8"> class                     |</span></span>
+<span class="line"><span style="color:#E1E4E8">| Modify Workers runtime simulation              | </span><span style="color:#79B8FF">`packages/miniflare/src/workers/`</span><span style="color:#E1E4E8">              | ~30 embedded worker scripts, built via </span><span style="color:#79B8FF">`worker:`</span><span style="color:#E1E4E8"> virtual imports |</span></span>
+<span class="line"><span style="color:#E1E4E8">| Add a test fixture                             | </span><span style="color:#79B8FF">`fixtures/`</span><span style="color:#E1E4E8">                                    | Each fixture is a full workspace member with own </span><span style="color:#79B8FF">`package.json`</span><span style="color:#E1E4E8">  |</span></span>
+<span class="line"><span style="color:#E1E4E8">| Shared config types/validation                 | </span><span style="color:#79B8FF">`packages/workers-utils/src/config/`</span><span style="color:#E1E4E8">           | </span><span style="color:#79B8FF">`validation.ts`</span><span style="color:#E1E4E8"> is the config normalizer (large file)            |</span></span>
+<span class="line"><span style="color:#E1E4E8">| Test helpers (runInTempDir, seed, mockConsole) | </span><span style="color:#79B8FF">`packages/workers-utils/src/test-helpers/`</span><span style="color:#E1E4E8">     | Shared across wrangler, miniflare, others                        |</span></span>
+<span class="line"><span style="color:#E1E4E8">| Cloudflare API mocks for tests                 | </span><span style="color:#79B8FF">`packages/wrangler/src/__tests__/helpers/msw/`</span><span style="color:#E1E4E8"> | MSW handlers per API domain                                      |</span></span>
+<span class="line"><span style="color:#E1E4E8">| CI workflows                                   | </span><span style="color:#79B8FF">`.github/workflows/`</span><span style="color:#E1E4E8">                           | </span><span style="color:#79B8FF">`test-and-check.yml`</span><span style="color:#E1E4E8"> is the primary gate                         |</span></span>
+<span class="line"><span style="color:#E1E4E8">| Build/deploy scripts                           | </span><span style="color:#79B8FF">`tools/deployments/`</span><span style="color:#E1E4E8">                           | Validation + deployment helpers, run via </span><span style="color:#79B8FF">`esbuild-register`</span><span style="color:#E1E4E8">      |</span></span>
+<span class="line"><span style="color:#E1E4E8">| Changeset config and rules                     | </span><span style="color:#79B8FF">`.changeset/README.md`</span><span style="color:#E1E4E8">                         | Must read before creating changesets                             |</span></span></code></pre>
+<p>这个表很朴素，但对 agent 很有用。它直接把“任务”映射到“位置”。agent 如果要改 CLI command，第一步就不会跑去 miniflare。要改 runtime simulation，也不会从 wrangler 的 CLI 入口开始乱翻。</p>
+<p>Airflow 的 AGENTS.md 也体现了这种大仓库的思路。它把不同测试入口写得很细：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8;font-weight:bold"> **Run all tests in package:**</span><span style="color:#79B8FF"> `uv run --project &#x3C;PROJECT> pytest path/to/package -xvs`</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8;font-weight:bold"> **If uv tests fail with missing system dependencies, run the tests with breeze**</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">`breeze run pytest &#x3C;tests> -xvs`</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8;font-weight:bold"> **Run core or provider tests suite in parallel:**</span><span style="color:#79B8FF"> `breeze testing &#x3C;test_group> --run-in-parallel`</span><span style="color:#E1E4E8"> (test groups: </span><span style="color:#79B8FF">`core-tests`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`providers-tests`</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8;font-weight:bold"> **Run core or provider db tests suite in parallel:**</span><span style="color:#79B8FF"> `breeze testing &#x3C;test_group> --run-db-tests-only --run-in-parallel`</span><span style="color:#E1E4E8"> (test groups: </span><span style="color:#79B8FF">`core-tests`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`providers-tests`</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8;font-weight:bold"> **Run core or provider non-db tests suite in parallel:**</span><span style="color:#79B8FF"> `breeze testing &#x3C;test_group> --skip-db-tests --use-xdist`</span><span style="color:#E1E4E8"> (test groups: </span><span style="color:#79B8FF">`core-tests`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`providers-tests`</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8;font-weight:bold"> **Run single provider complete test suite:**</span><span style="color:#79B8FF"> `breeze testing providers-tests --test-type "Providers[PROVIDERS_LIST]"`</span><span style="color:#E1E4E8"> (e.g., </span><span style="color:#79B8FF">`Providers[google]`</span><span style="color:#E1E4E8"> or </span><span style="color:#79B8FF">`Providers[amazon]`</span><span style="color:#E1E4E8"> or </span><span style="color:#79B8FF">`"Providers[amazon,google]"`</span><span style="color:#E1E4E8">)</span></span></code></pre>
+<p>它还把 newsfragment 的边界写得很具体：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#E1E4E8">For </span><span style="color:#79B8FF">`airflow-core`</span><span style="color:#E1E4E8"> (and </span><span style="color:#79B8FF">`chart/`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`dev/mypy/`</span><span style="color:#E1E4E8">) </span><span style="color:#E1E4E8;font-weight:bold">**user-facing**</span><span style="color:#E1E4E8"> changes, add a newsfragment in that distribution's </span><span style="color:#79B8FF">`newsfragments/`</span><span style="color:#E1E4E8"> directory. </span><span style="color:#E1E4E8;font-weight:bold">**Golden rule: only add a newsfragment when you are certain the change is visible to users; when in doubt, do not add one**</span><span style="color:#E1E4E8"> — a maintainer will request one in review if it is needed. Build/release tooling, CI, packaging, internal refactors, and dev-only scripts are not user-facing and must not get a newsfragment:</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**Do not add newsfragments for </span><span style="color:#79B8FF;font-weight:bold">`providers/`</span><span style="color:#E1E4E8;font-weight:bold"> or </span><span style="color:#79B8FF;font-weight:bold">`airflow-ctl/`</span><span style="color:#E1E4E8;font-weight:bold">**</span><span style="color:#E1E4E8"> — their release managers regenerate the changelog from </span><span style="color:#79B8FF">`git log`</span><span style="color:#E1E4E8"> and do not consume newsfragments.</span></span></code></pre>
+<p>我从这类项目里学到的是：大仓库的 AGENTS.md 先别急着讲“代码风格”。更重要的是告诉 agent 去哪里、跑什么、哪些看起来类似的路径其实不一样。</p>
+<p>迁移到普通项目，可以写成：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#79B8FF;font-weight:bold">## Where to work</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> UI routes and components: apps/web/</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Public API handlers: services/api/</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Background jobs: workers/</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Shared generated clients: packages/client/, do not edit by hand</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Deprecated implementation: legacy/, read only for reference</span></span></code></pre>
+<p>这比“熟悉项目结构后再修改”有用。它直接给 agent 一个安全起点。</p>
+<h2 id="有真实资源风险时要把命令分级">有真实资源风险时，要把命令分级</h2>
+<p>有些仓库里，命令不是中性的。一个测试命令可能会创建真实云资源，跑出成本，或者需要账号权限。</p>
+<p>Terraform AWS Provider 的 AGENTS.md 对这点写得很明确：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Do not prompt for confirmation before running any of the safe commands above.</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#E1E4E8"> Any other commands may be unsafe and should not be run without confirmation.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">#### Running tests</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Every PR must leave tests in a passing state.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> All existing tests must pass.</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#E1E4E8"> Use </span><span style="color:#79B8FF">`make test`</span><span style="color:#E1E4E8"> to run unit tests.</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#E1E4E8"> If your change breaks an existing test, fix it.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> CI is the gate. Run </span><span style="color:#79B8FF">`make ci-quick`</span><span style="color:#E1E4E8">.</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#E1E4E8"> PRs with failing tests do not merge.</span></span></code></pre>
+<p>更关键的是 acceptance test 那段：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Do not modify </span><span style="color:#79B8FF">`go.mod`</span><span style="color:#E1E4E8">/</span><span style="color:#79B8FF">`go.sum`</span><span style="color:#E1E4E8"> without running </span><span style="color:#79B8FF">`go mod tidy`</span><span style="color:#E1E4E8">.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Do not add new external dependencies without explicit approval.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Beware of running acceptance tests (</span><span style="color:#79B8FF">`make testacc`</span><span style="color:#E1E4E8">) without explicit approval — they create real AWS resources.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> The </span><span style="color:#79B8FF">`website/`</span><span style="color:#E1E4E8"> directory follows different conventions; see </span><span style="color:#79B8FF">`docs/end-user-documentation.md`</span><span style="color:#E1E4E8">.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Verification</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">Before finishing:</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#79B8FF"> `make build`</span><span style="color:#E1E4E8"> — must compile cleanly.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#79B8FF"> `make ci-quick`</span><span style="color:#E1E4E8"> — zero warnings.</span></span></code></pre>
+<p>这里最值得学的是“safe commands”和“ask-before commands”的区分。很多 AGENTS.md 只写“改完跑测试”，但在这类项目里，这句话会误导 agent。测试并不都安全。</p>
+<p>Tracecat 的主要风险落在客户数据和 CI 权限上。它的 AGENTS.md 写得更像安全边界：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Never copy customer-provided identifiers, customer names, URLs, tenant IDs,</span></span>
+<span class="line"><span style="color:#E1E4E8">  subscription IDs, workspace names, resource group names, incident IDs, emails,</span></span>
+<span class="line"><span style="color:#E1E4E8">  domains, tokens, or other potentially sensitive values into tests, docs,</span></span>
+<span class="line"><span style="color:#E1E4E8">  fixtures, snapshots, examples, logs, committed code, commit messages, PR or</span></span>
+<span class="line"><span style="color:#E1E4E8">  issue titles/bodies, PR comments, issue comments, review comments, or any</span></span>
+<span class="line"><span style="color:#E1E4E8">  other published repository text. Use generic phrasing such as "affected</span></span>
+<span class="line"><span style="color:#E1E4E8">  customer" or clearly synthetic placeholders instead, and search for the</span></span>
+<span class="line"><span style="color:#E1E4E8">  original strings before committing, pushing, or publishing PR/issue text.</span></span></code></pre>
+<p>它对 GitHub Actions 的手动触发也写得很具体：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Treat </span><span style="color:#79B8FF">`workflow_dispatch`</span><span style="color:#E1E4E8"> as a privileged path, not a convenience default.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Guard privileged manual workflows with </span><span style="color:#79B8FF">`TRUSTED_CI_ACTORS_JSON`</span><span style="color:#E1E4E8">.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> If another workflow triggers guarded </span><span style="color:#79B8FF">`workflow_dispatch`</span><span style="color:#E1E4E8">, account for</span></span>
+<span class="line"><span style="color:#79B8FF">  `github-actions[bot]`</span><span style="color:#E1E4E8"> explicitly instead of weakening the allowlist.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Keep workflow permissions read-only by default and grant write scopes only at</span></span>
+<span class="line"><span style="color:#E1E4E8">  the job level when a step demonstrably needs them.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Do not add </span><span style="color:#79B8FF">`pull-requests: write`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`packages: write`</span><span style="color:#E1E4E8">, or </span><span style="color:#79B8FF">`id-token: write`</span></span>
+<span class="line"><span style="color:#E1E4E8">  unless a specific job step requires them.</span></span></code></pre>
+<p>这就是我想要的证据密度。它把“注意安全”拆成了可执行边界：哪些信息不能进入哪些载体，替代写法是什么；哪些 workflow 是 privileged path，权限默认是什么，哪些 write scope 不能随便加。</p>
+<p>迁移写法可以很直接：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#79B8FF;font-weight:bold">## Safe commands</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Unit tests: make test</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Quick local CI: make ci-quick</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Build: make build</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Ask before</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Running tests that create real cloud resources.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Adding production dependencies.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Changing workflow permissions.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Triggering privileged manual workflows.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Never</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Copy customer identifiers, tenant IDs, URLs, emails, logs, or tokens into tests, fixtures, snapshots, examples, commits, PR text, or issue text.</span></span></code></pre>
+<h2 id="saas-项目的边界常常不在框架里">SaaS 项目的边界常常不在框架里</h2>
+<p>SaaS 项目很容易把 AGENTS.md 写成技术栈介绍：React、Node、Postgres、Redis、测试命令。那些当然有用，但我看公开案例时，真正有价值的常常是“仓库边界”和“安全热区”。</p>
+<p>Unleash 的 AGENTS.md 一上来就讲 OSS 和 Enterprise 的关系：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#E1E4E8;font-weight:bold">**Enterprise**</span><span style="color:#E1E4E8"> extends OSS via a separate repository (</span><span style="color:#79B8FF">`unleash-enterprise`</span><span style="color:#E1E4E8">) using a hook-based architecture. Enterprise does not fork OSS; it injects additional functionality through </span><span style="color:#79B8FF">`preRouterHook`</span><span style="color:#E1E4E8">. If the user says that this is an enterprise feature, you need to ask where the enterprise repository is located and work across both this repository and the enterprise repository.</span></span></code></pre>
+<p>后面还继续展开 enterprise 怎么接进去：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#79B8FF;font-weight:bold">## Enterprise Integration</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">Enterprise extends OSS through hooks without forking:</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">1.</span><span style="color:#E1E4E8;font-weight:bold"> **Entry**</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">`unleash-enterprise/src/index.ts`</span><span style="color:#E1E4E8"> wraps OSS </span><span style="color:#79B8FF">`start()`</span><span style="color:#E1E4E8">/</span><span style="color:#79B8FF">`create()`</span></span>
+<span class="line"><span style="color:#FFAB70">2.</span><span style="color:#E1E4E8;font-weight:bold"> **Hook**</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">`preRouterHook`</span><span style="color:#E1E4E8"> runs after OSS init, before route binding</span></span>
+<span class="line"><span style="color:#FFAB70">3.</span><span style="color:#E1E4E8;font-weight:bold"> **Extension**</span><span style="color:#E1E4E8">: Adds 50+ services, 30+ stores, 50+ controllers</span></span>
+<span class="line"><span style="color:#FFAB70">4.</span><span style="color:#E1E4E8;font-weight:bold"> **Gating**</span><span style="color:#E1E4E8">: License middleware restricts enterprise features</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**Enterprise-Only Features**</span><span style="color:#E1E4E8">: Change Requests, SSO (SAML/OIDC), Service Accounts, Signals &#x26; Actions, Insights, SCIM, Private Projects, Release Plans, Safeguards</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**Enterprise Composition**</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#79B8FF"> `enterprise/src/util/setup-stores.ts`</span><span style="color:#E1E4E8"> → Creates enterprise stores, merges with OSS stores</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#79B8FF"> `enterprise/src/util/setup-services.ts`</span><span style="color:#E1E4E8"> → Creates enterprise services with combined stores</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#79B8FF"> `enterprise/src/create-enterprise-routes.ts`</span><span style="color:#E1E4E8"> → Wires everything in </span><span style="color:#79B8FF">`preRouterHook`</span></span></code></pre>
+<p>这个规则会直接改变 agent 的动作。用户说“这是 enterprise feature”，agent 不应该在 OSS repo 里硬造一个实现。它应该先确认 enterprise repo 在哪里，再判断要改 OSS hook、enterprise route，还是两边都要改。</p>
+<p>Outline 的例子更窄，但也很有价值：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Always use </span><span style="color:#79B8FF">`sanitizeUrl()`</span><span style="color:#E1E4E8"> when setting </span><span style="color:#79B8FF">`href`</span><span style="color:#E1E4E8"> or </span><span style="color:#79B8FF">`src`</span><span style="color:#E1E4E8"> from user-controlled data in ProseMirror </span><span style="color:#79B8FF">`toDOM`</span><span style="color:#E1E4E8"> methods, regardless of whether it is imported via an alias or a relative path. Unlike React components, </span><span style="color:#79B8FF">`toDOM`</span><span style="color:#E1E4E8"> writes raw DOM and does not sanitize attribute values.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Use CSRF protection.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Use rateLimiter middleware for sensitive endpoints.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Follow OWASP guidelines.</span></span></code></pre>
+<p>这条规则已经写到函数级了。它不适合所有项目，但很适合 Outline。因为它告诉 agent：这个项目里有一个具体 API，表面上像普通 DOM 输出，实际上绕开了 React 的保护，需要手动 sanitize。</p>
+<p>我从 SaaS 项目里得到的判断是：AGENTS.md 不要只写框架和目录。它应该写清这些问题：</p>
+<ul>
+<li>功能到底在 OSS repo、Enterprise repo，还是通过 hook 接入？</li>
+<li>客户数据、tenant 信息、日志、fixture 的边界是什么？</li>
+<li>哪些 workflow、权限、部署动作不能当普通开发便利？</li>
+<li>哪些 API 或渲染方法有项目特有的安全坑？</li>
+</ul>
+<h2 id="sdk-项目要把用户契约写在前面">SDK 项目要把用户契约写在前面</h2>
+<p>SDK 项目的风险不只是“代码能不能跑”。它还要保护用户契约。</p>
+<p>OpenAI Agents Python 的 AGENTS.md 对 public API 兼容性写得很直：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#E1E4E8">Treat the parameter and dataclass field order of exported runtime APIs as a compatibility contract.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> For public constructors (for example </span><span style="color:#79B8FF">`RunConfig`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`FunctionTool`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`AgentHookContext`</span><span style="color:#E1E4E8">), preserve existing positional argument meaning. Do not insert new constructor parameters or dataclass fields in the middle of existing public order.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> When adding a new optional public field/parameter, append it to the end whenever possible and keep old fields in the same order.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> If reordering is unavoidable, add an explicit compatibility layer and regression tests that exercise the old positional call pattern.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Prefer keyword arguments at call sites to reduce accidental breakage, but do not rely on this to justify breaking positional compatibility for public APIs.</span></span></code></pre>
+<p>这段特别适合写给 agent。因为 agent 很容易“整理” public constructor：把参数挪一挪，把 dataclass 顺序调得更顺，把字段插到看起来更合理的位置。对 SDK 用户来说，这种整理可能就是 breaking change。</p>
+<p>同一份文件还把跨模块影响面写出来：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Adding new tool/output/approval item types requires coordinated updates across:</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `src/agents/items.py`</span><span style="color:#E1E4E8"> (RunItem types and conversions)</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `src/agents/run_internal/run_steps.py`</span><span style="color:#E1E4E8"> (ProcessedResponse and tool run structs)</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `src/agents/run_internal/turn_resolution.py`</span><span style="color:#E1E4E8"> (model output processing, run item extraction)</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `src/agents/run_internal/tool_execution.py`</span><span style="color:#E1E4E8"> and </span><span style="color:#79B8FF">`src/agents/run_internal/tool_planning.py`</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `src/agents/run_internal/items.py`</span><span style="color:#E1E4E8"> (normalization, dedupe, approval filtering)</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `src/agents/stream_events.py`</span><span style="color:#E1E4E8"> (stream event names)</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `src/agents/run_state.py`</span><span style="color:#E1E4E8"> (RunState serialization/deserialization)</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `src/agents/run_internal/session_persistence.py`</span><span style="color:#E1E4E8"> (session save/rewind)</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> If the serialized RunState shape changes, update </span><span style="color:#79B8FF">`CURRENT_SCHEMA_VERSION`</span><span style="color:#E1E4E8"> in </span><span style="color:#79B8FF">`src/agents/run_state.py`</span><span style="color:#E1E4E8"> and the related serialization/deserialization logic.</span></span></code></pre>
+<p>这段已经超出了普通目录说明。它在告诉 agent：某类 change 会跨 item、run step、turn resolution、stream event、session persistence、schema version。没有这段，agent 很容易只改它当前看到的文件，然后漏掉系统状态。</p>
+<p>迁移到 SDK 项目，我会写：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#79B8FF;font-weight:bold">## Public API compatibility</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Treat public constructor parameter order and dataclass field order as user-facing.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Append optional public parameters when possible.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> If reordering is unavoidable, add compatibility handling and regression tests.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> If a serialized state shape changes, update schema versioning and backward-read logic.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Do not edit generated translated docs by hand.</span></span></code></pre>
+<h2 id="codex-的-agentsmd-证明复杂项目要写系统边界">Codex 的 AGENTS.md 证明：复杂项目要写“系统边界”</h2>
+<p>Codex 自己的 AGENTS.md 很适合说明一件事：复杂项目的规则不能停在“这是 Rust 项目”这种层级。它要写系统边界。</p>
+<p>比如 sandbox 环境变量这段：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Never add or modify any code related to </span><span style="color:#79B8FF">`CODEX_SANDBOX_NETWORK_DISABLED_ENV_VAR`</span><span style="color:#E1E4E8"> or </span><span style="color:#79B8FF">`CODEX_SANDBOX_ENV_VAR`</span><span style="color:#E1E4E8">.</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#E1E4E8"> You operate in a sandbox where </span><span style="color:#79B8FF">`CODEX_SANDBOX_NETWORK_DISABLED=1`</span><span style="color:#E1E4E8"> will be set whenever you use the </span><span style="color:#79B8FF">`shell`</span><span style="color:#E1E4E8"> tool. Any existing code that uses </span><span style="color:#79B8FF">`CODEX_SANDBOX_NETWORK_DISABLED_ENV_VAR`</span><span style="color:#E1E4E8"> was authored with this fact in mind. It is often used to early exit out of tests that the author knew you would not be able to run given your sandbox limitations.</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#E1E4E8"> Similarly, when you spawn a process using Seatbelt (</span><span style="color:#79B8FF">`/usr/bin/sandbox-exec`</span><span style="color:#E1E4E8">), </span><span style="color:#79B8FF">`CODEX_SANDBOX=seatbelt`</span><span style="color:#E1E4E8"> will be set on the child process. Integration tests that want to run Seatbelt themselves cannot be run under Seatbelt, so checks for </span><span style="color:#79B8FF">`CODEX_SANDBOX=seatbelt`</span><span style="color:#E1E4E8"> are also often used to early exit out of tests, as appropriate.</span></span></code></pre>
+<p>这段在保护测试语义。agent 如果看到某个测试因为 sandbox env early exit，可能会以为这段逻辑多余，然后“清理”掉。AGENTS.md 直接告诉它：别碰，这跟 agent 自己运行工具时的 sandbox 能力有关。</p>
+<p>再看 Cargo 和 Bazel 的差异：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> If you change Rust dependencies (</span><span style="color:#79B8FF">`Cargo.toml`</span><span style="color:#E1E4E8"> or </span><span style="color:#79B8FF">`Cargo.lock`</span><span style="color:#E1E4E8">), run </span><span style="color:#79B8FF">`just bazel-lock-update`</span><span style="color:#E1E4E8"> from the</span></span>
+<span class="line"><span style="color:#E1E4E8">  repo root to refresh </span><span style="color:#79B8FF">`MODULE.bazel.lock`</span><span style="color:#E1E4E8">, and include that lockfile update in the same change.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> After dependency changes, run </span><span style="color:#79B8FF">`just bazel-lock-check`</span><span style="color:#E1E4E8"> from the repo root so lockfile drift is caught</span></span>
+<span class="line"><span style="color:#E1E4E8">  locally before CI.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Bazel does not automatically make source-tree files available to compile-time Rust file access. If</span></span>
+<span class="line"><span style="color:#E1E4E8">  you add </span><span style="color:#79B8FF">`include_str!`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`include_bytes!`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`sqlx::migrate!`</span><span style="color:#E1E4E8">, or similar build-time file or</span></span>
+<span class="line"><span style="color:#E1E4E8">  directory reads, update the crate's </span><span style="color:#79B8FF">`BUILD.bazel`</span><span style="color:#E1E4E8"> (</span><span style="color:#79B8FF">`compile_data`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`build_script_data`</span><span style="color:#E1E4E8">, or test</span></span>
+<span class="line"><span style="color:#E1E4E8">  data) or Bazel may fail even when Cargo passes.</span></span></code></pre>
+<p>这段就很像你说的“不要只说 Codex 关心 Bazel”。应该把原文放出来。读者看到这里才会明白：这个项目里 Cargo 过了不代表 Bazel 过了，依赖和 compile-time file access 都有额外动作。</p>
+<p>Codex 的测试入口也写得很具体：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#E1E4E8">Run </span><span style="color:#79B8FF">`just fmt`</span><span style="color:#E1E4E8"> (in the </span><span style="color:#79B8FF">`codex-rs`</span><span style="color:#E1E4E8"> directory) automatically after you have finished making code changes anywhere in this repository; do not ask for approval to run it. Additionally, run the tests:</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">1.</span><span style="color:#E1E4E8"> Do not run </span><span style="color:#79B8FF">`cargo test`</span><span style="color:#E1E4E8"> directly. Use </span><span style="color:#79B8FF">`just test`</span><span style="color:#E1E4E8"> so test execution follows the repo defaults.</span></span>
+<span class="line"><span style="color:#FFAB70">2.</span><span style="color:#E1E4E8"> Run the test for the specific project that was changed. For example, if changes were made in </span><span style="color:#79B8FF">`codex-rs/tui`</span><span style="color:#E1E4E8">, run </span><span style="color:#79B8FF">`just test -p codex-tui`</span><span style="color:#E1E4E8">.</span></span>
+<span class="line"><span style="color:#FFAB70">3.</span><span style="color:#E1E4E8"> Once those pass, if any changes were made in common, core, or protocol, run the complete test suite with </span><span style="color:#79B8FF">`just test`</span><span style="color:#E1E4E8">. Avoid </span><span style="color:#79B8FF">`--all-features`</span><span style="color:#E1E4E8"> for routine local runs because it expands the build matrix and can significantly increase </span><span style="color:#79B8FF">`target/`</span><span style="color:#E1E4E8"> disk usage; use it only when you specifically need full feature coverage. project-specific or individual tests can be run without asking the user, but do ask the user before running the complete test suite.</span></span></code></pre>
+<p>还有 TUI snapshot 这一段：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#E1E4E8">This repo uses snapshot tests (via </span><span style="color:#79B8FF">`insta`</span><span style="color:#E1E4E8">), especially in </span><span style="color:#79B8FF">`codex-rs/tui`</span><span style="color:#E1E4E8">, to validate rendered output.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**Requirement:**</span><span style="color:#E1E4E8"> any change that affects user-visible UI (including adding new UI) must include</span></span>
+<span class="line"><span style="color:#E1E4E8">corresponding </span><span style="color:#79B8FF">`insta`</span><span style="color:#E1E4E8"> snapshot coverage (add a new snapshot test if one doesn't exist yet, or</span></span>
+<span class="line"><span style="color:#E1E4E8">update the existing snapshot). Review and accept snapshot updates as part of the PR so UI impact</span></span>
+<span class="line"><span style="color:#E1E4E8">is easy to review and future diffs stay visual.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">When UI or text output changes intentionally, update the snapshots as follows:</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Run tests to generate any updated snapshots:</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `just test -p codex-tui`</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Check what’s pending:</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `cargo insta pending-snapshots -p codex-tui`</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Review changes by reading the generated </span><span style="color:#79B8FF">`*.snap.new`</span><span style="color:#E1E4E8"> files directly in the repo, or preview a specific file:</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `cargo insta show -p codex-tui path/to/file.snap.new`</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Only if you intend to accept all new snapshots in this crate, run:</span></span>
+<span class="line"><span style="color:#FFAB70">  -</span><span style="color:#79B8FF"> `cargo insta accept -p codex-tui`</span></span></code></pre>
+<p>这段证据说明了一个关键点：AGENTS.md 可以写得很细，只要这个细节真的改变工作方式。Codex 的 TUI 改动不能停在“跑过测试”，UI/text output 的变化要通过 snapshot 让 review 能看见。对这种项目，AGENTS.md 里写 snapshot 命令是在保护 review 质量。</p>
+<p>我会把这类项目的 AGENTS.md 写成系统边界清单：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#79B8FF;font-weight:bold">## System boundaries</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Do not modify sandbox capability checks unless the change is explicitly about sandbox behavior.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Cargo passing is not enough for dependency or compile-time file changes; update Bazel metadata too.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Use project test wrappers, not raw language defaults.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> UI or text output changes require snapshot generation, review, and acceptance.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Large or full-suite commands require explicit confirmation when they are expensive.</span></span></code></pre>
+<h2 id="cli-项目适合写-reviewer-热点">CLI 项目适合写 reviewer 热点</h2>
+<p>Databricks CLI 的 AGENTS.md 很像把 reviewer 反复说的话提前写给 agent：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#E1E4E8;font-weight:bold">**RULE: Do not modify or remove existing comments in code you didn't write.**</span><span style="color:#E1E4E8"> Comments often encode non-obvious context (a bug reference, a workaround, a reason the code is shaped a certain way) that is lost if rewritten. Leave them alone unless the user explicitly asks for a change.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**RULE: Prefer simplicity over cleverness. Avoid speculative fallbacks and default values.**</span><span style="color:#E1E4E8"> If you catch yourself adding a fallback branch "just in case," identify the correct path and use only that one. Reviewers in this repo reject speculative flexibility.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**RULE: Keep each PR focused on one change.**</span><span style="color:#E1E4E8"> If you notice an unrelated cleanup, bug fix, or refactor while making your primary change, leave it alone or put it in a separate PR. Reviewers consistently ask to split mixed PRs, especially when a dependency bump or schema diff rides along with a feature change.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**RULE: Before adding a new helper, search the codebase for an existing one.**</span><span style="color:#E1E4E8"> Common homes: </span><span style="color:#79B8FF">`libs/`</span><span style="color:#E1E4E8"> (shared utilities), </span><span style="color:#79B8FF">`libs/databrickscfg/`</span><span style="color:#E1E4E8"> (config), </span><span style="color:#79B8FF">`libs/git/`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`libs/filer/`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`libs/cmdio/`</span><span style="color:#E1E4E8"> (CLI I/O, spinners, prompts), </span><span style="color:#79B8FF">`libs/env/`</span><span style="color:#E1E4E8"> (env vars), </span><span style="color:#79B8FF">`libs/testserver/`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`libs/structpath/`</span><span style="color:#E1E4E8"> and </span><span style="color:#79B8FF">`libs/dyn/`</span><span style="color:#E1E4E8"> (path / dynamic values), </span><span style="color:#79B8FF">`acceptance/bin/`</span><span style="color:#E1E4E8"> (acceptance test helpers), </span><span style="color:#79B8FF">`internal/mocks/`</span><span style="color:#E1E4E8"> (generated mocks).</span></span></code></pre>
+<p>它后面还有更具体的 reviewer 热点：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#E1E4E8;font-weight:bold">**RULE: When adding a direct Go dependency, annotate its license in </span><span style="color:#79B8FF;font-weight:bold">`go.mod`</span><span style="color:#E1E4E8;font-weight:bold"> and update </span><span style="color:#79B8FF;font-weight:bold">`NOTICE`</span><span style="color:#E1E4E8;font-weight:bold">.**</span><span style="color:#E1E4E8"> Before picking the SPDX identifier, read </span><span style="color:#79B8FF">`internal/build/license_test.go`</span><span style="color:#E1E4E8"> to see the current allowlist (the </span><span style="color:#79B8FF">`spdxLicenses`</span><span style="color:#E1E4E8"> map). That test is the source of truth and will fail CI if a direct </span><span style="color:#79B8FF">`require`</span><span style="color:#E1E4E8"> line lacks a matching SPDX suffix comment (e.g. </span><span style="color:#79B8FF">`// MIT`</span><span style="color:#E1E4E8">). Also add a corresponding entry to </span><span style="color:#79B8FF">`NOTICE`</span><span style="color:#E1E4E8"> under the matching license section. If a dep's license isn't on the allowlist, discuss before adding.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**RULE: Do not use </span><span style="color:#79B8FF;font-weight:bold">`os.Exit()`</span><span style="color:#E1E4E8;font-weight:bold"> outside of </span><span style="color:#79B8FF;font-weight:bold">`main.go`</span><span style="color:#E1E4E8;font-weight:bold">.**</span><span style="color:#79B8FF"> `main.go`</span><span style="color:#E1E4E8"> owns the exit path; calling </span><span style="color:#79B8FF">`os.Exit()`</span><span style="color:#E1E4E8"> elsewhere skips deferred cleanup and complicates testing.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**RULE: Do not remove or skip failing tests to fix CI.**</span><span style="color:#E1E4E8"> Fix the underlying issue instead.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8;font-weight:bold">**RULE: Do not leave debug print statements in committed code.**</span><span style="color:#79B8FF"> `fmt.Println`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`log.Printf`</span><span style="color:#E1E4E8">, or similar. Always scrub before committing.</span></span></code></pre>
+<p>这类规则看起来碎，但很真实。它们通常来自 review 摩擦：有人改了旧注释，有人加了 speculative fallback，有人顺手清理 unrelated diff，有人新增 helper 前没搜，有人加依赖忘了 license，有人用 os.Exit 绕过 cleanup。</p>
+<p>AGENTS.md 很适合放这种 reviewer 热点。因为它们会改变 agent 的动作。</p>
+<h2 id="小项目不用写成大厂手册">小项目不用写成大厂手册</h2>
+<p>FileKit 的 AGENTS.md 很短，但它把该说的说了：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#E1E4E8">FileKit is split across multiplatform modules: </span><span style="color:#79B8FF">`filekit-core`</span><span style="color:#E1E4E8"> contains platform-agnostic APIs, while dialogs, Compose bindings, and Coil integration live in </span><span style="color:#79B8FF">`filekit-dialogs`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`filekit-dialogs-compose`</span><span style="color:#E1E4E8">, and </span><span style="color:#79B8FF">`filekit-coil`</span><span style="color:#E1E4E8">. Shared source sets live under </span><span style="color:#79B8FF">`src/*Main`</span><span style="color:#E1E4E8">, with platform tests in sibling </span><span style="color:#79B8FF">`src/*Test`</span><span style="color:#E1E4E8"> directories. Sample apps under </span><span style="color:#79B8FF">`samples/`</span><span style="color:#E1E4E8"> (</span><span style="color:#79B8FF">`sample-core`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`sample-compose`</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">`sample-file-explorer`</span><span style="color:#E1E4E8">) demonstrate integration patterns; update them alongside library changes when user-facing behaviour shifts. API docs and release notes are tracked in </span><span style="color:#79B8FF">`docs/`</span><span style="color:#E1E4E8"> and </span><span style="color:#79B8FF">`documentation-v0.8.8.md`</span><span style="color:#E1E4E8">.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Build, Test, and Development Commands</span></span>
+<span class="line"><span style="color:#E1E4E8">Use </span><span style="color:#79B8FF">`./gradlew assemble`</span><span style="color:#E1E4E8"> to ensure all published artifacts compile before raising a PR. Run </span><span style="color:#79B8FF">`./gradlew :filekit-core:check :filekit-dialogs:check`</span><span style="color:#E1E4E8"> to execute the multiplatform test matrix for the primary modules. Sample apps can be exercised with </span><span style="color:#79B8FF">`./gradlew :samples:sample-compose:composeApp:run`</span><span style="color:#E1E4E8"> (desktop) or by opening the Gradle targets in Android Studio for mobile builds.</span></span></code></pre>
+<p>测试和 PR 规则也不长：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#79B8FF;font-weight:bold">## Testing Guidelines</span></span>
+<span class="line"><span style="color:#E1E4E8">Add unit tests in the closest </span><span style="color:#79B8FF">`src/&#x3C;target>Test`</span><span style="color:#E1E4E8"> directory; default to </span><span style="color:#79B8FF">`commonTest`</span><span style="color:#E1E4E8"> when behaviour is shared and mirror target-specific coverage otherwise. Test names follow the </span><span style="color:#79B8FF">`Subject_action_expectation`</span><span style="color:#E1E4E8"> convention (e.g., </span><span style="color:#79B8FF">`FilePicker_openDirectory_returnsFolder`</span><span style="color:#E1E4E8">). Run </span><span style="color:#79B8FF">`./gradlew check`</span><span style="color:#E1E4E8"> locally before every push and ensure new features include regression coverage for at least one non-JVM target. When behaviour depends on native APIs, document manual verification steps in the PR description.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Commit &#x26; Pull Request Guidelines</span></span>
+<span class="line"><span style="color:#E1E4E8">Commits are short, imperative statements and often begin with an emoji category (e.g., </span><span style="color:#79B8FF">`✨ Add WASM picker`</span><span style="color:#E1E4E8">); keep related changes squashed together. Each PR should describe the change, note affected platforms, call out doc updates, and link issues or discussions when relevant. Attach screenshots or screen recordings when UI behaviour changes.</span></span></code></pre>
+<p>这份文件说明：AGENTS.md 不需要为了显得专业而变长。小项目只要讲清模块边界、命令、sample app、测试位置、UI 证据，就够有用。</p>
+<h2 id="模板什么时候有用">模板什么时候有用</h2>
+<p>我不建议从模板开始写，不代表模板没有价值。</p>
+<p>模板适合当检查表。比如你已经从项目摩擦里写出第一版 AGENTS.md 之后，可以拿模板扫一遍：有没有写 build/test 命令，有没有写 ask-before，有没有写 never，有没有写验证证据，有没有写 local 和 team 的边界。</p>
+<p>但模板不适合当正文来源。因为模板不知道你的项目怕什么。它不知道 acceptance test 会不会创建真实资源，不知道 Enterprise 功能是不是在另一个仓库，不知道 public constructor 参数顺序是不是用户契约，也不知道某个 UI 输出是不是必须走 snapshot review。</p>
+<p>所以我的顺序是：先从真实摩擦写，再用模板补漏。</p>
+<h2 id="回到我们自己怎么写">回到我们自己怎么写</h2>
+<p>看完这些案例，我现在会先列项目最近三类摩擦：</p>
+<ol>
+<li>
+<p>agent 容易走错哪里<br>
+比如旧目录、废弃实现、生成文件、monorepo package 边界。</p>
+</li>
+<li>
+<p>agent 容易跑错什么<br>
+比如真实云资源测试、昂贵全量测试、需要凭证的 e2e、生产或发布命令。</p>
+</li>
+<li>
+<p>agent 容易漏掉什么<br>
+比如 snapshot、schema version、docs、sample app、changelog、license、NOTICE、UI 证据、compat regression。</p>
+</li>
+</ol>
+<p>然后把它们写成能改变动作的规则。</p>
+<p>一个最小版本可以这样：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="md"><code><span class="line"><span style="color:#79B8FF;font-weight:bold"># AGENTS.md</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Stable facts</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Current implementation lives in &#x3C;path>.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Deprecated implementation lives in &#x3C;path>; read only for reference.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Generated files are not edited by hand.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Where to work</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> UI routes and components: apps/web/</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> API handlers: services/api/</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Background jobs: workers/</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Shared clients: packages/client/</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Before editing</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Run git status.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Inspect nearby call sites.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Search existing helpers before adding new utilities.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> If the change touches public API, migration, deployment, auth, or generated files, identify the boundary first.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Verification</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Backend changes: &#x3C;command>.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> UI changes: &#x3C;command> on the affected route, with screenshot / console / accessibility evidence.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> CLI output changes: update snapshots or acceptance output.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Do not say "verified" without reporting the exact command or runtime check.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Ask before</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Adding production dependencies.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Running tests that create real external resources.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Changing deployment, migration strategy, public API compatibility, workflow permissions, or production data.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Pushing, releasing, or touching production.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF;font-weight:bold">## Never</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Commit secrets.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Copy customer data into fixtures, logs, examples, commits, PR text, or issue text.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Restore deprecated pipelines.</span></span>
+<span class="line"><span style="color:#FFAB70">-</span><span style="color:#E1E4E8"> Modify applied migrations in place.</span></span></code></pre>
+<p>这只是起点。真正要留下哪些条目，要看项目自己的风险。</p>
+<p>如果是大 monorepo，补 “WHERE TO LOOK”。<br>
+如果是云 provider，补 safe commands / ask-before commands。<br>
+如果是 SaaS，补客户数据、tenant、workflow 权限、enterprise/OSS 边界。<br>
+如果是 SDK，补 public API、schema、generated docs、compat tests。<br>
+如果是 CLI，补 helper 搜索、输出 snapshot、依赖 license、debug print。<br>
+如果是小 library，删掉大部分，只保留模块边界和验证命令。</p>
+<h2 id="检查一条规则值不值得放进去">检查一条规则值不值得放进去</h2>
+<p>我现在会问这些问题：</p>
+<ul>
+<li>它会不会改变 agent 的下一步动作？</li>
+<li>它有没有触发条件？</li>
+<li>它说清了要做什么、不要做什么吗？</li>
+<li>它说清了怎么验证吗？</li>
+<li>它是不是团队共享规则？</li>
+<li>它是不是当前任务状态？</li>
+<li>它是不是个人偏好？</li>
+<li>它离对应代码够近吗？要不要下沉到子目录？</li>
+<li>它来自真实摩擦，还是来自想象中的最佳实践？</li>
+</ul>
+<p>AGENTS.md 写得好不好，不看它像不像一份完整文档。看 agent 读完以后，会不会少犯一个真实错误。</p>
+<p>这也是我看完这些公开案例后最想保留的判断：AGENTS.md 是从返工里长出来的开工边界。它要把项目里那些最容易走错、最难靠模型常识补上的东西，放到 agent 动手之前。</p>
+<p>参考过的公开文件：</p>
+<ul>
+<li><a href="https://github.com/apache/airflow/blob/main/AGENTS.md">Apache Airflow AGENTS.md</a></li>
+<li><a href="https://github.com/cloudflare/workers-sdk/blob/main/AGENTS.md">Cloudflare Workers SDK AGENTS.md</a></li>
+<li><a href="https://github.com/hashicorp/terraform-provider-aws/blob/main/AGENTS.md">Terraform AWS Provider AGENTS.md</a></li>
+<li><a href="https://github.com/TracecatHQ/tracecat/blob/main/AGENTS.md">Tracecat AGENTS.md</a></li>
+<li><a href="https://github.com/Unleash/unleash/blob/main/AGENTS.md">Unleash AGENTS.md</a></li>
+<li><a href="https://github.com/outline/outline/blob/main/AGENTS.md">Outline AGENTS.md</a></li>
+<li><a href="https://github.com/openai/openai-agents-python/blob/main/AGENTS.md">OpenAI Agents Python AGENTS.md</a></li>
+<li><a href="https://github.com/openai/codex/blob/main/AGENTS.md">OpenAI Codex AGENTS.md</a></li>
+<li><a href="https://github.com/databricks/cli/blob/main/AGENTS.md">Databricks CLI AGENTS.md</a></li>
+<li><a href="https://github.com/vinceglb/FileKit/blob/main/AGENTS.md">FileKit AGENTS.md</a></li>
+</ul></div> <section class="related-section reveal" aria-labelledby="related-heading"> <div class="eyebrow">Next reading path</div> <h2 id="related-heading">继续顺着这条线读</h2> <div class="related-grid"> <a class="related-card" href="/my-blog/essays/coding-agent-eval-needs-isolation/"> <div class="meta-row"> <span>Essays</span> <span>Same series</span> </div> <strong>评审 Coding Agent：关键不是多一个 Agent，而是隔离</strong> <p>什么时候用 subagent、什么时候新开会话、什么时候该把评审做成正式 rubric。</p> </a><a class="related-card" href="/my-blog/essays/agent-memory-is-write-policy/"> <div class="meta-row"> <span>Essays</span> <span>Shared tag: agents</span> </div> <strong>Agent memory 不是向量库，是写入策略</strong> <p>真正有用的 agent memory 不只是保存聊天历史,而是决定什么状态值得写入、更新、选择、遗忘和审计。</p> </a><a class="related-card" href="/my-blog/notes/function-calling-is-not-agent-loop/"> <div class="meta-row"> <span>Notes</span> <span>Shared tag: agents</span> </div> <strong>Function calling 是能力，agent loop 是授权</strong> <p>给模型工具不等于让模型控制流程;多数生产系统应该先 workflow,只在必要处给 bounded loop。</p> </a><a class="related-card" href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noreferrer"> <div class="meta-row"> <span>Links</span> <span>Shared tag: agents</span> </div> <strong>Anthropic Building Effective Agents</strong> <p>官方 agent 架构地基:先区分 workflow 和 agent,从简单可组合模式开始,不要默认追求全自动 loop。</p> </a> </div> </section> </div> <aside class="panel detail-aside reveal" aria-label="Entry metadata"> <div class="meta-row"><time datetime="2026-06-19T00:00:00.000Z">Jun 19, 2026</time></div> <div class="meta-row" style="margin-top:1rem"><span class="tag">agents</span><span class="tag">codex</span><span class="tag">workflow</span><span class="tag">context-engineering</span></div> <p style="margin-top:1rem">Collection: Essays</p> <p style="margin-top:0.75rem">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  </aside> </article>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn. Built as a local-first Astro field note.</span> <span><a href="/my-blog/rss.xml">RSS</a> · no deployment cutover before human acceptance</span> </div> </footer> </div> <script>
+      const revealItems = Array.from(document.querySelectorAll('.reveal'));
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) {
+        revealItems.forEach((el) => {
+          el.classList.add('is-visible');
+          el.dataset.revealState = 'visible';
+        });
+      } else {
+        revealItems.forEach((el, index) => {
+          el.dataset.revealState = 'idle';
+          el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
+        });
+        const observer = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            const visible = entry.isIntersecting;
+            entry.target.classList.toggle('is-visible', visible);
+            entry.target.dataset.revealState = visible ? 'visible' : 'idle';
+          }
+        }, { threshold: 0.18, rootMargin: '-6% 0px -12% 0px' });
+        revealItems.forEach((el) => observer.observe(el));
+      }
+    </script> </body> </html>
