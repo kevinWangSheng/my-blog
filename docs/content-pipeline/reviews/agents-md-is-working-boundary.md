@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: publish-ready
+- status: published
 - source paths / source records:
   - current interactive learning session about AGENTS.md structure, team/local split, examples, and eval loop
   - Codex manual fetched via openai-docs helper on 2026-06-19
@@ -162,10 +162,10 @@ Total: 17/18
 
 ~~~yaml
 agent_review:
-  status: publish-ready
+  status: published
   reviewer: agent
   date: 2026-06-20
-  notes: "User explicitly requested deploy. Latest rewrite adds AGENTS.md background plus public source excerpts. check.sh passed with 0 hard and 0 soft hits. read-only review.sh passed with weighted 3.89/5. Content check, sync, build, leak check, preview prepare, 4327 preview, and UI verify passed."
+  notes: "User explicitly requested deploy. Latest rewrite adds AGENTS.md background plus public source excerpts. check.sh passed with 0 hard and 0 soft hits. read-only review.sh passed with weighted 3.89/5. Content check, sync, build, leak check, preview prepare, 4327 preview, UI verify, CI, deploy, and public URL verification passed."
 ~~~
 
 ## Final human blog review
@@ -184,6 +184,8 @@ human_blog_review:
 - content:sync: PASS, wrote site/src/content/essays/agents-md-is-working-boundary.md with --overwrite after user-directed revision
 - build: PASS, pnpm --dir site build, 23 pages
 - preview URL: http://127.0.0.1:4327/my-blog/essays/agents-md-is-working-boundary/ confirmed 200 with title "AGENTS.md 到底该写什么 · Essays"
+- deploy: PASS, commit f4e29b8 pushed to main; CI run 27863960788 passed; deploy run 27863969288 passed and published gh-pages
+- public URL: PASS, https://kevinwangsheng.github.io/my-blog/essays/agents-md-is-working-boundary/ returned 200 with title "AGENTS.md 到底该写什么 · Essays"
 - ui-verify if run: PASS, axe 0 at 375/768/1440, console errors 0, console warnings 0, overflow no, Lighthouse performance/accessibility/best-practices/seo 100/100/100/100, summary out/summary.json
 - leak check: PASS, no matches for local path/private/forbidden markers in staged markdown, synced source, or generated HTML
 - rejection cleanup if needed:
