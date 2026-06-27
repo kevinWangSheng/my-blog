@@ -26,6 +26,23 @@ const minutes = Math.max(1, Math.round(charCount / 450));
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const hasToc = toc.length >= 2;
 const tags: string[] = Array.isArray(entry.data.tags) ? entry.data.tags : [];
+
+// 首字下沉(T19 ①):仅 essays,且正文首段以字母 / 中文起头。
+// 引号、括号、标点开头则跳过(::first-letter 会带上前导标点,放大后突兀)。
+// 检测保守:命中结构块(标题 / 列表 / 引用 / 代码 / 表格)就继续找下一段,
+// 找到首个正文段后剥掉行内强调符(* _ ` ~)再看首字。判不准时宁可不下沉。
+function essayLeadsWithLetter(body: unknown): boolean {
+  if (typeof body !== 'string') return false;
+  for (const raw of body.split('\n')) {
+    const line = raw.trim();
+    if (!line) continue;
+    if (/^(#{1,6}\s|>|[-*+]\s|\d+[.)]\s|`{3,}|~{3,}|\||={2,}$|-{3,}$|\*{3,}$|!\[|<)/.test(line)) continue;
+    const ch = line.replace(/^[*_`~]+/, '')[0] ?? '';
+    return /\p{Letter}/u.test(ch);
+  }
+  return false;
+}
+const dropCap = collection === 'essays' && essayLeadsWithLetter(entry.body);
 ---
 <BaseLayout title={`${entry.data.title} · ${label.title}`} description={entry.data.description} type="article">
   <div class:list={["container", hasToc ? "detail-shell" : null]}>
@@ -51,7 +68,7 @@ const tags: string[] = Array.isArray(entry.data.tags) ? entry.data.tags : [];
         </section>
       )}
 
-      <div class="prose"><Content /></div>
+      <div class:list={["prose", dropCap ? "has-drop-cap" : null]}><Content /></div>
 
       <p class="type-note">{typeNotes[collection]}</p>
 
@@ -90,4 +107,71 @@ const tags: string[] = Array.isArray(entry.data.tags) ? entry.data.tags : [];
       </aside>
     )}
   </div>
+
+  <script>
+    // 文章工艺细节(T19):标题悬停锚点 ④ + 脚注 hover/focus 预览 ③。
+    // 二者都是渐进增强:无 JS 时标题仍有 id 可深链、脚注号仍是跳页尾的普通链接。
+    // 显隐由 CSS 的 :hover / :focus-within 负责;JS 只负责生成节点与 Esc 关闭。
+
+    // ④ 为正文 h2/h3(Astro 已注入 id)前置一个 # 锚链接。
+    function initHeadingAnchors() {
+      document.querySelectorAll('.prose h2[id], .prose h3[id]').forEach((h) => {
+        const head = h as HTMLElement;
+        if (head.dataset.anchored) return;
+        head.dataset.anchored = '1';
+        const a = document.createElement('a');
+        a.className = 'heading-anchor';
+        a.href = '#' + head.id;
+        a.textContent = '#';
+        a.setAttribute('aria-label', '链接到本节:' + (head.textContent || '').trim());
+        head.prepend(a);
+      });
+    }
+
+    // ③ 为 GFM 脚注引用就地生成 popover;CSS 控制显隐,Esc 失焦关闭。
+    function initFootnotePopovers() {
+      const refs = document.querySelectorAll('.prose a[data-footnote-ref]');
+      refs.forEach((node, i) => {
+        const ref = node as HTMLAnchorElement;
+        if (ref.dataset.fnPop) return;
+        const href = ref.getAttribute('href') || '';
+        const target = href.startsWith('#')
+          ? document.getElementById(decodeURIComponent(href.slice(1)))
+          : null;
+        if (!target) return;
+        // 取脚注正文,剔除「返回正文」回链
+        const clone = target.cloneNode(true) as HTMLElement;
+        clone.querySelectorAll('a[data-footnote-backref]').forEach((el) => el.remove());
+        const text = (clone.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!text) return;
+        ref.dataset.fnPop = '1';
+
+        const host = (ref.parentElement && ref.parentElement.tagName === 'SUP')
+          ? ref.parentElement
+          : ref;
+        host.classList.add('fn-host');
+
+        const popId = 'fn-pop-' + (i + 1);
+        const pop = document.createElement('span');
+        pop.className = 'fn-pop';
+        pop.id = popId;
+        pop.setAttribute('role', 'tooltip');
+        pop.textContent = text;
+        host.appendChild(pop);
+
+        const described = (ref.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+        if (!described.includes(popId)) described.push(popId);
+        ref.setAttribute('aria-describedby', described.join(' '));
+
+        ref.addEventListener('keydown', (e) => {
+          if ((e as KeyboardEvent).key === 'Escape') ref.blur();
+        });
+      });
+    }
+
+    document.addEventListener('astro:page-load', () => {
+      initHeadingAnchors();
+      initFootnotePopovers();
+    });
+  </script>
 </BaseLayout>

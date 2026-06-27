@@ -461,6 +461,20 @@
 - 首页不再把 Projects 作为第一 CTA;About 不再引用下线项目。
 - UI 自验证通过。
 
+### T19 — 文章工艺细节(高级感细节,非炫技特效)
+
+> 规格:`design-previews/spec/premium-touches-plan.md`;视觉参照:`design-previews/premium-touches.html`。只做四项,不新增炫技特效,不回退 B 系统 / 暗色 / View Transitions。
+
+- [x] ① 首字下沉:仅 essays 首段,标点 / 引用起头跳过(`DetailPage.astro` 内容判定 + `.has-drop-cap` + CSS `::first-letter`)。
+- [x] ② 放大引用:`.prose blockquote.pull-quote` 样式 + 作者约定文档(`docs/content-pipeline/article-craft.md`)。
+- [x] ④ 标题悬停锚点:客户端为 h2/h3 前置 `#` 锚链接,hover/focus 显现,`aria-label` 可达,触屏隐藏。零新增依赖(规格的 rehype-slug/autolink 路线因 AGENTS.md「新增依赖先问」门 + pnpm 解析问题改走客户端注入,详见 `out/acceptance/T19-plan.md`)。
+- [x] ③ 脚注 hover/focus 预览:渐进增强 JS,`role=tooltip` + `aria-describedby`,Esc 关闭,无 JS 仍可跳页尾。
+
+验收标准:
+- `pnpm --dir site build` 通过;`pnpm ui-verify` 达 axe 0 / Lighthouse a11y 100 / perf ≥90。
+- essay 页肉眼对照样稿(浅 / 暗 + 键盘走查脚注与锚点)。
+- 自验证证据见 `out/acceptance/T19-{plan,main,adversarial}.md`。⑦ human 结果验收待做;未 push/deploy。
+
 ## 当前下一步
 
 ⑦ human 验收已通过,T12 发布 / CI-CD cutover 已执行。当前线上地址为 `https://kevinwangsheng.github.io/my-blog/`。当前 CI/CD 只认 Astro `site/`:CI 跑 install/build/`pnpm ci:sanity`,Deploy 构建 `site/dist` 并发布到 `gh-pages`;旧 Notion→Hugo 管线已从当前工作区移除。C01 KB 候选池盘点已完成,候选表见 `docs/content-pipeline/candidates.md`;C02 skill 调研与 `blog-publisher` 内容处理能力已完成,见 `docs/content-pipeline/skill-research.md` 与 `.agents/skills/blog-publisher/`。C03 内容中间发布状态已完成:已建立 `docs/content-pipeline/reviews/` 与 `docs/content-pipeline/manifests/`,并通过 `blog-publisher` 将第一篇 KB-derived essay `rag-as-evidence-chain` 从 review → manifest → content:check → content:sync → build 跑通。C04 第一批高质量内容发布已完成:以 `rag-as-evidence-chain` 作为主 essay,新增 `retrieval-eval-before-answer-eval`、`when-graphrag-is-worth-it` 两条 notes 和 `anthropic-contextual-retrieval` link,并将 `synced-agent-note` fixture 下线为 draft。验收证据见 `docs/content-pipeline/reviews/C04-verification.md`。C05 文章详情推荐已完成:essay / note / log / project 详情页现在展示轻量 Next reading path,推荐依据覆盖 series、related frontmatter、shared tags、same collection recent,并允许 Essay 推荐相关 notes/links、Project 推荐 notes/logs。验收证据见 `docs/content-pipeline/reviews/C05-verification.md`。C06 内容质量与主题重平衡已完成:下线低质量 Project 和 RAG-heavy 内容,新增 Agent Memory / workflow / harness 方向的高质量观点内容,并调整首页与 About。验收证据见 `docs/content-pipeline/reviews/C06-verification.md`。当前下一步:继续做公开内容取舍和质量返工;新内容仍必须走 `blog-publisher` → review → manifest → `content:check` → `content:sync`。
