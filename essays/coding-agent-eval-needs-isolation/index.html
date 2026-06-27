@@ -1,30 +1,14 @@
-<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.4.6"><title>评审 Coding Agent：关键不是多一个 Agent，而是隔离 · Essays</title><meta name="description" content="什么时候用 subagent、什么时候新开会话、什么时候该把评审做成正式 rubric。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/essays/coding-agent-eval-needs-isolation"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="评审 Coding Agent：关键不是多一个 Agent，而是隔离 · Essays"><meta property="og:description" content="什么时候用 subagent、什么时候新开会话、什么时候该把评审做成正式 rubric。"><meta property="og:type" content="article"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/essays/coding-agent-eval-needs-isolation"><meta name="twitter:card" content="summary_large_image"><style>
-      html,
-      body,
-      .site-shell,
-      main,
-      article,
-      section,
-      .reading,
-      .prose,
-      .prose :where(p, h1, h2, h3, h4, h5, h6, li, blockquote, code, pre, span, strong, em, a) {
-        -webkit-user-select: text !important;
-        user-select: text !important;
-      }
-      .reading,
-      .prose {
-        cursor: text;
-        pointer-events: auto !important;
-        -webkit-touch-callout: default !important;
-      }
-      body::selection,
-      .reading::selection,
-      .prose::selection,
-      .prose :where(p, h1, h2, h3, h4, h5, h6, li, blockquote, code, pre, span, strong, em, a)::selection {
-        background: #234d3f !important;
-        color: #fffdf7 !important;
-      }
-    </style><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.CHdrpCjF.css"></head> <body> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn / learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/projects/">Projects</a><a href="/my-blog/notes/">Notes</a><a href="/my-blog/logs/">Logs</a><a href="/my-blog/essays/">Essays</a><a href="/my-blog/links/">Links</a><a href="/my-blog/about/">About</a><a href="/my-blog/rss.xml">RSS</a> </div> </nav> </header> <main class="site-main">  <article class="container detail-shell"> <div class="reading"> <div class="eyebrow">Long-form synthesis</div> <h1>评审 Coding Agent：关键不是多一个 Agent，而是隔离</h1> <p class="detail-description">什么时候用 subagent、什么时候新开会话、什么时候该把评审做成正式 rubric。</p> <p class="type-note">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  <div class="prose"><p>一个很自然的想法是：如果一个 coding agent 写了计划，那就再找另一个 agent 来评审。</p>
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) { /* localStorage 不可用时静默回退到默认浅色 */ }
+      })();
+    </script><meta name="generator" content="Astro v6.4.6"><title>评审 Coding Agent：关键不是多一个 Agent，而是隔离 · Essays</title><meta name="description" content="什么时候用 subagent、什么时候新开会话、什么时候该把评审做成正式 rubric。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/essays/coding-agent-eval-needs-isolation"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="评审 Coding Agent：关键不是多一个 Agent，而是隔离 · Essays"><meta property="og:description" content="什么时候用 subagent、什么时候新开会话、什么时候该把评审做成正式 rubric。"><meta property="og:type" content="article"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/essays/coding-agent-eval-needs-isolation"><meta property="og:site_name" content="Shawn Field Notes"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Shawn Field Notes — AI 学习自留地"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap"></noscript><noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/my-blog/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CAqDO0tx.js"></script><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.93Bs6UTD.css"></head> <body> <div class="reading-progress" id="reading-progress" aria-hidden="true"></div> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn · learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/essays/" class="active" aria-current="page">Essays</a><a href="/my-blog/notes/">Notes</a><a href="/my-blog/logs/">Logs</a><a href="/my-blog/projects/">Projects</a><a href="/my-blog/links/">Links</a><a href="/my-blog/about/">About</a><a href="/my-blog/rss.xml">RSS</a> <button type="button" class="theme-toggle" id="theme-toggle" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换深色 / 浅色模式"> <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg> <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> </button> </div> </nav> </header> <main class="site-main">  <div class="container detail-shell"> <article class="prose-article"> <header class="post-head reveal"> <p class="kicker">Long-form synthesis</p> <h1>评审 Coding Agent：关键不是多一个 Agent，而是隔离</h1> <p class="lede">什么时候用 subagent、什么时候新开会话、什么时候该把评审做成正式 rubric。</p> <div class="post-meta"> <span class="who"><span class="av" aria-hidden="true"></span><b>Shawn</b></span> <time datetime="2026-06-16T00:00:00.000Z">Jun 16, 2026</time> <span aria-hidden="true">·</span><span>约 14 分钟</span> <span class="tag">agents</span><span class="tag">evals</span><span class="tag">coding-agents</span><span class="tag">workflow</span> </div> </header>  <div class="prose has-drop-cap"><p>一个很自然的想法是：如果一个 coding agent 写了计划，那就再找另一个 agent 来评审。</p>
 <p>这个想法有用，但容易抓错重点。真正有效的不是“多一个 agent”，而是<strong>评审独立性</strong>：评审者应该拿到一个冻结的 artifact，在有限上下文里，按明确 rubric 判断。第二个 agent 如果继承了第一个 agent 的叙事和暗示，仍然可能只是礼貌地点头。新开会话如果输入包很糟，也一样会评出噪声。正式 eval 如果 rubric 含糊，也会制造假确定性。</p>
 <p>所以第一问题不是“用 subagent 还是新会话”。第一问题应该是：</p>
 <ol>
@@ -49,20 +33,20 @@
 <p>这是日常性价比最高的形态。Claude Code 文档把 subagent 描述为有独立上下文窗口的专门助手；OpenAI Codex 文档也把 subagents 放在并行探索、代码库调查、多步骤计划等场景里，同时提醒它会消耗更多 token。这里真正有价值的属性不是“它也是一个 agent”，而是它能把探索和评审上下文从主线程里隔离出去。</p>
 <p>限制也很明显：同会话 subagent 有上下文隔离，但不等于完全独立。主 agent 仍然决定给它什么 artifact、什么问题、什么措辞。如果提示词是“帮我确认这个计划没问题”，评审已经被污染了。</p>
 <p>更好的提示应该像这样：</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Review this frozen plan as a skeptical staff engineer.</span></span>
+<pre class="astro-code warm-garden-dark" style="background-color:#1f2b26;color:#d7e3dc; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Review this frozen plan as a skeptical staff engineer.</span></span>
 <span class="line"><span>Return PASS / REVISE / BLOCK.</span></span>
 <span class="line"><span>Focus on missing requirements, unsafe assumptions, unverified claims,</span></span>
 <span class="line"><span>bad sequencing, and tests that would not prove the stated acceptance criteria.</span></span>
 <span class="line"><span>Do not rewrite the plan unless you identify a blocker.</span></span></code></pre>
 <p>这不是仪式感，而是在给 reviewer 说“不”的权力。</p>
 <p>一个常见坏例子是：</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Bad review packet:</span></span>
+<pre class="astro-code warm-garden-dark" style="background-color:#1f2b26;color:#d7e3dc; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Bad review packet:</span></span>
 <span class="line"><span>"Check whether this plan looks good. I think it covers the requirements."</span></span>
 <span class="line"><span></span></span>
 <span class="line"><span>Likely result:</span></span>
 <span class="line"><span>"Looks good. Maybe add tests."</span></span></code></pre>
 <p>这不是 eval，只是礼貌互动。一个更冷、更窄的评审包应该像这样：</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Artifact: plan.md</span></span>
+<pre class="astro-code warm-garden-dark" style="background-color:#1f2b26;color:#d7e3dc; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Artifact: plan.md</span></span>
 <span class="line"><span>Goal: implement the content publishing path without changing deploy behavior.</span></span>
 <span class="line"><span>Constraints: no new dependencies, no publish, no local paths in public prose.</span></span>
 <span class="line"><span>Evidence available: source links, manifest draft, content-check output.</span></span>
@@ -103,7 +87,7 @@
 </ul>
 <p>Anthropic 的 agent eval 指南在这里很有用：任务要明确到两个领域专家能独立给出相近判定；eval trial 要从隔离环境开始；grader 应更关注结果质量，而不是脆弱的工具调用路径；LLM judge 需要和 human expert 校准；多维度任务可以拆成多个独立 judge 或多个 rubric。</p>
 <p>映射到 coding-agent 工作里，一个评审 prompt 本质上就是小型 eval harness。并且对 coding agent 来说，不能只看最终回答，还要看环境和 trace：</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Artifact: plan.md</span></span>
+<pre class="astro-code warm-garden-dark" style="background-color:#1f2b26;color:#d7e3dc; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Artifact: plan.md</span></span>
 <span class="line"><span>Runtime/evidence:</span></span>
 <span class="line"><span>- clean worktree status</span></span>
 <span class="line"><span>- tests/build command output</span></span>
@@ -188,7 +172,7 @@
 <li>只有真正属于人类判断的地方才交给 human。</li>
 </ol>
 <p>实现任务可以再加一层：</p>
-<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>implement</span></span>
+<pre class="astro-code warm-garden-dark" style="background-color:#1f2b26;color:#d7e3dc; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>implement</span></span>
 <span class="line"><span>-> run tests/build/checks</span></span>
 <span class="line"><span>-> freeze diff + evidence</span></span>
 <span class="line"><span>-> reviewer agent checks risks and acceptance criteria</span></span>
@@ -216,26 +200,4 @@
 <li><a href="https://openreview.net/forum?id=Sx038qxjek">CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing</a>，ICLR 2024。</li>
 <li><a href="https://arxiv.org/abs/2604.22891">Quantifying and Mitigating Self-Preference Bias of LLM Judges</a>，arXiv 2026。</li>
 <li><a href="https://www.promptfoo.dev/docs/guides/evaluate-coding-agents/">Promptfoo: Evaluate Coding Agents</a>，作为第三方实践材料检查于 2026-06-16。</li>
-</ul></div> <section class="related-section reveal" aria-label="Related entries"> <div class="related-grid"> <a class="related-card" href="/my-blog/essays/agents-md-is-working-boundary/"> <div class="meta-row"> <span>Essays</span> <span>Same series</span> </div> <strong>AGENTS.md 到底该写什么</strong> <p>AGENTS.md 给 coding agent 写开工边界。先讲它是什么,再用公开项目原文拆解哪些内容真的会改变 agent 的下一步动作。</p> </a><a class="related-card" href="/my-blog/notes/function-calling-is-not-agent-loop/"> <div class="meta-row"> <span>Notes</span> <span>Shared tag: agents</span> </div> <strong>Function calling 是能力，agent loop 是授权</strong> <p>给模型工具不等于让模型控制流程;多数生产系统应该先 workflow,只在必要处给 bounded loop。</p> </a><a class="related-card" href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noreferrer"> <div class="meta-row"> <span>Links</span> <span>Shared tag: agents</span> </div> <strong>Anthropic Building Effective Agents</strong> <p>官方 agent 架构地基:先区分 workflow 和 agent,从简单可组合模式开始,不要默认追求全自动 loop。</p> </a><a class="related-card" href="/my-blog/notes/review-gates-are-product-design/"> <div class="meta-row"> <span>Notes</span> <span>Shared tag: agents</span> </div> <strong>Review gate 不是拖慢 agent,而是产品设计</strong> <p>真正需要人的地方应该被设计成清晰验收点,而不是让人承担重复检查。</p> </a> </div> </section> </div> <aside class="panel detail-aside reveal" aria-label="Entry metadata"> <div class="meta-row"><time datetime="2026-06-16T00:00:00.000Z">Jun 16, 2026</time></div> <div class="meta-row" style="margin-top:1rem"><span class="tag">agents</span><span class="tag">evals</span><span class="tag">coding-agents</span><span class="tag">workflow</span></div> <p style="margin-top:1rem">Collection: Essays</p> <p style="margin-top:0.75rem">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  </aside> </article>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn. Built as a local-first Astro field note.</span> <span><a href="/my-blog/rss.xml">RSS</a> · no deployment cutover before human acceptance</span> </div> </footer> </div> <script>
-      const revealItems = Array.from(document.querySelectorAll('.reveal'));
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) {
-        revealItems.forEach((el) => {
-          el.classList.add('is-visible');
-          el.dataset.revealState = 'visible';
-        });
-      } else {
-        revealItems.forEach((el, index) => {
-          el.dataset.revealState = 'idle';
-          el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
-        });
-        const observer = new IntersectionObserver((entries) => {
-          for (const entry of entries) {
-            const visible = entry.isIntersecting;
-            entry.target.classList.toggle('is-visible', visible);
-            entry.target.dataset.revealState = visible ? 'visible' : 'idle';
-          }
-        }, { threshold: 0.18, rootMargin: '-6% 0px -12% 0px' });
-        revealItems.forEach((el) => observer.observe(el));
-      }
-    </script> </body> </html>
+</ul></div> <p class="type-note">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  <section class="related-section reveal" aria-label="Related entries"> <h2>继续阅读</h2> <div class="related-grid"> <a class="related-card" href="/my-blog/essays/agents-md-is-working-boundary/"> <div class="meta-row"> <span>Essays</span> <span>Same series</span> </div> <strong>AGENTS.md 到底该写什么</strong> <p>AGENTS.md 给 coding agent 写开工边界。先讲它是什么,再用公开项目原文拆解哪些内容真的会改变 agent 的下一步动作。</p> </a><a class="related-card" href="/my-blog/notes/function-calling-is-not-agent-loop/"> <div class="meta-row"> <span>Notes</span> <span>Shared tag: agents</span> </div> <strong>Function calling 是能力，agent loop 是授权</strong> <p>给模型工具不等于让模型控制流程;多数生产系统应该先 workflow,只在必要处给 bounded loop。</p> </a><a class="related-card" href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noreferrer"> <div class="meta-row"> <span>Links</span> <span>Shared tag: agents</span> </div> <strong>Anthropic Building Effective Agents</strong> <p>官方 agent 架构地基:先区分 workflow 和 agent,从简单可组合模式开始,不要默认追求全自动 loop。</p> </a><a class="related-card" href="/my-blog/notes/review-gates-are-product-design/"> <div class="meta-row"> <span>Notes</span> <span>Shared tag: agents</span> </div> <strong>Review gate 不是拖慢 agent,而是产品设计</strong> <p>真正需要人的地方应该被设计成清晰验收点,而不是让人承担重复检查。</p> </a> </div> </section> </article> <aside class="toc" id="toc" aria-label="本页目录"> <div class="lab">本页目录</div> <a href="#三种有用的评审形态">三种有用的评审形态</a><a href="#1-同会话-subagent低摩擦的局部挑刺" class="sub">1. 同会话 subagent：低摩擦的局部挑刺</a><a href="#2-新会话或-headless-run给高影响决策更强隔离" class="sub">2. 新会话或 headless run：给高影响决策更强隔离</a><a href="#3-正式-rubric--eval重复出现的质量门" class="sub">3. 正式 rubric / eval：重复出现的质量门</a><a href="#当前证据支持到哪里">当前证据支持到哪里</a><a href="#一个实用决策表">一个实用决策表</a><a href="#最小可靠流程">最小可靠流程</a><a href="#最后规则">最后规则</a><a href="#已检查来源">已检查来源</a> </aside> </div> <script type="module">function u(){document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach(c=>{const t=c;if(t.dataset.anchored)return;t.dataset.anchored="1";const n=document.createElement("a");n.className="heading-anchor",n.href="#"+t.id,n.textContent="#",n.setAttribute("aria-label","链接到本节:"+(t.textContent||"").trim()),t.prepend(n)})}function h(){document.querySelectorAll(".prose a[data-footnote-ref]").forEach((t,n)=>{const e=t;if(e.dataset.fnPop)return;const d=e.getAttribute("href")||"",i=d.startsWith("#")?document.getElementById(decodeURIComponent(d.slice(1))):null;if(!i)return;const l=i.cloneNode(!0);l.querySelectorAll("a[data-footnote-backref]").forEach(s=>s.remove());const p=(l.textContent||"").replace(/\s+/g," ").trim();if(!p)return;e.dataset.fnPop="1";const f=e.parentElement&&e.parentElement.tagName==="SUP"?e.parentElement:e;f.classList.add("fn-host");const r="fn-pop-"+(n+1),o=document.createElement("span");o.className="fn-pop",o.id=r,o.setAttribute("role","tooltip"),o.textContent=p,f.appendChild(o);const a=(e.getAttribute("aria-describedby")||"").split(/\s+/).filter(Boolean);a.includes(r)||a.push(r),e.setAttribute("aria-describedby",a.join(" ")),e.addEventListener("keydown",s=>{s.key==="Escape"&&e.blur()})})}document.addEventListener("astro:page-load",()=>{u(),h()});</script>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn · Warm Garden</span> <span><a href="/my-blog/rss.xml">RSS</a> · local-first Astro field note</span> </div> </footer> </div> <script type="module">const l=()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;function m(){const e=Array.from(document.querySelectorAll(".reveal"));if(!e.length)return;if(l()||!("IntersectionObserver"in window)){e.forEach(r=>r.classList.add("is-visible"));return}e.forEach((r,n)=>{r instanceof HTMLElement&&r.style.setProperty("--reveal-delay",`${Math.min(n%6,5)*70}ms`)});const t=new IntersectionObserver(r=>{for(const n of r)n.isIntersecting&&(n.target.classList.add("is-visible"),t.unobserve(n.target))},{threshold:.12,rootMargin:"0px 0px -8% 0px"});e.forEach(r=>t.observe(r))}function u(){const e=Array.from(document.querySelectorAll("#toc a"));if(!e.length||!("IntersectionObserver"in window))return;const t=e.map(n=>document.querySelector(n.getAttribute("href")||"")).filter(Boolean);if(!t.length)return;const r=new IntersectionObserver(n=>{for(const s of n)s.isIntersecting&&e.forEach(c=>c.classList.toggle("active",c.getAttribute("href")==="#"+s.target.id))},{rootMargin:"-20% 0px -70% 0px",threshold:0});t.forEach(n=>r.observe(n))}let i=!1;function a(){const e=document.getElementById("reading-progress");if(!e)return;const t=document.documentElement,r=t.scrollHeight-t.clientHeight;e.style.width=(r>0?t.scrollTop/r*100:0)+"%"}function h(){i||(i=!0,document.addEventListener("scroll",a,{passive:!0})),a()}function d(){return document.documentElement.dataset.theme==="dark"?"dark":"light"}function o(){const e=document.getElementById("theme-toggle");e&&e.setAttribute("aria-pressed",d()==="dark"?"true":"false")}function g(){const e=document.getElementById("theme-toggle");if(!e||e.dataset.bound){o();return}e.dataset.bound="1",e.addEventListener("click",()=>{const t=d()==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("theme",t)}catch{}o()}),o()}document.addEventListener("astro:after-swap",()=>{try{const e=localStorage.getItem("theme"),t=e==="dark"||e==="light"?e:window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch{}});document.addEventListener("astro:page-load",()=>{m(),u(),h(),g()});</script> </body> </html>

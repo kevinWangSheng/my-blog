@@ -1,49 +1,11 @@
-<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="generator" content="Astro v6.4.6"><title>Projects · Shawn Field Notes</title><meta name="description" content="项目入口会保持克制:只有足够公开、质量过线、证据完整的项目才会展示。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/projects"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="Projects · Shawn Field Notes"><meta property="og:description" content="项目入口会保持克制:只有足够公开、质量过线、证据完整的项目才会展示。"><meta property="og:type" content="website"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/projects"><meta name="twitter:card" content="summary_large_image"><style>
-      html,
-      body,
-      .site-shell,
-      main,
-      article,
-      section,
-      .reading,
-      .prose,
-      .prose :where(p, h1, h2, h3, h4, h5, h6, li, blockquote, code, pre, span, strong, em, a) {
-        -webkit-user-select: text !important;
-        user-select: text !important;
-      }
-      .reading,
-      .prose {
-        cursor: text;
-        pointer-events: auto !important;
-        -webkit-touch-callout: default !important;
-      }
-      body::selection,
-      .reading::selection,
-      .prose::selection,
-      .prose :where(p, h1, h2, h3, h4, h5, h6, li, blockquote, code, pre, span, strong, em, a)::selection {
-        background: #234d3f !important;
-        color: #fffdf7 !important;
-      }
-    </style><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.CHdrpCjF.css"></head> <body> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn / learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/projects/">Projects</a><a href="/my-blog/notes/">Notes</a><a href="/my-blog/logs/">Logs</a><a href="/my-blog/essays/">Essays</a><a href="/my-blog/links/">Links</a><a href="/my-blog/about/">About</a><a href="/my-blog/rss.xml">RSS</a> </div> </nav> </header> <main class="site-main">  <section class="page-hero"> <div class="container reveal"> <div class="eyebrow">Capability evidence</div> <h1>Projects</h1> <p>项目入口会保持克制:只有足够公开、质量过线、证据完整的项目才会展示。</p> </div> </section> <section class="container list-stack"> <article class="panel list-card"><p>这个集合暂时为空。后续 agent 同步内容前,页面仍保持可用。</p></article> </section>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn. Built as a local-first Astro field note.</span> <span><a href="/my-blog/rss.xml">RSS</a> · no deployment cutover before human acceptance</span> </div> </footer> </div> <script>
-      const revealItems = Array.from(document.querySelectorAll('.reveal'));
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) {
-        revealItems.forEach((el) => {
-          el.classList.add('is-visible');
-          el.dataset.revealState = 'visible';
-        });
-      } else {
-        revealItems.forEach((el, index) => {
-          el.dataset.revealState = 'idle';
-          el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
-        });
-        const observer = new IntersectionObserver((entries) => {
-          for (const entry of entries) {
-            const visible = entry.isIntersecting;
-            entry.target.classList.toggle('is-visible', visible);
-            entry.target.dataset.revealState = visible ? 'visible' : 'idle';
-          }
-        }, { threshold: 0.18, rootMargin: '-6% 0px -12% 0px' });
-        revealItems.forEach((el) => observer.observe(el));
-      }
-    </script> </body> </html>
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) { /* localStorage 不可用时静默回退到默认浅色 */ }
+      })();
+    </script><meta name="generator" content="Astro v6.4.6"><title>Projects · Shawn Field Notes</title><meta name="description" content="项目入口会保持克制:只有足够公开、质量过线、证据完整的项目才会展示。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/projects"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="Projects · Shawn Field Notes"><meta property="og:description" content="项目入口会保持克制:只有足够公开、质量过线、证据完整的项目才会展示。"><meta property="og:type" content="website"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/projects"><meta property="og:site_name" content="Shawn Field Notes"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Shawn Field Notes — AI 学习自留地"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap"></noscript><noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/my-blog/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CAqDO0tx.js"></script><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.93Bs6UTD.css"></head> <body> <div class="reading-progress" id="reading-progress" aria-hidden="true"></div> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn · learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/essays/">Essays</a><a href="/my-blog/notes/">Notes</a><a href="/my-blog/logs/">Logs</a><a href="/my-blog/projects/" class="active" aria-current="page">Projects</a><a href="/my-blog/links/">Links</a><a href="/my-blog/about/">About</a><a href="/my-blog/rss.xml">RSS</a> <button type="button" class="theme-toggle" id="theme-toggle" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换深色 / 浅色模式"> <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg> <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> </button> </div> </nav> </header> <main class="site-main">  <section class="page-hero"> <div class="container reveal"> <div class="eyebrow">Capability evidence</div> <h1>Projects</h1> <p>项目入口会保持克制:只有足够公开、质量过线、证据完整的项目才会展示。</p> </div> </section> <section class="container list-stack"> <article class="panel list-card"><p>这个集合暂时为空。后续 agent 同步内容前,页面仍保持可用。</p></article> </section>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn · Warm Garden</span> <span><a href="/my-blog/rss.xml">RSS</a> · local-first Astro field note</span> </div> </footer> </div> <script type="module">const l=()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;function m(){const e=Array.from(document.querySelectorAll(".reveal"));if(!e.length)return;if(l()||!("IntersectionObserver"in window)){e.forEach(r=>r.classList.add("is-visible"));return}e.forEach((r,n)=>{r instanceof HTMLElement&&r.style.setProperty("--reveal-delay",`${Math.min(n%6,5)*70}ms`)});const t=new IntersectionObserver(r=>{for(const n of r)n.isIntersecting&&(n.target.classList.add("is-visible"),t.unobserve(n.target))},{threshold:.12,rootMargin:"0px 0px -8% 0px"});e.forEach(r=>t.observe(r))}function u(){const e=Array.from(document.querySelectorAll("#toc a"));if(!e.length||!("IntersectionObserver"in window))return;const t=e.map(n=>document.querySelector(n.getAttribute("href")||"")).filter(Boolean);if(!t.length)return;const r=new IntersectionObserver(n=>{for(const s of n)s.isIntersecting&&e.forEach(c=>c.classList.toggle("active",c.getAttribute("href")==="#"+s.target.id))},{rootMargin:"-20% 0px -70% 0px",threshold:0});t.forEach(n=>r.observe(n))}let i=!1;function a(){const e=document.getElementById("reading-progress");if(!e)return;const t=document.documentElement,r=t.scrollHeight-t.clientHeight;e.style.width=(r>0?t.scrollTop/r*100:0)+"%"}function h(){i||(i=!0,document.addEventListener("scroll",a,{passive:!0})),a()}function d(){return document.documentElement.dataset.theme==="dark"?"dark":"light"}function o(){const e=document.getElementById("theme-toggle");e&&e.setAttribute("aria-pressed",d()==="dark"?"true":"false")}function g(){const e=document.getElementById("theme-toggle");if(!e||e.dataset.bound){o();return}e.dataset.bound="1",e.addEventListener("click",()=>{const t=d()==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("theme",t)}catch{}o()}),o()}document.addEventListener("astro:after-swap",()=>{try{const e=localStorage.getItem("theme"),t=e==="dark"||e==="light"?e:window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch{}});document.addEventListener("astro:page-load",()=>{m(),u(),h(),g()});</script> </body> </html>
