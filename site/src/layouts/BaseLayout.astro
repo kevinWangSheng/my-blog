@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -11,18 +12,38 @@ const {
   description = 'Shawn 的 AI 学习自留地、agent workflow 和知识系统公开手札。',
   type = 'website'
 } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://kevinwangsheng.github.io');
+const origin = Astro.site ?? 'https://kevinwangsheng.github.io';
+const canonical = new URL(Astro.url.pathname, origin);
+const ogImage = new URL(sitePath('/og.png'), origin);
 const nav = [
-  ['Projects', '/projects'], ['Notes', '/notes'], ['Logs', '/logs'], ['Essays', '/essays'], ['Links', '/links'], ['About', '/about'], ['RSS', '/rss.xml']
+  ['Essays', '/essays'], ['Notes', '/notes'], ['Logs', '/logs'], ['Projects', '/projects'], ['Links', '/links'], ['About', '/about'], ['RSS', '/rss.xml']
 ];
 
 import { sitePath } from '../lib/urls';
+const here = Astro.url.pathname.replace(/\/$/, '');
+const isActive = (href: string) => {
+  const target = sitePath(href).replace(/\/$/, '');
+  return here === target || (target !== sitePath('/').replace(/\/$/, '') && here.startsWith(target + '/'));
+};
 ---
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* 暗色模式 FOUC 兜底:在首屏绘制前同步设定 data-theme(用户选择优先,否则跟随系统)。
+        palette 已定稿,见 tokens.css 的 [data-theme="dark"] 与 DECISIONS.md D-20260626-暗色palette。 */}
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) { /* localStorage 不可用时静默回退到默认浅色 */ }
+      })();
+    </script>
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -33,45 +54,54 @@ import { sitePath } from '../lib/urls';
     <meta property="og:description" content={description} />
     <meta property="og:type" content={type} />
     <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Shawn Field Notes" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Shawn Field Notes — AI 学习自留地" />
     <meta name="twitter:card" content="summary_large_image" />
-    <style is:inline>
-      html,
-      body,
-      .site-shell,
-      main,
-      article,
-      section,
-      .reading,
-      .prose,
-      .prose :where(p, h1, h2, h3, h4, h5, h6, li, blockquote, code, pre, span, strong, em, a) {
-        -webkit-user-select: text !important;
-        user-select: text !important;
-      }
-      .reading,
-      .prose {
-        cursor: text;
-        pointer-events: auto !important;
-        -webkit-touch-callout: default !important;
-      }
-      body::selection,
-      .reading::selection,
-      .prose::selection,
-      .prose :where(p, h1, h2, h3, h4, h5, h6, li, blockquote, code, pre, span, strong, em, a)::selection {
-        background: #234d3f !important;
-        color: #fffdf7 !important;
-      }
-    </style>
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {/* 非阻塞但尽早发现:用 preload as=style 提前抓字体 CSS,onload 后转 stylesheet。
+        比 media=print 技巧更早发起请求 → web 字体更早到达 → swap 更早、LCP 更稳,且不阻塞首屏。 */}
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap"
+      />
+    </noscript>
+
+    {/* JS 失效兜底:无脚本时强制显示所有渐显内容,避免白屏 */}
+    <noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript>
+
+    <ClientRouter />
   </head>
   <body>
+    <div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
     <div class="site-shell">
       <header class="site-header">
         <nav class="container nav" aria-label="Primary navigation">
           <a class="brand" href={sitePath("/")} aria-label="Shawn Field Notes home">
             <strong>Shawn Field Notes</strong>
-            <span>Shawn / learning systems</span>
+            <span>Shawn · learning systems</span>
           </a>
           <div class="nav-links">
-            {nav.map(([label, href]) => <a href={sitePath(href)}>{label}</a>)}
+            {nav.map(([label, href]) => (
+              <a href={sitePath(href)} class={isActive(href) ? 'active' : undefined} aria-current={isActive(href) ? 'page' : undefined}>{label}</a>
+            ))}
+            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换深色 / 浅色模式">
+              <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+              <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
           </div>
         </nav>
       </header>
@@ -80,33 +110,111 @@ import { sitePath } from '../lib/urls';
       </main>
       <footer class="site-footer">
         <div class="container footer-grid">
-          <span>© {new Date().getFullYear()} Shawn. Built as a local-first Astro field note.</span>
-          <span><a href={sitePath("/rss.xml")}>RSS</a> · no deployment cutover before human acceptance</span>
+          <span>© {new Date().getFullYear()} Shawn · Warm Garden</span>
+          <span><a href={sitePath("/rss.xml")}>RSS</a> · local-first Astro field note</span>
         </div>
       </footer>
     </div>
-    <script is:inline>
-      const revealItems = Array.from(document.querySelectorAll('.reveal'));
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) {
-        revealItems.forEach((el) => {
-          el.classList.add('is-visible');
-          el.dataset.revealState = 'visible';
-        });
-      } else {
-        revealItems.forEach((el, index) => {
-          el.dataset.revealState = 'idle';
-          el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
+
+    <script>
+      // 初始加载 + 每次 View Transition 后都会触发 astro:page-load。
+      const prefersReduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function initReveal() {
+        const items = Array.from(document.querySelectorAll('.reveal'));
+        if (!items.length) return;
+        if (prefersReduce() || !('IntersectionObserver' in window)) {
+          items.forEach((el) => el.classList.add('is-visible'));
+          return;
+        }
+        items.forEach((el, index) => {
+          if (el instanceof HTMLElement) {
+            el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 70}ms`);
+          }
         });
         const observer = new IntersectionObserver((entries) => {
           for (const entry of entries) {
-            const visible = entry.isIntersecting;
-            entry.target.classList.toggle('is-visible', visible);
-            entry.target.dataset.revealState = visible ? 'visible' : 'idle';
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
           }
-        }, { threshold: 0.18, rootMargin: '-6% 0px -12% 0px' });
-        revealItems.forEach((el) => observer.observe(el));
+        }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+        items.forEach((el) => observer.observe(el));
       }
+
+      function initToc() {
+        const links = Array.from(document.querySelectorAll('#toc a'));
+        if (!links.length || !('IntersectionObserver' in window)) return;
+        const heads = links
+          .map((a) => document.querySelector(a.getAttribute('href') || ''))
+          .filter(Boolean);
+        if (!heads.length) return;
+        const spy = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              links.forEach((l) => l.classList.toggle('active', l.getAttribute('href') === '#' + entry.target.id));
+            }
+          }
+        }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+        heads.forEach((h) => spy.observe(h));
+      }
+
+      // 阅读进度条:scroll 监听只绑一次,每次都重新取条元素(View Transition 会替换它)。
+      let progressBound = false;
+      function updateProgress() {
+        const bar = document.getElementById('reading-progress');
+        if (!bar) return;
+        const h = document.documentElement;
+        const max = h.scrollHeight - h.clientHeight;
+        bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+      }
+      function bindProgress() {
+        if (!progressBound) {
+          progressBound = true;
+          document.addEventListener('scroll', updateProgress, { passive: true });
+        }
+        updateProgress();
+      }
+
+      // 暗色切换:状态在 <html data-theme> + localStorage;按钮反映当前态。
+      function currentTheme() {
+        return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+      }
+      function syncToggle() {
+        const btn = document.getElementById('theme-toggle');
+        if (btn) btn.setAttribute('aria-pressed', currentTheme() === 'dark' ? 'true' : 'false');
+      }
+      function initThemeToggle() {
+        const btn = document.getElementById('theme-toggle');
+        if (!btn || btn.dataset.bound) { syncToggle(); return; }
+        btn.dataset.bound = '1';
+        btn.addEventListener('click', () => {
+          const next = currentTheme() === 'dark' ? 'light' : 'dark';
+          document.documentElement.dataset.theme = next;
+          try { localStorage.setItem('theme', next); } catch (e) { /* 忽略持久化失败 */ }
+          syncToggle();
+        });
+        syncToggle();
+      }
+
+      // View Transition 会替换 <html> 上的属性,导航后重新应用主题,避免闪回浅色。
+      document.addEventListener('astro:after-swap', () => {
+        try {
+          const stored = localStorage.getItem('theme');
+          const theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) { /* 回退浅色 */ }
+      });
+
+      document.addEventListener('astro:page-load', () => {
+        initReveal();
+        initToc();
+        bindProgress();
+        initThemeToggle();
+      });
     </script>
   </body>
 </html>

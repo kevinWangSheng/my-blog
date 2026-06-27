@@ -206,3 +206,10 @@
 - 决策:`D-20260614-UI审美方向修正` **取代** `D-20260614-UI审美方向` 中“默认采用 AI Lab Manual / AI 实验手册”的实现口径。当前执行以 `tasks.md` T13–T17、`CONVENTIONS.md` 的当前 UI 约定和本条取代关系为准。
 - 取舍:保留旧决策的历史记录,但明确它不再作为当前实现验收基线。
 - 推翻条件:只有 human 在后续 ⑦验收或新 D- 条中明确恢复强实验舱方向时,旧方向才可重新成为主基线。
+
+### D-20260626-暗色palette
+- 状态:已定
+- 背景:方向 B「Warm Garden」落地时,`design-previews/spec/tokens.css` 把暗色 palette 标为 `[待确认]`,属 ②决策;agent 实现了切换骨架并用提案色值跑通 a11y,human 在本地预览看过实际渲染后确认色调。
+- 决策:采用 tokens.css `:root[data-theme="dark"]` 的暖调深色提案为定稿:底色 `#14171a`(非纯黑暖中性)、卡片 `#1a1f1d`、正文 `#e7eae6`、sage 提亮 `#6fd3ad`、amber `#e0b06a`、玻璃面板基色 `38 45 41`、行内 code `#8fd6b8`。切换控件位于导航栏;无历史选择时**跟随系统 `prefers-color-scheme`**(premium-gate B3),用户手动切换后 localStorage 记忆。
+- 取舍:得到一套与浅色 Warm Garden 同气质、非反色的暗色;代价是组件表面需用主题感知 token(`--c-surface-rgb` / `--c-header-bg` / `--c-bg-top` / `--c-code-inline`)而非裸白值。
+- 推翻条件:若后续 human 觉得底色不够沉静、强调色过荧光或层次不清,按"再压暗 / 加对比"方向调值;调值不改变切换机制与默认跟随系统的行为。

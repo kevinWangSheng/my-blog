@@ -1,35 +1,146 @@
+/* =============================================================================
+   Design Tokens — 方向 B「Warm Garden」
+   事实源(视觉): design-previews/direction-b-article.html / direction-b-garden.html
+   规格: design-previews/spec/tokens.css
+   组件只引用变量,不写裸值。底部「兼容别名」段把旧 token 名映射到新值,
+   让尚未迁移的页面(首页/列表/about)继续工作,迁完后逐步删除。
+   ============================================================================= */
+
 :root {
   color-scheme: light;
-  --bg: #f7f4ec;
-  --bg-elevated: #fffdf7;
-  --panel: rgba(255, 253, 247, 0.86);
-  --panel-strong: rgba(255, 253, 247, 0.96);
-  --ink: #25332f;
-  --ink-soft: #485a53;
-  --ink-muted: #64736d;
-  --line: rgba(94, 124, 111, 0.18);
-  --line-strong: rgba(72, 106, 92, 0.34);
-  --glow: #2f6f59;
+
+  /* ---- 颜色 · 浅色 -------------------------------------------------------- */
+  --c-bg:        #f7f3e8;   /* 纸白,非纯白 */
+  --c-bg-tint:   #f1ead8;
+  --c-card:      #fffdf6;
+  --c-ink:       #27332e;   /* 正文墨黑,非 #000 */
+  --c-ink-soft:  #4a5a52;
+  --c-ink-mute:  #73776c;
+  --c-line:      #e3dcca;
+  --c-line-2:    #cfc6ac;
+
+  --c-accent:        #2f6f59;   /* sage */
+  --c-accent-soft:   #5b917e;
+  --c-accent-2:      #b07a32;   /* amber */
+  --c-accent-tint:   rgba(47,111,89,.09);
+  --c-accent-2-tint: rgba(176,122,50,.07);
+
+  --c-code-bg:    #1f2b26;
+  --c-code-ink:   #d7e3dc;
+  --c-code-mute:  #7f9488;
+  --c-code-kw:    #e6b877;
+  --c-code-str:   #7ed3a8;
+  --c-code-fn:    #8fc4d6;
+
+  --c-selection:  rgba(47,111,89,.18);
+  --c-focus-ring: var(--c-accent);
+
+  /* 主题感知表面(暗色下被覆盖):body 渐变顶 / 顶栏底 / 玻璃面板基色 / 行内 code 文字 */
+  --c-bg-top:      #fbf7ee;
+  --c-header-bg:   rgba(251,247,238,.82);
+  --c-surface-rgb: 255 253 246;
+  --c-code-inline: #2c5e4c;
+
+  /* ---- 字体族 ------------------------------------------------------------ */
+  --font-serif:   "Literata","Noto Serif SC",Georgia,serif;
+  --font-display: "Fraunces","Noto Serif SC",Georgia,serif;
+  --font-ui:      "Inter",system-ui,sans-serif;
+  --font-mono:    "JetBrains Mono",ui-monospace,monospace;
+
+  /* ---- 字号阶梯(正文锚定 19px) --------------------------------------- */
+  --fs-kicker:  .72rem;
+  --fs-meta:    .82rem;
+  --fs-body:    19px;
+  --fs-lede:    1.2rem;
+  --fs-h4:      .98rem;
+  --fs-h3:      1.32rem;
+  --fs-h2:      1.75rem;
+  --fs-h1:      clamp(2.3rem, 4.6vw, 3.4rem);
+  --fs-hero:    clamp(2.6rem, 5.4vw, 4.3rem);
+
+  --fw-normal: 400; --fw-medium: 500; --fw-semibold: 600;
+  --lh-tight: 1.08;  --lh-snug: 1.25;  --lh-body: 1.75;
+  --ls-display: -.02em;  --ls-caps: .18em;
+  --measure:       720px;
+  --measure-media: 840px;
+
+  /* ---- 间距阶梯(4pt 基) ------------------------------------------------ */
+  --sp-1:.25rem; --sp-2:.5rem; --sp-3:.75rem; --sp-4:1rem;
+  --sp-5:1.3rem; --sp-6:1.8rem; --sp-8:2.4rem; --sp-10:3rem; --sp-12:4rem;
+  --gap-para: 1.3rem;
+  --gap-h2:   3rem;
+
+  /* ---- 圆角 / 阴影 ------------------------------------------------------- */
+  --r-sm: 6px; --r-md: 9px; --r-lg: 14px; --r-xl: 18px; --r-pill: 999px;
+  --shadow-sm:  0 12px 30px rgba(52,67,60,.07);
+  --shadow-md:  0 16px 36px rgba(47,111,89,.14);
+  --shadow-code:0 22px 50px rgba(31,43,38,.28);
+
+  /* ---- 动效(reduced-motion 下整体关闭) -------------------------------- */
+  --dur-fast: .15s; --dur: .2s; --dur-reveal: .6s;
+  --ease: ease;
+  --ease-out: cubic-bezier(.2,.7,.2,1);
+  --z-header: 9; --z-progress: 50;
+
+  /* ===========================================================================
+     兼容别名 —— 旧 token 名映射到方向 B 新值。未迁移页面(首页/列表/about/404)
+     仍引用这些名字;迁移完成后应逐项删除,不再新增对它们的引用。
+     =========================================================================== */
+  --bg: var(--c-bg);
+  --bg-elevated: var(--c-card);
+  --panel: rgba(var(--c-surface-rgb),.86);
+  --panel-strong: rgba(var(--c-surface-rgb),.96);
+  --ink: var(--c-ink);
+  --ink-soft: var(--c-ink-soft);
+  --ink-muted: var(--c-ink-mute);
+  --line: var(--c-line);
+  --line-strong: var(--c-line-2);
+  --glow: var(--c-accent);
   --glow-rgb: 47 111 89;
-  --amber: #8f642d;
-  --amber-rgb: 143 100 45;
+  --amber: var(--c-accent-2);
+  --amber-rgb: 176 122 50;
   --blue: #5f7f9a;
   --danger: #a85d61;
-  --shadow: 0 18px 60px rgba(52, 67, 60, 0.10);
-  --shadow-glow: 0 16px 44px rgba(71, 125, 104, 0.12);
-  --radius-sm: 14px;
-  --radius: 24px;
-  --radius-lg: 36px;
+  --shadow: var(--shadow-sm);
+  --shadow-glow: var(--shadow-md);
+  --radius-sm: var(--r-lg);
+  --radius: var(--r-xl);
+  --radius-lg: 28px;
   --max: 1160px;
-  --reading: 760px;
+  --reading: var(--measure);
   --space-1: clamp(0.38rem, 0.3rem + 0.35vw, 0.58rem);
   --space-2: clamp(0.7rem, 0.56rem + 0.65vw, 1.05rem);
   --space-3: clamp(1.05rem, 0.82rem + 0.95vw, 1.65rem);
   --space-4: clamp(1.65rem, 1.22rem + 1.8vw, 2.75rem);
   --space-5: clamp(2.45rem, 1.7rem + 3.25vw, 4.45rem);
   --space-6: clamp(3.5rem, 2.2rem + 5.4vw, 7rem);
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --font-body: Charter, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  --font-ui: "Avenir Next", "Gill Sans", "Trebuchet MS", sans-serif;
-  --font-mono: "SF Mono", "IBM Plex Mono", "Cascadia Code", monospace;
+  --font-body: var(--font-serif);
+}
+
+/* =============================================================================
+   暗色模式(已定稿 · D-20260626-暗色palette)—— 暖调深色,非反色非纯黑。
+   触发:<html data-theme="dark">(切换控件 + 跟随系统默认见 BaseLayout)。
+   ============================================================================= */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --c-bg:        #14171a;
+  --c-bg-tint:   #101316;
+  --c-card:      #1a1f1d;
+  --c-ink:       #e7eae6;
+  --c-ink-soft:  #aab4ad;
+  --c-ink-mute:  #79817a;
+  --c-line:      #2a302c;
+  --c-line-2:    #353d38;
+  --c-accent:        #6fd3ad;
+  --c-accent-soft:   #4f9c81;
+  --c-accent-2:      #e0b06a;
+  --c-accent-tint:   rgba(111,211,173,.12);
+  --c-accent-2-tint: rgba(224,176,106,.10);
+  --c-selection:     rgba(111,211,173,.22);
+
+  /* 主题感知表面 — 暗色对应值 */
+  --c-bg-top:      #161a1d;
+  --c-header-bg:   rgba(18,21,24,.82);
+  --c-surface-rgb: 38 45 41;
+  --c-code-inline: #8fd6b8;
 }

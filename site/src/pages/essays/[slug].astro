@@ -8,6 +8,6 @@ export async function getStaticPaths() {
   return Promise.all(entries.map(async (entry) => ({ params: { slug: entrySlug(entry) }, props: { entry, related: await getRelatedEntries('essays', entry) } })));
 }
 const { entry, related } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 ---
-<DetailPage collection="essays" entry={entry} Content={Content} related={related} />
+<DetailPage collection="essays" entry={entry} Content={Content} headings={headings} related={related} />

@@ -1,9 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { formatDate, collectionLabels, type RelatedEntry } from '../lib/content';
-interface Props { entry: any; collection: keyof typeof collectionLabels; Content: any; related?: RelatedEntry[]; }
-const { entry, collection, Content, related = [] } = Astro.props;
+import { sitePath } from '../lib/urls';
+
+interface Heading { depth: number; slug: string; text: string; }
+interface Props { entry: any; collection: keyof typeof collectionLabels; Content: any; related?: RelatedEntry[]; headings?: Heading[]; }
+const { entry, collection, Content, related = [], headings = [] } = Astro.props;
 const label = collectionLabels[collection];
+
 const typeNotes: Record<string, string> = {
   projects: 'Project 是能力证据入口:看问题、角色、方案、过程证据和当前进展,不是普通文章列表。',
   notes: 'Note 是短判断 / 知识卡片:保留正在形成但已经可复用的想法。',
@@ -14,15 +18,29 @@ const typeNotes: Record<string, string> = {
 const statusLabel: Record<string, string> = { active: 'Active', shipped: 'Shipped', paused: 'Paused', archived: 'Archived' };
 const isProject = collection === 'projects';
 
-import { sitePath } from '../lib/urls';
+// 阅读时长:正文以字符估算(中文按 ~450 字/分)。
+const charCount = typeof entry.body === 'string' ? entry.body.replace(/\s+/g, '').length : 0;
+const minutes = Math.max(1, Math.round(charCount / 450));
+
+// 目录:只取 h2 / h3,>=2 条才显示跟随侧栏。
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const hasToc = toc.length >= 2;
+const tags: string[] = Array.isArray(entry.data.tags) ? entry.data.tags : [];
 ---
 <BaseLayout title={`${entry.data.title} · ${label.title}`} description={entry.data.description} type="article">
-  <article class="container detail-shell">
-    <div class="reading">
-      <div class="eyebrow">{label.eyebrow}</div>
-      <h1>{entry.data.title}</h1>
-      <p class="detail-description">{entry.data.description}</p>
-      <p class="type-note">{typeNotes[collection]}</p>
+  <div class:list={["container", hasToc ? "detail-shell" : null]}>
+    <article class:list={["prose-article", hasToc ? null : "reading"]}>
+      <header class="post-head reveal">
+        <p class="kicker">{label.eyebrow}</p>
+        <h1>{entry.data.title}</h1>
+        <p class="lede">{entry.data.description}</p>
+        <div class="post-meta">
+          <span class="who"><span class="av" aria-hidden="true"></span><b>Shawn</b></span>
+          <time datetime={new Date(entry.data.date).toISOString()}>{formatDate(entry.data.date)}</time>
+          {charCount > 0 && (<><span aria-hidden="true">·</span><span>约 {minutes} 分钟</span></>)}
+          {tags.map((tag) => <span class="tag">{tag}</span>)}
+        </div>
+      </header>
 
       {isProject && (
         <section class="project-proof" aria-label="Project proof summary">
@@ -34,8 +52,19 @@ import { sitePath } from '../lib/urls';
       )}
 
       <div class="prose"><Content /></div>
+
+      <p class="type-note">{typeNotes[collection]}</p>
+
+      {isProject && (entry.data.repo || entry.data.demo) && (
+        <div class="cta-row">
+          {entry.data.repo && <a class="button secondary" href={entry.data.repo} target="_blank" rel="noreferrer">Open repo</a>}
+          {entry.data.demo && <a class="button secondary" href={entry.data.demo} target="_blank" rel="noreferrer">Open demo</a>}
+        </div>
+      )}
+
       {related.length > 0 && (
         <section class="related-section reveal" aria-label="Related entries">
+          <h2>继续阅读</h2>
           <div class="related-grid">
             {related.map((item) => (
               <a class="related-card" href={item.path} target={item.external ? '_blank' : undefined} rel={item.external ? 'noreferrer' : undefined}>
@@ -50,19 +79,15 @@ import { sitePath } from '../lib/urls';
           </div>
         </section>
       )}
-    </div>
-    <aside class="panel detail-aside reveal" aria-label="Entry metadata">
-      <div class="meta-row"><time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time></div>
-      <div class="meta-row" style="margin-top:1rem">{entry.data.tags?.map((tag: string) => <span class="tag">{tag}</span>)}</div>
-      <p style="margin-top:1rem">Collection: {label.title}</p>
-      <p style="margin-top:0.75rem">{typeNotes[collection]}</p>
-      {isProject && (
-        <div class="aside-links">
-          {entry.data.repo ? <a class="button secondary" href={entry.data.repo} target="_blank" rel="noreferrer">Open repo</a> : <span class="unavailable">Repo 暂未公开</span>}
-          {entry.data.demo ? <a class="button secondary" href={entry.data.demo} target="_blank" rel="noreferrer">Open demo</a> : <span class="unavailable">Demo 待补充</span>}
-          <a class="button secondary" href={sitePath("/about")}>About Shawn</a>
-        </div>
-      )}
-    </aside>
-  </article>
+    </article>
+
+    {hasToc && (
+      <aside class="toc" id="toc" aria-label="本页目录">
+        <div class="lab">本页目录</div>
+        {toc.map((h) => (
+          <a href={`#${h.slug}`} class={h.depth === 3 ? 'sub' : undefined}>{h.text}</a>
+        ))}
+      </aside>
+    )}
+  </div>
 </BaseLayout>

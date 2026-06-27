@@ -15,7 +15,7 @@ import { sitePath } from '../lib/urls';
 <BaseLayout>
   <section class="hero">
     <div class="container hero-grid">
-      <div class="reveal">
+      <div>
         <div class="eyebrow">Personal system / public notes</div>
         <h1 class="hero-title">Shawn <span>Field Notes</span></h1>
         <p class="hero-copy">Shawn 的学习自留地:这里先公开 AI 学习、agent workflow、memory 和知识系统判断;项目入口暂时收窄,只保留足够公开且质量过线的内容。</p>
@@ -28,7 +28,7 @@ import { sitePath } from '../lib/urls';
           <a class="path-card" href={sitePath("/notes")}><strong>短观点路径</strong><span>从 note 快速进入 function calling、harness、review gate 等具体判断。</span></a>
         </div>
       </div>
-      <aside class="panel instrument reveal" aria-label="Field status panel">
+      <aside class="panel instrument" aria-label="Field status panel">
         <div class="meta-row"><span>Current focus</span><span>agent memory / workflow</span></div>
         <div class="orbit"><span>human judgment core</span></div>
         <div class="instrument-grid">
