@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" font-family="-apple-system, 'Segoe UI', 'PingFang SC', sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L9,4 L0,8 Z" fill="#8a94a6"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="560" fill="#0e1420"/>
+  <text x="60" y="60" fill="#f5f0e8" font-size="30" font-weight="700">Planner – Generator – Evaluator 对抗式 harness</text>
+  <text x="60" y="92" fill="#8a94a6" font-size="17">context 与职责完全切开;交接靠文件,不靠对话。核心洞察:调一个独立评审严苛是可行的,调建造者自我批判不可行。</text>
+
+  <!-- Planner -->
+  <rect x="80" y="150" width="250" height="120" rx="12" fill="#161e2c" stroke="#5cc8ff"/>
+  <text x="205" y="200" fill="#5cc8ff" font-size="22" font-weight="700" text-anchor="middle">Planner</text>
+  <text x="205" y="232" fill="#c3cad6" font-size="15" text-anchor="middle">1–4 句 → 高层 spec</text>
+  <text x="205" y="253" fill="#c3cad6" font-size="15" text-anchor="middle">切 sprints(故意不做细节)</text>
+
+  <!-- Generator -->
+  <rect x="475" y="150" width="250" height="120" rx="12" fill="#161e2c" stroke="#fb923c"/>
+  <text x="600" y="200" fill="#fb923c" font-size="22" font-weight="700" text-anchor="middle">Generator(建造者)</text>
+  <text x="600" y="232" fill="#c3cad6" font-size="15" text-anchor="middle">写 HTML/CSS/JS + 后端</text>
+  <text x="600" y="253" fill="#c3cad6" font-size="15" text-anchor="middle">暴露可验证的调试状态</text>
+
+  <!-- Evaluator -->
+  <rect x="870" y="150" width="250" height="120" rx="12" fill="#1b1710" stroke="#c97a3e"/>
+  <text x="995" y="200" fill="#c97a3e" font-size="22" font-weight="700" text-anchor="middle">Evaluator(评审)</text>
+  <text x="995" y="232" fill="#e8c9a6" font-size="15" text-anchor="middle">fresh context,不看推理</text>
+  <text x="995" y="253" fill="#e8c9a6" font-size="15" text-anchor="middle">真点击/真读像素判 PASS</text>
+
+  <!-- arrows -->
+  <line x1="330" y1="210" x2="470" y2="210" stroke="#8a94a6" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="725" y1="210" x2="865" y2="210" stroke="#8a94a6" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M990,272 C990,340 610,340 610,274" fill="none" stroke="#c97a3e" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+  <text x="800" y="378" fill="#c97a3e" font-size="14" text-anchor="middle">NEEDS_WORK → 下一轮起始 prompt(5–15 轮)</text>
+
+  <!-- contract / files -->
+  <rect x="80" y="400" width="1040" height="120" rx="12" fill="#12100b" stroke="#3a3220"/>
+  <text x="100" y="436" fill="#f5f0e8" font-size="18" font-weight="600">共享状态 = 磁盘文件(不是对话)</text>
+  <text x="100" y="468" fill="#c3cad6" font-size="15">test-results.json(Default-FAIL 契约) · PROGRESS.json(面包屑) · screenshots/ · verify-output.json</text>
+  <text x="100" y="494" fill="#8a94a6" font-size="14">evidence-first hook:没先打开证据,禁止写"通过"。 两轨:functional = 确定性 e2e(measured);design = 主观 rubric(taste)。</text>
+</svg>

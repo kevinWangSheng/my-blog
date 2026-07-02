@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) { /* localStorage 不可用时静默回退到默认浅色 */ }
+      })();
+    </script><meta name="generator" content="Astro v6.4.6"><title>让 agent 连跑几小时的是 harness,不是模型 · Essays</title><meta name="description" content="先把 Anthropic《Build Agents That Run for Hours》这套 Planner–Generator–Evaluator harness 逐块讲清楚,再用一个真的跑了两小时、72 条准则的 3D 项目复现它——包括对抗审计怎么把'纸糊的验证'逼成实测,以及读 trace 怎么抓到一个'绿色的假收敛'。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/essays/harness-that-runs-for-hours"><link rel="icon" href="/my-blog/favicon.ico"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="让 agent 连跑几小时的是 harness,不是模型 · Essays"><meta property="og:description" content="先把 Anthropic《Build Agents That Run for Hours》这套 Planner–Generator–Evaluator harness 逐块讲清楚,再用一个真的跑了两小时、72 条准则的 3D 项目复现它——包括对抗审计怎么把'纸糊的验证'逼成实测,以及读 trace 怎么抓到一个'绿色的假收敛'。"><meta property="og:type" content="article"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/essays/harness-that-runs-for-hours"><meta property="og:site_name" content="Shawn Field Notes"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Shawn Field Notes — AI 学习自留地"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap"></noscript><noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/my-blog/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CAqDO0tx.js"></script><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.93Bs6UTD.css"></head> <body> <div class="reading-progress" id="reading-progress" aria-hidden="true"></div> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn · learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/essays/" class="active" aria-current="page">Essays</a><a href="/my-blog/notes/">Notes</a><a href="/my-blog/logs/">Logs</a><a href="/my-blog/projects/">Projects</a><a href="/my-blog/links/">Links</a><a href="/my-blog/about/">About</a><a href="/my-blog/rss.xml">RSS</a> <button type="button" class="theme-toggle" id="theme-toggle" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换深色 / 浅色模式"> <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg> <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> </button> </div> </nav> </header> <main class="site-main">  <div class="container detail-shell"> <article class="prose-article"> <header class="post-head reveal"> <p class="kicker">Long-form synthesis</p> <h1>让 agent 连跑几小时的是 harness,不是模型</h1> <p class="lede">先把 Anthropic《Build Agents That Run for Hours》这套 Planner–Generator–Evaluator harness 逐块讲清楚,再用一个真的跑了两小时、72 条准则的 3D 项目复现它——包括对抗审计怎么把&#39;纸糊的验证&#39;逼成实测,以及读 trace 怎么抓到一个&#39;绿色的假收敛&#39;。</p> <div class="post-meta"> <span class="who"><span class="av" aria-hidden="true"></span><b>Shawn</b></span> <time datetime="2026-07-02T00:00:00.000Z">Jul 02, 2026</time> <span aria-hidden="true">·</span><span>约 20 分钟</span> <span class="tag">agents</span><span class="tag">harness</span><span class="tag">eval</span><span class="tag">loop-engineering</span><span class="tag">systems</span> </div> </header>  <div class="prose has-drop-cap"><p>有一个说法这两年被反复提起:coding agent 已经能”连续跑几个小时,自己把一个应用做出来”。听起来很像营销。我想搞清楚两件事:这句话背后的机制到底是什么,以及它到底成不成立。</p>
+<p>所以我做了两步。第一步,把 Anthropic 那场讲这套机制的 workshop 逐块拆开、真正弄懂——不是记住几个名词,而是弄清每个部件为什么存在。第二步,亲手把这套 harness 复现一遍,拿它去建一个<strong>模型一把过不了</strong>的复杂项目,看它是不是真能跑几小时收敛,以及中间会在哪里骗我。</p>
+<p>这篇文章分两半:上半场把视频讲透,下半场讲我的实践。两条最反直觉的结论会在下半场出现——<strong>验证这一环最容易变成纸糊的</strong>,以及<strong>一个全绿的 dashboard 可能只是解析假象</strong>。</p>
+<hr>
+<h1 id="上半场这套-harness-到底是什么">上半场:这套 harness 到底是什么</h1>
+<p>先交代来源:这是 AI Engineer(Europe 2026)的一场 75 分钟 workshop,讲者是 Anthropic Applied AI 团队的两位工程师。它分两块——前半是”过去一年怎么让 Claude 不跑偏”的演化史,后半是”当前这套 harness 怎么设计”。下面按机制重新组织。</p>
+<h2 id="一agent-为什么跑着跑着就跑偏">一、agent 为什么”跑着跑着就跑偏”</h2>
+<p>视频开头给了三个原因。别急着跳过,这三个是后面所有设计的动机。</p>
+<p><img src="/my-blog/images/voyager-harness/three-failure-modes.svg" alt="Agent 跑偏的三个原因"></p>
+<p><strong>Context(状态)</strong>:上下文窗口有限,跨 session 会失忆。窗口越满,模型越容易 “context rot”——被噪声和过期结论干扰。更微妙的是 “context anxiety”:当模型感觉自己快到窗口上限,它会开始赶工、抄近路。</p>
+<p><strong>Planning(规划)</strong>:典型的三种坏法——想一把梭(一次做完整个复杂任务);做了半个功能就当自己做完了;或者做到一半 context 耗尽,留下一个半成品。</p>
+<p><strong>Verification(验证)</strong>:这是最反直觉、也是最重要的一个。模型在编码时的验证是不可靠的——它会发现 bug,然后自我说服放过;会写只跑通表层的浅层测试;会把平庸的活儿评成”很好”。视频用词很直接:<strong>谄媚偏置(sycophancy)直接作用在了质量判断上</strong>。一个会讨好你的模型,不是一个好的 QA。</p>
+<h2 id="二两条修复路径以及它们怎么共同演化">二、两条修复路径,以及它们怎么共同演化</h2>
+<p>面对这三个问题,有两条路。</p>
+<p><strong>路径一:训进模型权重。</strong> 视频引了 METR 的 p50 指标——在最小脚手架下、50% 成功率能完成的任务时长。它从 Sonnet 3.7 的约 1 小时,涨到 Opus 4.6 的约 12 小时。也就是说,模型本身能独立顶住的时长在指数级变长。(这一节里的时长、时间线、模型能力数字都转述自视频,我没有独立复核 METR 原始数据,读的时候当成”视频这么说”。)</p>
+<p><strong>路径二:改 harness。</strong> 也就是围绕模型搭的那套运行系统——Agent SDK 里的那些原语:agent loop、MCP 工具、子 agent、skills、权限控制。</p>
+<p>关键判断是这两条<strong>共同演化</strong>:先用 harness 填模型当前的缺口,等这个能力被训进权重,再把那段脚手架删掉。视频有一句我很喜欢的话——“有意思的 harness 组合的空间不会缩小,它只是<strong>移动</strong>”。所以这不是”以后就不需要 harness 了”,而是”需要的 harness 一直在变”。</p>
+<p>演化史那半场给了一条时间线佐证:2025 年初 Sonnet 3.7 配 Claude Code 预览版,能扛约 60 分钟级任务;年中 Opus 4 出来,有了 Rakuten 的 7 小时重构;到 2026 年初 Opus 4.6 + 1M 上下文,METR p50 到了约 12 小时,实战里出现了 6 小时的复古游戏、4 小时的音频工作站。中间还有个插曲叫 Ralph Wiggum loop——把一个 prompt 塞进 CLI 循环里一直跑到完成,精神是”在一个非确定的世界里做到确定地烂”。这些都是”让模型多跑一会儿”的不同尝试。</p>
+<h2 id="三核心机制把建造者和评审者彻底切开">三、核心机制:把建造者和评审者彻底切开</h2>
+<p>现在讲这套 harness 的心脏。它借鉴 GAN 的思路:一个 Generator 负责建造,一个 Evaluator 负责评判,而且两者的<strong>上下文、system prompt、职责完全切开</strong>,人为制造对抗压力。</p>
+<p><img src="/my-blog/images/voyager-harness/pge-loop.svg" alt="Planner–Generator–Evaluator 对抗式 harness"></p>
+<p>这里有一个全场最重要的洞察,值得单独抄下来:</p>
+<blockquote>
+<p>调一个<strong>独立的评审</strong>让它变得严苛,是 tractable(可做到)的;调一个<strong>建造者</strong>让它自我批判,不是。</p>
+</blockquote>
+<p>这句话解释了为什么要切开。同一个模型,当它扮演创作者时会袒护自己的作品;当它扮演一个 context 里从没见过这份作品的批评家时,它可以很挑剔。你利用的是 LLM”当评论家”和”当创作者”这两种能力之间的落差。这也是为什么 Evaluator 不该看到 Generator 的推理过程——视频在 Q&#x26;A 里明确说,让两个 model stream 互相看会”互相污染(muddying)“,所以只交接<strong>产出</strong>,不交接思路。</p>
+<p>还有一个细节:Evaluator 不是读代码 diff 来判断的,它用 Playwright <strong>真的去点击、真的截图</strong>。原则叫 “Plausibility is not correctness”——一段看起来合理的代码,配一张坏掉的截图,依然是不通过。</p>
+<h2 id="四主观质量是可以被打分的">四、主观质量,是可以被打分的</h2>
+<p>很多人觉得”设计好不好看”太主观、没法进自动化循环。视频的反驳是:可以,只要你把标准写下来。它用了一个四维 rubric,权重偏向前两项:</p>
+<ul>
+<li><strong>Design quality</strong>:整体是不是一个”连贯的整体”,而不是一堆零件的拼凑。</li>
+<li><strong>Originality</strong>:有没有自己的取舍,还是全在用模板/库的默认值。</li>
+<li><strong>Craft</strong>:排版层级、间距、配色和谐、对比度这些手艺活。</li>
+<li><strong>Functionality</strong>:用户看不看得懂界面、找不找得到主操作。</li>
+</ul>
+<p>打分方式是关键:<strong>每一个 criterion 一个硬阈值,任何一项低于阈值,这一轮就 fail</strong>——是逐项门禁,不是一个模糊的总分。另外用 few-shot 校准:给几个带详细分数拆解的范例,把评审对齐到作者的偏好上。</p>
+<h2 id="五frontend-loop一轮生成要评-5-到-15-次">五、frontend loop:一轮生成要评 5 到 15 次</h2>
+<p>具体到前端:Generator 产出 HTML/CSS/JS,Evaluator 用 Playwright MCP 自己导航、截图、研究,然后逐项打分、写下批评,回流给 Generator。<strong>每一次生成,通常要来回 5 到 15 轮。</strong></p>
+<p>其中有个我觉得单 agent 给不了的东西:<strong>pivot</strong>。每一轮之后 Generator 会判断——如果分数在往好走,就继续 refine;如果不行,就整体换一个美学方向。这种”知道什么时候该推倒重来”的能力,是对抗式循环特有的。</p>
+<h2 id="六planner-与-sprint-契约先谈拢done再动手">六、Planner 与 Sprint 契约:先谈拢”done”,再动手</h2>
+<p>Planner 把用户那 1 到 4 句话的 prompt,扩成一份<strong>高层</strong> spec,再切成若干 sprint。注意它<strong>故意不做 granular 的技术细节</strong>——因为一旦在计划阶段就把细节定死,错误会沿着 sprint 一级级放大。Planner 被提示”对范围要有野心,聚焦产品和高层设计”。</p>
+<p>然后是契约机制,这是我觉得整套东西里最精巧的一环:<strong>在 Generator 写第一行代码之前,两个 agent 先就”什么算做完”谈拢</strong>。Generator 提出”我要建什么、怎么验证”,Evaluator 来审——范围是不是太大?测试是不是太弱?有没有漏掉边界情况?两边通过磁盘上的文件来回迭代,直到一致才开建。而且最后 Evaluator 打分是对着<strong>这份契约</strong>打,不是对着最初那句模糊的 spec。视频给的例子里,那个复古游戏光是 Sprint 3 就单独有 27 条验收标准。</p>
+<h2 id="七一个实证solo-vs-full-harness">七、一个实证:solo vs full harness</h2>
+<p>视频拿”做一个复古游戏制作器”做了对照,数字很有说服力。</p>
+<p><strong>单 agent(solo)</strong>:表面看像做完了,但一进 play mode,按键没反应——它不懂怎么测试自己做的东西。20 分钟、9 美元、4 个功能。</p>
+<p><strong>完整 harness</strong>:agent 自己把项目命名成 Retro Forge,自建了新建项目对话框、54 色调色板,甚至在 app 内递归地长出一个 AI 关卡助手,play mode 是真能玩的(还带一个 debug HUD 专门给 evaluator 看)。6 小时、200 美元、16 个功能、跨 10 个 sprint。</p>
+<p>差距<strong>几乎全部来自脚手架</strong>。而且 evaluator 抓到的那些 bug 很典型:FastAPI 的路由顺序问题、单元测试全过但生产环境崩溃、一个删除键的布尔逻辑 bug——这些都是只有真去用这个 app 才抓得到的,读代码读不出来。</p>
+<h2 id="八坦白调试和给-harness-减肥">八、坦白、调试,和给 harness 减肥</h2>
+<p>视频有一句很诚实的话:“开箱即用的 Claude 是个差劲的 QA agent。” 它会发现 bug 又放过自己。没有银弹,靠的是手工把边界 case 喂回 prompt。</p>
+<p>那<strong>调试这套系统的主循环是什么?是人肉读 trace。</strong> 找到模型的判断和人的判断在哪里分叉,再去调那段 prompt。视频说这和读 stack trace 是同一块肌肉。你也可以再派一个 agent 去 grep 转录、自动改 prompt,但本质是一样的:读原始输出,找分叉点。</p>
+<p>最后,随着模型变强,harness 是要<strong>减肥</strong>的。视频给了一张 Opus 4.5 → 4.6 的组件对照:session 之间的 context reset,从”必须”变成”丢掉”(改用单 session + compaction);sprint 拆分,从”关键”变成”去掉”(模型能连贯撑两小时);evaluator 频率,从”每个 sprint 一次”变成”整个生成后跑一次”;只有 Planner,仍然需要。教训是——不是 harness 错了,是前沿移动了。</p>
+<h2 id="九它收在五条我只挑我真复测过的讲">九、它收在五条,我只挑我真复测过的讲</h2>
+<p>视频结尾给了五条 takeaways:自评是陷阱、要用对抗式评审;compaction 不等于 coherence(压缩上下文不等于保持连贯);结构化的 handoff 配干净的 context;主观质量是可以打分的,前提是你把标准写下来;以及,坐下来读 trace。</p>
+<p>五条我都认同,但真正被我下半场实践狠狠验证过的,是第一条和第五条——用对抗评审代替自评,以及读 trace。它们也正好是这次给我上课上得最狠的两条,下面会看到为什么。</p>
+<hr>
+<h1 id="下半场我把它复现了一遍">下半场:我把它复现了一遍</h1>
+<p>理解归理解。我想知道自己搭一套能不能真的跑起来,以及它会在哪里出问题。</p>
+<h2 id="十先做玩具让玩具暴露盲点">十、先做玩具,让玩具暴露盲点</h2>
+<p>我最初拿一个看板应用练手。它一轮就”收敛”了——看起来成功,其实什么都没证明:任务太确定,模型一把过,evaluator 根本无事可做。</p>
+<p>但它暴露了一个真实的盲点。验收脚本每次都先调 <code>/api/reset</code> 种好数据再看 UI,于是一直是绿的。可真实的第一个用户不会去调 reset——他打开的是一个全新的空库。而那版后端只在 reset 时 seed,<code>GET /api/board</code> 在空库上直接返回空列表,前端渲染出<strong>一片空白的首屏</strong>。</p>
+<p>根因一句话:<strong>验证用了被测系统自己的 setup 接口,去制造它本该去检验的前提。</strong> 我把这条教训直接写进了下一个项目的契约——冷启动(全新库、从不调 reset)必须渲染出内容,而且 verify 不许用 reset/种数据伪造首屏。一个玩具的价值,就在于它便宜地暴露了这种边界盲点。</p>
+<h2 id="十一选一个模型一把过不了的靶子voyager">十一、选一个模型一把过不了的靶子:VOYAGER</h2>
+<p>要验证”连跑几小时”,就得选一个复杂到一轮做不完的项目。我选了 VOYAGER:一个滚动驱动的电影级 3D 太阳系远航——下滑就像驾驶相机从地表飞向星系,Three.js 前端,Python 标准库后端,而且后端自己用 Kepler 方程算真实的行星位置。</p>
+<p><img src="/my-blog/images/voyager-harness/voyager-launch.webp" alt="VOYAGER 第一章 Launch:地球带大气壳、月球、小行星带、HUD"></p>
+<p>契约拆成 <strong>72 条准则(60 条功能 + 12 条设计)</strong>,十个 sprint。选它的理由很功利,对应视频里那些”只有真用 app 才抓得到”的点:</p>
+<ul>
+<li>3D 是不透明的像素,evaluator 没法读 diff——逼我把”可验证性”想清楚;</li>
+<li>主观的电影质感挑不完——让 design 评审有多轮可做;</li>
+<li>后端星历给了一条<strong>确定性数值轴</strong>——行星位置对不对,是能被精确校验的,骗不过去。</li>
+</ul>
+<p>这里有个关键设计:3D 场景对外部是黑盒,所以我要求前端暴露一个 <code>window.__VOYAGE__</code> 调试状态对象(当前章节、滚动进度、相机位姿、可见天体的屏幕坐标、帧数、粒子数、后处理开关)。这就是 evaluator 唯一的”地面真相”。这一步直接对应视频里复古游戏那个”给 evaluator 看的 debug HUD”。</p>
+<h2 id="十二对抗审计它是真复杂还是又一个玩具">十二、对抗审计:它是真复杂,还是又一个玩具?</h2>
+<p>在烧几小时算力之前,我做了一件我觉得最值的事:<strong>派一个对抗性 subagent,专门攻击这套 harness——它到底够不够复杂,还是只是看起来复杂?</strong></p>
+<p>结论很扎心:<strong>BORDERLINE(临界)</strong>。规模是够大,但达标的方式是错的。因为 verify 把 builder <strong>自报</strong>的 <code>__VOYAGE__</code> 数值当成了真相。一个偷懒的 builder,用一个静态 HTML 页面 + 一个写死的状态对象、根本不渲染任何东西,就能假过大约 40/60 条功能准则:</p>
+<ul>
+<li><code>particles = 100000</code>?直接写死这个数,不用真渲染十万颗星;</li>
+<li><code>fps = 60</code>?直接写死;更糟的是,真的去渲染十万颗星在无头软件 GL 下反而跑不到 20fps——<strong>于是”诚实者失败,作弊者通过”</strong>;</li>
+<li><code>post.bloom = true</code>?一个布尔量而已。</li>
+</ul>
+<p>它还找到两条<strong>永远不可能被判过</strong>的准则(verify 的一个 bug 导致它们从不被记录成通过)——这意味着就算 builder 做得完美,循环也永远收敛不了,只会白白空转几小时。这正是”跑了几小时却什么都没证明”的另一种死法,只是更慢。</p>
+<p>这就是视频第 1 条 takeaway 的反面教材:<strong>当你唯一的地面真相是一个建造者能自己写死的钩子,验证这一环就是纸糊的。</strong></p>
+<h2 id="十三加固把自报全部换成实测">十三、加固:把”自报”全部换成”实测”</h2>
+<p>修法不是把评审调松,是把每一个吃重的数字从”自报”改成”实测”:</p>
+<ul>
+<li><strong>FPS</strong>:从一个每帧递增的 <code>frameCount</code>,在 t0 和 t+1 秒两次采样实算,而不是读那个可写的 <code>fps</code>。地板降到软件 GL 现实的 20。</li>
+<li><strong>粒子/星数</strong>:取自 <code>renderer.info.render.points</code>(真实绘制的点数),不是一个可写的标量。</li>
+<li><strong>“真的渲染出来了”</strong>:用 <code>preserveDrawingBuffer</code> 真读回画布像素,判断非空、逐章配色差异、bloom 是否真的溢出亮像素。</li>
+<li><strong>点选正确性</strong>:真的派发一次鼠标点击到天体的屏幕坐标,再断言焦点落在它身上——一个写死的 onclick 满足不了两个不同天体的点击。</li>
+</ul>
+<p><img src="/my-blog/images/voyager-harness/voyager-explore-annotated.webp" alt="explore 模式:标注指出真后端信息面板与收敛后的 bloom"></p>
+<p>加固后再让它复审,评级升到 <strong>GENUINELY-COMPLEX</strong>。这条的价值,在后面的长跑里被兑现了两次。<strong>一句话:验证读什么字段,决定它能不能被骗。要读像素、读帧进展、读真实输入事件——不能读建造者能写死的东西。</strong></p>
+<p>在正式长跑前我还跑了个便宜的”探针”(只跑几轮),它当场抓出 verify 自己的一个崩溃 bug——3D 场景没挂载时查询画布会抛错,导致后面十几条准则根本没被记录。这个 bug 只有对着真实构建跑才会现形。修成”崩不了、永远记满 72 条”之后,才敢放它长跑。</p>
+<h2 id="十四长跑两小时自治真的建到了-7272">十四、长跑:两小时自治,真的建到了 72/72</h2>
+<p>harness 定稿后,我让它无人值守地跑。大约两小时、三次迭代:</p>
+<ul>
+<li>一个 builder turn 花了 <strong>34 分钟</strong>,从零写出了完整的 <code>app.js</code>——八章远航、十二万颗种子星、真实星历定位、粒子小行星带、后处理栈、自由探索模式,功能轴<strong>一轮拿下 60/60</strong>;</li>
+<li>设计轴迭代了三轮:过曝 → 加上程序化的行星表面 → 收敛。</li>
+</ul>
+<p><img src="/my-blog/images/voyager-harness/voyager-galaxy.webp" alt="银河终章 Interstellar:十二万颗星构成的银河带"></p>
+<p>这印证了视频最朴素的主张:harness 让 agent 连续 productive 干了几个小时,而不是一次回复的极限。也顺带印证了一个更细的判断——对足够强的模型,<strong>功能轴几乎一轮就过,多轮的价值主要压在了主观的设计轴上</strong>。这正是视频第七节说的”脚手架随模型变强而移动”:我这套的 sprint 拆分对功能几乎没起作用,起作用的是设计轴的反复对抗。</p>
+<h2 id="十五最狠的一课绿色的收敛可能是解析假象">十五、最狠的一课:绿色的”收敛”可能是解析假象</h2>
+<p>循环报告 <strong>72/72、两个判官全过、自动停机</strong>。如果我就此收工,这篇文章会是个漂亮的圆满结局。</p>
+<p>但我照着视频第 5 条 takeaway 做了——读 evaluator 的原始输出。design-critic 的实际裁决是这样的:</p>
+<pre class="astro-code warm-garden-dark" style="background-color:#1f2b26;color:#d7e3dc; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span># harness/logs/iter-5-design.txt</span></span>
+<span class="line"><span>PASS or NEEDS_WORK assessment below, based on actually viewing all seven frames.</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>NEEDS_WORK</span></span>
+<span class="line"><span>d01 7/10 ✓ | … | d12 6/10 ✗ (threshold 7)</span></span></code></pre>
+<p>它判的是 <strong>NEEDS_WORK</strong>。d12(finish-polish)只有 6 分,没到 7 分的阈值。但 timeline 记录成了 PASS。问题出在取裁决的这一行:</p>
+<pre class="astro-code warm-garden-dark" style="background-color:#1f2b26;color:#d7e3dc; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#7F9488;font-style:italic"># run-loop.sh</span></span>
+<span class="line"><span style="color:#8FC4D6">verdict_of</span><span style="color:#D7E3DC">(){ </span><span style="color:#8FC4D6">grep</span><span style="color:#7ED3A8"> -oE</span><span style="color:#7ED3A8"> 'PASS|NEEDS_WORK'</span><span style="color:#7ED3A8"> "</span><span style="color:#D7E3DC">$1</span><span style="color:#7ED3A8">"</span><span style="color:#E6B877"> |</span><span style="color:#8FC4D6"> head</span><span style="color:#7ED3A8"> -1</span><span style="color:#D7E3DC">; }   </span><span style="color:#7F9488;font-style:italic"># ← 抓到了开场白里的 "PASS"</span></span></code></pre>
+<p>评审在第一行写了句”PASS or NEEDS_WORK assessment below”,<code>grep | head -1</code> 贪婪地抓到了那句话里的 <strong>PASS</strong>,于是整个循环在一个<strong>假 PASS</strong> 上收敛了。真实状态其实是 71/72。</p>
+<p>这一下同时说明了两件事,而且都很重要。第一,独立评审<strong>确实够严</strong>——它 d12 的三条缺陷(块状的 Earth 贴图、图表式的天体摆位、explore 模式的过曝),我独立去看截图,全部核实为真。所以问题不在评审的品味,恰恰印证了视频那句核心洞察:调严的独立 critic 是可行的。第二,<strong>失效的是读它裁决的那行管道</strong>。</p>
+<p>校准的方向因此很清楚——不是调松评审,是把裁决改成锚定、不会和散文碰撞的机读 token:</p>
+<pre class="astro-code warm-garden-dark" style="background-color:#1f2b26;color:#d7e3dc; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#8FC4D6">verdict_of</span><span style="color:#D7E3DC">(){ </span><span style="color:#8FC4D6">grep</span><span style="color:#7ED3A8"> -oE</span><span style="color:#7ED3A8"> '^(VERDICT:[[:space:]]*)?(PASS|NEEDS_WORK)[[:space:]]*$'</span><span style="color:#7ED3A8"> "</span><span style="color:#D7E3DC">$1</span><span style="color:#7ED3A8">"</span><span style="color:#E6B877"> |</span><span style="color:#8FC4D6"> grep</span><span style="color:#7ED3A8"> -oE</span><span style="color:#7ED3A8"> 'PASS|NEEDS_WORK'</span><span style="color:#E6B877"> |</span><span style="color:#8FC4D6"> head</span><span style="color:#7ED3A8"> -1</span><span style="color:#D7E3DC">; }</span></span></code></pre>
+<p>同时把两个判官的输出契约收紧:首行必须<strong>恰好</strong>是 <code>VERDICT: PASS</code> 或 <code>VERDICT: NEEDS_WORK</code>,不许有开场白。</p>
+<p><strong>这就是”读 trace”的真正价值:它抓到的是一个肉眼看 dashboard 永远发现不了的问题。一个全绿的面板,可能只是一次字符串匹配的假象。</strong></p>
+<h2 id="十六一个附赠的教训美化撞出了跨轨回归">十六、一个附赠的教训:美化撞出了跨轨回归</h2>
+<p>修好管道续跑,又撞出第三件事。builder 为了修 d12,给地球换上了高清贴图和大气 shader,结果把 chapter-0 的<strong>实测</strong> FPS 拖到了 19,低于 20 的地板。而且它擅自把那条功能准则标成了通过。</p>
+<p>功能评审当场穿帮了——<strong>因为 FPS 是从 frameCount 实测的</strong>。如果当初信的是自报值,19fps 会被伪装成通过混过去。一次纯粹的视觉美化,撞出一次跨轨的性能回归,被 measured 的门稳稳接住。再修一轮(降低地球的几何精度、削减过度绘制),才是一个经得起复核的真 72/72。</p>
+<p>也该诚实交代我<strong>没</strong>测的:整个验证跑在无头的软件 GL 下,真实 GPU 上的表现、跨浏览器、以及超过两小时的长程稳定性,我都没验;设计轴的”通过”最终仍是评审模型的判断,和人的品味是否完全一致,我只做了抽样核对,没有系统对齐。这些是这次实践的边界。</p>
+<h2 id="十七我会带走的五条">十七、我会带走的五条</h2>
+<ol>
+<li><strong>要验证 harness,先选一个模型一把过不了的项目。</strong> 一轮就完成的任务,证明的是模型强,不是系统有用。</li>
+<li><strong>验证读什么字段,决定它能不能被骗。</strong> 只要读的是被造者能写死的东西,门就是纸糊的;要读像素、读帧进展、读真实输入事件。</li>
+<li><strong>契约要写真实的第一次旅程。</strong> 别用被测系统自己的 setup 接口去伪造前提(冷启动、空状态、首屏)。</li>
+<li><strong>绿色不等于对。</strong> 把 evaluator 的原文和 dashboard 记录对一遍;机读裁决要锚定、防碰撞。</li>
+<li><strong>强模型把”多轮”压到了主观轴。</strong> 功能能一轮过时,循环的价值主要在设计/品味的多轮对抗,以及跨轨回归的兜底。</li>
+</ol>
+<p>回到开头那个问题——“agent 能连跑几小时自己做出应用”这句话成不成立?我的答案是:成立,但它成立的前提被这句话本身藏住了。真正让它成立的,不是模型某一次的灵光一现,而是一套<strong>把建造和评审对抗起来、把验证钉死在实测上、并且允许你回头读原始 trace</strong> 的系统。模型负责变强,harness 负责不让它骗你——包括不让它骗自己。</p>
+<hr>
+<p><em>素材来自 Anthropic 的 workshop <a href="https://www.youtube.com/watch?v=mR-WAvEPRwE">《Build Agents That Run for Hours》</a>(AI Engineer, Europe 2026)。文中除”三失败原因""PGE 环”两张为我据其概念重画的原创图外,其余均为本次实践 VOYAGER 的真实截图。整个过程——搭 harness、对抗审计、两小时长跑、读 trace 校准——都留有可追溯的提交与日志。</em></p></div> <p class="type-note">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  <section class="related-section reveal" aria-label="Related entries"> <h2>继续阅读</h2> <div class="related-grid"> <a class="related-card" href="/my-blog/essays/sandbox-is-execution-boundary/"> <div class="meta-row"> <span>Essays</span> <span>Same series</span> </div> <strong>Agent sandbox 是执行边界，不是安全按钮</strong> <p>让 agent 跑代码之前,先分清 sandbox 能隔离什么、不能替你决定什么,以及为什么凭据和网络边界仍然是产品设计问题。</p> </a><a class="related-card" href="/my-blog/essays/agent-memory-is-write-policy/"> <div class="meta-row"> <span>Essays</span> <span>Same series</span> </div> <strong>Agent memory 不是向量库，是写入策略</strong> <p>真正有用的 agent memory 不只是保存聊天历史,而是决定什么状态值得写入、更新、选择、遗忘和审计。</p> </a><a class="related-card" href="/my-blog/notes/harness-before-finetune/"> <div class="meta-row"> <span>Notes</span> <span>Shared tag: agents</span> </div> <strong>先投 harness，再谈 fine-tune</strong> <p>如果问题能通过工具、权限、上下文、评估和流程解决, fine-tune 不应该是第一反应。</p> </a><a class="related-card" href="/my-blog/essays/context-engineering-as-lifecycle/"> <div class="meta-row"> <span>Essays</span> <span>Shared tag: agents</span> </div> <strong>Context engineering 是生命周期设计</strong> <p>上下文窗口变长并不会自动带来可靠 agent,真正重要的是写入、选择、压缩、隔离和恢复。</p> </a> </div> </section> </article> <aside class="toc" id="toc" aria-label="本页目录"> <div class="lab">本页目录</div> <a href="#一agent-为什么跑着跑着就跑偏">一、agent 为什么”跑着跑着就跑偏”</a><a href="#二两条修复路径以及它们怎么共同演化">二、两条修复路径,以及它们怎么共同演化</a><a href="#三核心机制把建造者和评审者彻底切开">三、核心机制:把建造者和评审者彻底切开</a><a href="#四主观质量是可以被打分的">四、主观质量,是可以被打分的</a><a href="#五frontend-loop一轮生成要评-5-到-15-次">五、frontend loop:一轮生成要评 5 到 15 次</a><a href="#六planner-与-sprint-契约先谈拢done再动手">六、Planner 与 Sprint 契约:先谈拢”done”,再动手</a><a href="#七一个实证solo-vs-full-harness">七、一个实证:solo vs full harness</a><a href="#八坦白调试和给-harness-减肥">八、坦白、调试,和给 harness 减肥</a><a href="#九它收在五条我只挑我真复测过的讲">九、它收在五条,我只挑我真复测过的讲</a><a href="#十先做玩具让玩具暴露盲点">十、先做玩具,让玩具暴露盲点</a><a href="#十一选一个模型一把过不了的靶子voyager">十一、选一个模型一把过不了的靶子:VOYAGER</a><a href="#十二对抗审计它是真复杂还是又一个玩具">十二、对抗审计:它是真复杂,还是又一个玩具?</a><a href="#十三加固把自报全部换成实测">十三、加固:把”自报”全部换成”实测”</a><a href="#十四长跑两小时自治真的建到了-7272">十四、长跑:两小时自治,真的建到了 72/72</a><a href="#十五最狠的一课绿色的收敛可能是解析假象">十五、最狠的一课:绿色的”收敛”可能是解析假象</a><a href="#十六一个附赠的教训美化撞出了跨轨回归">十六、一个附赠的教训:美化撞出了跨轨回归</a><a href="#十七我会带走的五条">十七、我会带走的五条</a> </aside> </div> <script type="module">function u(){document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach(c=>{const t=c;if(t.dataset.anchored)return;t.dataset.anchored="1";const n=document.createElement("a");n.className="heading-anchor",n.href="#"+t.id,n.textContent="#",n.setAttribute("aria-label","链接到本节:"+(t.textContent||"").trim()),t.prepend(n)})}function h(){document.querySelectorAll(".prose a[data-footnote-ref]").forEach((t,n)=>{const e=t;if(e.dataset.fnPop)return;const d=e.getAttribute("href")||"",i=d.startsWith("#")?document.getElementById(decodeURIComponent(d.slice(1))):null;if(!i)return;const l=i.cloneNode(!0);l.querySelectorAll("a[data-footnote-backref]").forEach(s=>s.remove());const p=(l.textContent||"").replace(/\s+/g," ").trim();if(!p)return;e.dataset.fnPop="1";const f=e.parentElement&&e.parentElement.tagName==="SUP"?e.parentElement:e;f.classList.add("fn-host");const r="fn-pop-"+(n+1),o=document.createElement("span");o.className="fn-pop",o.id=r,o.setAttribute("role","tooltip"),o.textContent=p,f.appendChild(o);const a=(e.getAttribute("aria-describedby")||"").split(/\s+/).filter(Boolean);a.includes(r)||a.push(r),e.setAttribute("aria-describedby",a.join(" ")),e.addEventListener("keydown",s=>{s.key==="Escape"&&e.blur()})})}document.addEventListener("astro:page-load",()=>{u(),h()});</script>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn · Warm Garden</span> <span><a href="/my-blog/rss.xml">RSS</a> · local-first Astro field note</span> </div> </footer> </div> <script type="module">const l=()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;function m(){const e=Array.from(document.querySelectorAll(".reveal"));if(!e.length)return;if(l()||!("IntersectionObserver"in window)){e.forEach(r=>r.classList.add("is-visible"));return}e.forEach((r,n)=>{r instanceof HTMLElement&&r.style.setProperty("--reveal-delay",`${Math.min(n%6,5)*70}ms`)});const t=new IntersectionObserver(r=>{for(const n of r)n.isIntersecting&&(n.target.classList.add("is-visible"),t.unobserve(n.target))},{threshold:.12,rootMargin:"0px 0px -8% 0px"});e.forEach(r=>t.observe(r))}function u(){const e=Array.from(document.querySelectorAll("#toc a"));if(!e.length||!("IntersectionObserver"in window))return;const t=e.map(n=>document.querySelector(n.getAttribute("href")||"")).filter(Boolean);if(!t.length)return;const r=new IntersectionObserver(n=>{for(const s of n)s.isIntersecting&&e.forEach(c=>c.classList.toggle("active",c.getAttribute("href")==="#"+s.target.id))},{rootMargin:"-20% 0px -70% 0px",threshold:0});t.forEach(n=>r.observe(n))}let i=!1;function a(){const e=document.getElementById("reading-progress");if(!e)return;const t=document.documentElement,r=t.scrollHeight-t.clientHeight;e.style.width=(r>0?t.scrollTop/r*100:0)+"%"}function h(){i||(i=!0,document.addEventListener("scroll",a,{passive:!0})),a()}function d(){return document.documentElement.dataset.theme==="dark"?"dark":"light"}function o(){const e=document.getElementById("theme-toggle");e&&e.setAttribute("aria-pressed",d()==="dark"?"true":"false")}function g(){const e=document.getElementById("theme-toggle");if(!e||e.dataset.bound){o();return}e.dataset.bound="1",e.addEventListener("click",()=>{const t=d()==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("theme",t)}catch{}o()}),o()}document.addEventListener("astro:after-swap",()=>{try{const e=localStorage.getItem("theme"),t=e==="dark"||e==="light"?e:window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch{}});document.addEventListener("astro:page-load",()=>{m(),u(),h(),g()});</script> </body> </html>
