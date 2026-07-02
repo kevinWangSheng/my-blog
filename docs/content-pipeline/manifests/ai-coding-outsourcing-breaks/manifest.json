@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "ai-coding-outsourcing-breaks.md",
+      "slug": "ai-coding-outsourcing-breaks",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}
