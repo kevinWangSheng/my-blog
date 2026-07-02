@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "harness-that-runs-for-hours.md",
+      "slug": "harness-that-runs-for-hours",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}

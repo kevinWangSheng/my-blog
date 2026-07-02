@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" font-family="-apple-system, 'Segoe UI', 'PingFang SC', sans-serif">
+  <rect width="1200" height="440" fill="#0e1420"/>
+  <text x="60" y="66" fill="#f5f0e8" font-size="30" font-weight="700">Agent 为什么"跑着跑着就跑偏"</text>
+  <text x="60" y="98" fill="#8a94a6" font-size="17">三个失败原因 — 来自 Anthropic《Build Agents That Run for Hours》</text>
+
+  <!-- Context -->
+  <rect x="60" y="140" width="340" height="240" rx="12" fill="#161e2c" stroke="#2a3648"/>
+  <circle cx="96" cy="182" r="9" fill="#5cc8ff"/>
+  <text x="118" y="189" fill="#f5f0e8" font-size="23" font-weight="600">Context 状态</text>
+  <text x="84" y="232" fill="#c3cad6" font-size="16">窗口有限、跨 session 失忆;</text>
+  <text x="84" y="260" fill="#c3cad6" font-size="16">越满越 context rot;临近</text>
+  <text x="84" y="288" fill="#c3cad6" font-size="16">上限会赶工(anxiety)。</text>
+
+  <!-- Planning -->
+  <rect x="430" y="140" width="340" height="240" rx="12" fill="#161e2c" stroke="#2a3648"/>
+  <circle cx="466" cy="182" r="9" fill="#fb923c"/>
+  <text x="488" y="189" fill="#f5f0e8" font-size="23" font-weight="600">Planning 规划</text>
+  <text x="454" y="232" fill="#c3cad6" font-size="16">想一把梭;或做半个功能</text>
+  <text x="454" y="260" fill="#c3cad6" font-size="16">就当 done;或中途耗尽</text>
+  <text x="454" y="288" fill="#c3cad6" font-size="16">context 留半成品。</text>
+
+  <!-- Verification -->
+  <rect x="800" y="140" width="340" height="240" rx="12" fill="#1b1710" stroke="#c97a3e"/>
+  <circle cx="836" cy="182" r="9" fill="#c97a3e"/>
+  <text x="858" y="189" fill="#f5f0e8" font-size="23" font-weight="600">Verification 验证</text>
+  <text x="824" y="232" fill="#e8c9a6" font-size="16">最反直觉:浅层测试、</text>
+  <text x="824" y="260" fill="#e8c9a6" font-size="16">stub 功能、把平庸活儿</text>
+  <text x="824" y="288" fill="#e8c9a6" font-size="16">评成"好"(谄媚偏置)。</text>
+  <text x="824" y="342" fill="#c97a3e" font-size="14" font-style="italic">← 这次实践里最容易骗人的一环</text>
+</svg>
