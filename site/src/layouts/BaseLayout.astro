@@ -134,10 +134,8 @@ const isActive = (href: string) => {
         });
         const observer = new IntersectionObserver((entries) => {
           for (const entry of entries) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              observer.unobserve(entry.target);
-            }
+            // 进入视口 → 显示;滚动移出视口 → 重新隐藏(双向)。
+            entry.target.classList.toggle('is-visible', entry.isIntersecting);
           }
         }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
         items.forEach((el) => observer.observe(el));
