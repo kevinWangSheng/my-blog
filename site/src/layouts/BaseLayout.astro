@@ -48,7 +48,9 @@ const isActive = (href: string) => {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" href={sitePath("/favicon.ico")} />
+    <link rel="icon" href={sitePath("/favicon.ico")} sizes="any" />
+    <link rel="icon" type="image/svg+xml" href={sitePath("/favicon.svg")} />
+    <link rel="apple-touch-icon" href={sitePath("/apple-touch-icon.png")} />
     <link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href={sitePath("/rss.xml")} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

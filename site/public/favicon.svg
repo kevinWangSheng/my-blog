@@ -1,0 +1,5 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Shawn Field Notes">
+  <rect width="64" height="64" rx="15" fill="#f1ead8"/>
+  <path d="M46 14 C24 16 16 34 16 50 C36 50 50 34 46 14Z" fill="#2f6f59"/>
+  <path d="M40 22 C30 30 24 40 20 48" stroke="#fffdf6" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>
