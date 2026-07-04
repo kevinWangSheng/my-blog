@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: publish-ready
+- status: published
 - source paths / source records:
   - /Users/shenghuikevin/dev/AI/dep-upgrade-agent/AGENTS.md
   - /Users/shenghuikevin/dev/AI/dep-upgrade-agent/STATUS.md
@@ -205,16 +205,16 @@ Total: 17/18
 | missing/weak process visual | Added inline animated SVG flow diagram with loops, human gate, closeout, and capture loop | yes |
 | SVG accessibility concern | Added SVG `role`, `title`, `desc`, and expanded figcaption; `ui-verify` axe critical/serious count is 0 | yes |
 | stale 0043 current-state claim | Updated public article to closed/human-accepted 2026-07-03 wording and refreshed source evidence | yes |
-| external eval / preview-ready gate | Degraded eval still has failing URL checks; do not mark preview-ready or publish-ready | no |
+| external eval / preview-ready gate | Initial degraded eval failed because the canonical article URL was not deployed yet; after publish, Pages build succeeded and the live route returned HTTP 200 with the article title | yes |
 
 ## Agent review
 
 ```yaml
 agent_review:
-  status: publish-ready
+  status: published
   reviewer: agent
   date: 2026-07-04
-  notes: Staged markdown, manifest, and synced essay passed local verification and the user explicitly approved publishing. Writing check passed with hard hits 0; content:check, content:sync, build, preview:prepare, leak check, and ui-verify passed. Source final re-check and eval review were degraded because codex subagent spawning hit usage limits. Generated external URLs include the not-yet-deployed canonical URL; verify the live route after deploy.
+  notes: Staged markdown, manifest, and synced essay passed local verification and the user explicitly approved publishing. Writing check passed with hard hits 0; content:check, content:sync, build, preview:prepare, leak check, and ui-verify passed. Source final re-check and eval review were degraded because codex subagent spawning hit usage limits. Live route verified after GitHub Pages deploy.
 ```
 
 ## Final human blog review
@@ -223,10 +223,10 @@ Human review happens on local preview before publish/deploy, unless the user exp
 
 ```yaml
 human_blog_review:
-  status: approved-for-publish
+  status: published
   reviewer: human
   date: 2026-07-04
-  notes: User explicitly said "好了,可以发布了"; proceed through push, CI/deploy, and live URL verification.
+  notes: User explicitly said "好了,可以发布了"; pushed to main, deployed through GitHub Pages, and verified the live URL.
 ```
 
 ## Mechanical verification notes
@@ -237,4 +237,5 @@ human_blog_review:
 - preview URL: latest `ui-verify` served `http://127.0.0.1:58524/my-blog/essays/coding-agent-dev-flow-system/`; earlier local static preview server may still serve `http://127.0.0.1:4328/my-blog/essays/coding-agent-dev-flow-system/`.
 - ui-verify if run: `pnpm ui-verify -- --serve out/ui-serve --path /my-blog/essays/coding-agent-dev-flow-system/` passed; 375/768/1440 px screenshots, axe 0 critical/serious, console errors/warnings 0, overflow no, Lighthouse performance 99, accessibility 100, best-practices 100, SEO 100.
 - leak check: passed on staged public markdown, synced source, and generated HTML for `/Users/`, `kb-vault`, `docs/content-pipeline`, private/forbidden markers, and Chinese private markers.
-- rejection cleanup if needed: not needed yet; item is synced for local review but not preview-ready because eval did not pass.
+- rejection cleanup if needed: not needed; item was approved and published.
+- live publish verification: `pages build and deployment` for `gh-pages` commit `2b66a86` passed; `https://kevinwangsheng.github.io/my-blog/essays/coding-agent-dev-flow-system/` returned HTTP 200 and contained the article title.
