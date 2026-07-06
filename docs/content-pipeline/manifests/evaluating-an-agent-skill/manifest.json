@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "evaluating-an-agent-skill.md",
+      "slug": "evaluating-an-agent-skill",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "writing-great-skills.md",
+      "slug": "writing-great-skills",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}
