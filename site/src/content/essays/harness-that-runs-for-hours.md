@@ -12,6 +12,8 @@ series: "Agent systems"
 
 这篇文章分两半:上半场把视频讲透,下半场讲我的实践。两条最反直觉的结论会在下半场出现——**验证这一环最容易变成纸糊的**,以及**一个全绿的 dashboard 可能只是解析假象**。
 
+https://www.youtube.com/watch?v=mR-WAvEPRwE
+
 ---
 
 # 上半场:这套 harness 到底是什么
