@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: publish-ready
+- status: published
 - source paths / source records:
   - https://www.youtube.com/watch?v=9fubhllmsBU
   - out/video-field-guide-to-fable/metadata.json
@@ -214,10 +214,10 @@ Total: 17/18
 
 ```yaml
 agent_review:
-  status: publish-ready
+  status: published
   reviewer: agent
   date: 2026-07-06
-  notes: "Writing check hard hits 0; independent writing review PASS 3.82/5; publisher editor/source/adversarial reviews all pass via independent codex exec read-only; content:check/content:sync/build/preview:prepare pass; link/image eval passes via degraded local check after codex usage limit blocked eval reviewer; playable YouTube embed added and verified in built HTML; ui-verify and ci:sanity pass."
+  notes: "Writing check hard hits 0; independent writing review PASS 3.82/5; publisher editor/source/adversarial reviews all pass via independent codex exec read-only; content:check/content:sync/build/preview:prepare pass; link/image eval passes via degraded local check after codex usage limit blocked eval reviewer; playable YouTube embed added and verified in built HTML; ui-verify and ci:sanity pass; production deploy succeeded."
 ```
 
 ## Final human blog review
@@ -242,4 +242,6 @@ human_blog_review:
 - post-embed verification: generated HTML contains `.video-embed` with `data-provider="youtube"`, `youtube-nocookie` embed URL returned 200, thumbnail returned 200 image/jpeg
 - ci:sanity: `pnpm ci:sanity` -> ok true; warnings: existing logs page standard-empty-message warning
 - leak check: staged markdown + synced source + generated HTML passed (no /Users, kb-vault, docs/content-pipeline, private/confidential/forbidden markers)
+- production deploy: commit `c0afe18` pushed to `main`; CI run https://github.com/kevinWangSheng/my-blog/actions/runs/28810671479 succeeded; Deploy run https://github.com/kevinWangSheng/my-blog/actions/runs/28810692896 succeeded
+- public URL: https://kevinwangsheng.github.io/my-blog/essays/field-guide-to-fable/ -> HTTP 200; live HTML contains `.video-embed` with `youtube-nocookie` source; first article image returns `200 image/webp`
 - rejection cleanup if needed: n/a
