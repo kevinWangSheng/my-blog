@@ -22,6 +22,20 @@
 - reader decision helped:
 - strongest counterpoint / edge case:
 
+## Complete-story check (required for learning/practice-derived items)
+
+The arc binds only stages whose material actually exists. Mark N/A (with reason) for absent stages; forcing an absent stage with tangential material is a blocker.
+
+- [ ] what the source (video/course/paper/tool) actually said is covered
+- [ ] source deep-dive completeness: full section-by-section coverage (mechanisms/arguments/numbers/examples), not an outline or intro
+- [ ] video/talk source is embedded as a playable video near the top, or N/A with reason (embed forbidden/unavailable/non-video source)
+- [ ] source key visuals (slides/diagrams/demo screens) embedded with source-credit captions, or N/A (no informative visuals)
+- [ ] what I actually practiced is concrete (steps/code/prompts/configs) — or N/A: no practice material, piece written as pure deep-dive
+- [ ] real results/data/outputs are included — or N/A with the practice stage
+- [ ] verified vs. untested claims are separated (for pure deep-dives: source claims the author cannot check are marked as the speaker's claims)
+- [ ] my own judgment is present and clearly separated from the source's content
+- absent stages and why (recorded here, not padded in the article):
+
 ## Draft direction
 
 ## Rewrite plan
@@ -31,6 +45,13 @@
 ### Remove / anonymize
 
 ### Add / refresh
+
+## Links collection maintenance
+
+For every external source cited in the article: promote core sources (the piece is built around them) to a `links` entry in the same manifest; batch examples and passing citations stay inline only.
+
+| cited source (url) | core source? | decision (promote / inline-only / already-exists) | links slug (if promoted) |
+|---|---|---|---|
 
 ## Project/public evidence table
 
@@ -114,6 +135,23 @@ Total: /18
 - blockers:
 - non-blocking risks:
 - required revisions:
+
+### Eval review (links/images, after build)
+
+- reviewer: subagent (required; if degraded to self-check, say why)
+- pass: yes|no
+- link results:
+
+| url | status | pass? |
+|---|---|---|
+
+- image results:
+
+| src | resolved location / status | pass? |
+|---|---|---|
+
+- rendered check run: yes|no
+- broken items and fixes:
 
 ## Blocker resolution log
 

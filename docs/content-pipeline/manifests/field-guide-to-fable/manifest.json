@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "field-guide-to-fable.md",
+      "slug": "field-guide-to-fable",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "field-guide-to-fable-video.md",
+      "slug": "field-guide-to-fable-video",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}

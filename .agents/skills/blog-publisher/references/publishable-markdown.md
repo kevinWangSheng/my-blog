@@ -77,6 +77,7 @@ Notes:
 - Manifest mode always looks for `<input>/manifest.json`.
 - Manifest item `file` is resolved inside the input directory; paths using `docs/...` or `../...` fail as unsafe.
 - Add `--overwrite` only when replacing an existing target is explicitly intended and allowed.
+- For YouTube/Bilibili-style source videos, put the video URL on its own paragraph near the top of the Markdown. The site converts recognized bare video URLs into responsive playable embeds; a normal inline Markdown link remains just a link.
 
 ## Limits
 
