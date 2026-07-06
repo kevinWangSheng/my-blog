@@ -209,11 +209,33 @@ const isActive = (href: string) => {
         } catch (e) { /* 回退浅色 */ }
       });
 
+      // 内嵌视频 facade 升级:点击封面才注入 iframe(youtube-nocookie / bilibili player)。
+      // 无 JS 时 facade 仍是可见封面,原始链接仍可从 Links 或正文其它位置找到。
+      function initVideoEmbeds() {
+        document.querySelectorAll('.video-embed:not([data-ready]) .video-embed__btn').forEach((btn) => {
+          const box = btn.closest('.video-embed');
+          if (!box) return;
+          box.setAttribute('data-ready', '1');
+          btn.addEventListener('click', () => {
+            const src = box.getAttribute('data-embed-src');
+            if (!src) return;
+            const iframe = document.createElement('iframe');
+            iframe.src = src;
+            iframe.title = box.getAttribute('data-title') || '视频播放器';
+            iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+            box.replaceChildren(iframe);
+          });
+        });
+      }
+
       document.addEventListener('astro:page-load', () => {
         initReveal();
         initToc();
         bindProgress();
         initThemeToggle();
+        initVideoEmbeds();
       });
     </script>
   </body>

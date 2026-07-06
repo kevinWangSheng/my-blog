@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import rehypeVideoEmbed from './plugins/rehype-video-embed.mjs';
 
 // 方向 B 代码块主题 —— 颜色镜像 tokens.css 的 --c-code-* (shiki 在构建期运行,无法读 CSS 变量,故此处硬编码同值)。
 const warmGardenCode = {
@@ -22,6 +23,7 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'never',
   markdown: {
-    shikiConfig: { theme: warmGardenCode, wrap: false }
+    shikiConfig: { theme: warmGardenCode, wrap: false },
+    rehypePlugins: [rehypeVideoEmbed]
   }
 });
