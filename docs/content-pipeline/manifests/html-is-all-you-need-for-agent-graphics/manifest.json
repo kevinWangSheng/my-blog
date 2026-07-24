@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "html-is-all-you-need-for-agent-graphics.md",
+      "slug": "html-is-all-you-need-for-agent-graphics",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "html-is-all-you-need-for-agent-graphics-video.md",
+      "slug": "html-is-all-you-need-for-agent-graphics-video",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}

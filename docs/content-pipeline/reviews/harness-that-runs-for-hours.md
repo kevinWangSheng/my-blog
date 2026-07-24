@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: publish-ready
+- status: published
 - source paths / source records:
   - Anthropic workshop transcript + understanding notes (harness-lab/video-source/, local research pack)
   - Practice artifacts: harness-lab/voyager/ (git history, harness/SETUP_LOG.md, harness/logs/timeline.tsv, test-results.json, harness/screenshots/)

@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "agent-engineering-two-loops.md",
+      "slug": "agent-engineering-two-loops",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "mutagent-agentic-ai-engineer-talk.md",
+      "slug": "mutagent-agentic-ai-engineer-talk",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}

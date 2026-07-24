@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "type": "logs",
+      "file": "publish-pipeline-three-gates.md",
+      "slug": "publish-pipeline-three-gates",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}
