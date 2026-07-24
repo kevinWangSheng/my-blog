@@ -15,7 +15,7 @@ Use this before syncing and before publishing.
 
 ## Review passes
 
-Run three review passes for every public content item except typo-only metadata fixes. Use independent subagents when available. If not available, run three separate role passes yourself and disclose that limitation.
+Run three review passes for every public content item except typo-only metadata fixes, plus one eval pass after build. Each pass must run as an independent subagent; only if the runtime cannot spawn subagents, run separate role passes yourself and disclose that degradation in the review file.
 
 ### Editor reviewer
 
@@ -75,6 +75,26 @@ Output:
 - required revisions
 - pass: yes/no
 
+### Eval reviewer (links and images; separate subagent, after build)
+
+Prompt goal: mechanically prove that every link opens and every image renders. Runs after `content:sync` + `pnpm --dir site build` + `pnpm preview:prepare`, against both the staged markdown (`docs/content-pipeline/manifests/<slug>/<slug>.md`) and the built HTML for the item's route in `site/dist`.
+
+This pass must be dispatched as a subagent separate from the drafting agent. It reports evidence; it does not fix content.
+
+Check:
+
+- **External links**: for every `http(s)` URL in the staged markdown and built HTML, request it (`curl -sIL -o /dev/null -w '%{http_code}' <url>`; if HEAD is blocked, retry with `curl -sL -o /dev/null -w '%{http_code}'`). Pass = 2xx/3xx. Record every URL with its status code.
+- **Internal links**: every site-internal href must resolve to an existing file in `site/dist` (e.g. `<path>/index.html`) or a real asset.
+- **Images**: every `<img src>` in the built HTML must either exist as a non-empty file in `site/dist` (local) or return 2xx with an image content-type (remote). Zero-byte or missing files fail.
+- **Rendered check (when a preview server is available)**: load the preview page and confirm no broken images (`naturalWidth > 0`) and no 404s for page resources. Optional if the static checks above all pass, but record whether it was run.
+
+Output:
+
+- per-URL link table (url, status, pass/fail)
+- per-image table (src, resolved location or status, pass/fail)
+- unreachable/broken list with suggested fix (replace, archive link, remove)
+- pass: yes/no (any broken link or image = fail)
+
 ## Passing rule
 
 To mark `draft-review-passed`:
@@ -91,13 +111,15 @@ To mark `agent-cleared`:
 - all three review passes say pass or have only non-blocking risks;
 - every blocker has a recorded resolution;
 - staged public markdown contains no local source paths or forbidden markers;
-- source/freshness/privacy checklists are complete.
+- source/freshness/privacy checklists are complete;
+- the links-maintenance table records a promote/inline decision for every cited source, and promoted core sources have staged links entries in the manifest.
 
 To mark `preview-ready`:
 
 - `content:check`, `content:sync`, and `pnpm --dir site build` pass;
 - local preview route exists;
 - leak check passes on staged public markdown, synced source, and generated HTML;
+- the eval reviewer (links/images) subagent has run and passed, with per-URL and per-image results recorded in the review file;
 - `ui-verify` is run for UI/layout changes or representative long-form page changes.
 
 To mark `publish-ready`:

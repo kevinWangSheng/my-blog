@@ -40,6 +40,48 @@ AI 编码 agent 的稳定入口,每次进项目先读。只放长期稳定的事
   - 把执行层 todo / 当前任务计划塞进本文件 → 放 `tasks.md` / `plan.md`。
   - UI 验证套件(Playwright 截图 / axe / Lighthouse)塞进 ⑧ 部署 CI → 只在本地 ⑥自验证 跑,保护冻结期发布链路(详见 `CONVENTIONS.md` 的「UI 自验证回路」、`DECISIONS.md` 的 `D-20260614-UI验证工具链`)。
 
+## 本地预览与验证
+
+本项目区分两类本地“部署”:
+
+1. **一次性测试预览 / agent 自验证**
+   - 用于 agent 自己证明页面可构建、可访问、无明显 UI / a11y / console 问题。
+   - 正确流程:
+     ~~~bash
+     pnpm --dir site build
+     pnpm preview:prepare
+     pnpm ui-verify -- --serve out/ui-serve --path /my-blog/<route>/
+     ~~~
+   - ui-verify 会自己启动临时静态服务、截图、跑 axe / Lighthouse / console / overflow 检查,并写 out/summary.json。
+   - 这类临时服务只服务验证,不要把它当成给 human review 的稳定预览地址。
+   - agent 汇报时给出 out/summary.json 结论和截图路径即可;不要逐张截图读回上下文。
+
+2. **给 human 看的本地预览**
+   - 用于 ⑦ 结果验收,需要一个 human 能打开的稳定 URL。
+   - 正确流程:
+     ~~~bash
+     pnpm --dir site build
+     pnpm preview:prepare
+     pnpm preview:local
+     ~~~
+   - preview:local 会从 out/ui-serve 提供静态页面,保留 GitHub Pages 的 /my-blog/ base path。
+   - 默认 URL 形如:
+     ~~~text
+     http://127.0.0.1:4327/my-blog/
+     http://127.0.0.1:4327/my-blog/<route>/
+     ~~~
+   - 如果 4327 被占用,换一个 43xx 端口启动:
+     ~~~bash
+     python3 -m http.server <port> --bind 127.0.0.1 --directory out/ui-serve
+     ~~~
+   - 给用户看时,不要依赖短命后台命令或 nohup 启动的临时服务;这类进程可能被执行环境回收。应使用前台 / 持久终端会话运行服务,确认目标页面返回 200 后再给 URL。
+   - human review 通过前,不要 push/deploy。GitHub Pages 发布仍属于 ⑧ 发布,需要用户明确要求。
+
+补充规则:
+- 一次性验证和 human 预览都不等于生产发布。
+- pnpm --dir site build 产物在 site/dist;pnpm preview:prepare 会准备 out/ui-serve 并挂载 /my-blog/。
+- Playwright MCP / 浏览器手动检查只作为临时探索或 human 预览确认;固定客观门禁仍以 ui-verify 为准。
+
 ## Pointers
 
 - `plan.md` / `tasks.md`:当前重建任务的执行层文件(可能尚未创建;到 ③④ 阶段由 agent 建)。
