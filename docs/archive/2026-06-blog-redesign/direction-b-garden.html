@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>方向 B · Warm Garden — Shawn Field Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Literata:ital,opsz,wght@0,7..72,400..500;1,7..72,400&family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f7f3e8; --card:#fffdf6; --ink:#27332e; --ink-soft:#4a5a52; --ink-mute:#73776c;
+    --sage:#2f6f59; --sage-soft:#5b917e; --amber:#b07a32; --line:#e3dcca; --line-2:#cfc6ac;
+    --serif:"Literata","Noto Serif SC",Georgia,serif;
+    --display:"Fraunces","Noto Serif SC",Georgia,serif;
+    --ui:"Inter",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;color:var(--ink);font-family:var(--serif);font-size:18px;line-height:1.72;
+    background:
+      radial-gradient(120% 60% at 15% 0%, rgba(47,111,89,.10), transparent 60%),
+      radial-gradient(100% 55% at 92% 4%, rgba(176,122,50,.12), transparent 55%),
+      linear-gradient(180deg,#fbf7ee,var(--bg) 40%,#f1ead8);
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;min-height:100vh;}
+  a{color:inherit;}
+  .wrap{width:min(1120px,calc(100% - 2.4rem));margin-inline:auto;}
+  /* nav */
+  header{position:sticky;top:0;z-index:9;backdrop-filter:blur(10px);
+    background:rgba(251,247,238,.8);border-bottom:1px solid var(--line);}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;
+    min-height:66px;flex-wrap:wrap;}
+  .brand{display:grid;gap:.1rem;text-decoration:none;line-height:1.1;}
+  .brand b{font-family:var(--display);font-weight:560;font-size:1.18rem;letter-spacing:.005em;}
+  .brand small{font-family:var(--ui);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mute);}
+  .nav nav{display:flex;gap:1.3rem;flex-wrap:wrap;}
+  .nav nav a{font-family:var(--ui);font-size:.85rem;color:var(--ink-soft);text-decoration:none;
+    position:relative;padding-bottom:3px;transition:.2s;}
+  .nav nav a::after{content:"";position:absolute;left:0;right:100%;bottom:0;height:2px;
+    border-radius:2px;background:var(--sage);transition:right .25s;}
+  .nav nav a:hover{color:var(--sage);}
+  .nav nav a:hover::after{right:0;}
+  /* hero */
+  .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:2.8rem;align-items:center;
+    padding-block:4.5rem 3.5rem;}
+  .sprout{font-family:var(--ui);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--sage);display:inline-flex;align-items:center;gap:.5rem;margin:0 0 1.4rem;}
+  .sprout svg{width:16px;height:16px;}
+  .hero h1{font-family:var(--display);font-weight:480;font-size:clamp(2.6rem,5.4vw,4.3rem);
+    line-height:1.06;letter-spacing:-.018em;margin:0;}
+  .hero h1 em{font-style:italic;color:var(--sage);font-weight:480;}
+  .hero p.lede{font-size:1.16rem;color:var(--ink-soft);max-width:42ch;margin:1.6rem 0 2rem;}
+  .cta{display:flex;gap:.8rem;flex-wrap:wrap;}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--ui);font-size:.86rem;
+    font-weight:500;padding:.7rem 1.25rem;border-radius:999px;text-decoration:none;transition:.2s;}
+  .btn.p{background:var(--sage);color:#fbf7ee;box-shadow:0 8px 22px rgba(47,111,89,.22);}
+  .btn.p:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(47,111,89,.28);}
+  .btn.s{border:1px solid var(--line-2);color:var(--ink-soft);background:rgba(255,255,255,.5);}
+  .btn.s:hover{border-color:var(--sage-soft);color:var(--sage);}
+  /* hero card — a "now growing" note, content-first instead of a dashboard */
+  .nowcard{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:1.6rem 1.7rem;
+    box-shadow:0 20px 50px rgba(52,67,60,.10);position:relative;overflow:hidden;}
+  .nowcard::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;
+    background:linear-gradient(90deg,var(--sage),var(--amber));}
+  .nowcard .tag{font-family:var(--ui);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--amber);}
+  .nowcard h3{font-family:var(--display);font-weight:500;font-size:1.5rem;line-height:1.18;
+    letter-spacing:-.01em;margin:.7rem 0 .6rem;}
+  .nowcard p{font-size:.98rem;color:var(--ink-soft);margin:0 0 1.1rem;}
+  .nowcard .foot{display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--ui);font-size:.76rem;color:var(--ink-mute);border-top:1px solid var(--line);padding-top:.9rem;}
+  .nowcard .foot a{color:var(--sage);text-decoration:none;font-weight:500;}
+  /* sections */
+  section{padding-block:3rem;}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.6rem;}
+  .sec-head h2{font-family:var(--display);font-weight:480;font-size:clamp(1.7rem,3vw,2.4rem);
+    letter-spacing:-.015em;margin:0;}
+  .sec-head h2 .u{background-image:linear-gradient(transparent 62%,rgba(176,122,50,.35) 0);}
+  .sec-head p{font-size:.96rem;color:var(--ink-mute);max-width:30ch;margin:0;text-align:right;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:1.25rem 1.3rem;
+    text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:.6rem;min-height:13.5rem;
+    transition:.2s;}
+  .card:hover{transform:translateY(-3px);border-color:var(--sage-soft);box-shadow:0 16px 36px rgba(47,111,89,.14);}
+  .card .meta{font-family:var(--ui);font-size:.72rem;letter-spacing:.04em;color:var(--ink-mute);
+    display:flex;gap:.6rem;}
+  .card .meta b{color:var(--sage);font-weight:600;}
+  .card h3{font-family:var(--display);font-weight:500;font-size:1.32rem;line-height:1.2;
+    letter-spacing:-.01em;margin:.2rem 0;}
+  .card p{font-size:.95rem;color:var(--ink-soft);margin:auto 0 0;line-height:1.55;}
+  /* reading sample */
+  .sample{margin-top:1rem;}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:24px;
+    padding:clamp(1.8rem,4vw,3.2rem);box-shadow:0 18px 46px rgba(52,67,60,.08);
+    max-width:720px;margin-inline:auto;}
+  .panel .tag{font-family:var(--ui);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--sage);}
+  .panel h3{font-family:var(--display);font-weight:500;font-size:clamp(1.8rem,3.5vw,2.5rem);
+    line-height:1.12;letter-spacing:-.015em;margin:.8rem 0 1.3rem;}
+  .panel p{margin:0 0 1.15rem;color:var(--ink-soft);}
+  .panel blockquote{margin:1.6rem 0;padding:1rem 1.2rem;border-left:3px solid var(--amber);
+    background:rgba(176,122,50,.07);border-radius:0 12px 12px 0;font-style:italic;color:var(--ink-soft);}
+  .panel a.inline{color:var(--sage);text-underline-offset:.18em;}
+  footer{padding-block:3rem;font-family:var(--ui);font-size:.82rem;color:var(--ink-mute);
+    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+  @media(max-width:820px){
+    .hero{grid-template-columns:1fr;gap:2rem;}
+    .grid{grid-template-columns:1fr;}
+    .sec-head p{display:none;}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="#"><b>Shawn Field Notes</b><small>Shawn · learning systems</small></a>
+  <nav><a>Essays</a><a>Notes</a><a>Logs</a><a>Projects</a><a>Links</a><a>About</a></nav>
+</div></header>
+
+<div class="wrap hero">
+  <div>
+    <p class="sprout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11c0-3 2.5-5 6-5 0 3-2.5 5-6 5Z"/><path d="M12 13C9 13 6 11 6 7c3 0 6 2 6 6Z"/></svg> Public garden · 持续生长</p>
+    <h1>Shawn 的 <em>学习自留地</em></h1>
+    <p class="lede">AI 学习、agent workflow、memory 和知识系统的公开手札。想法先以短笔记落地,稳定后再长成文章。</p>
+    <div class="cta">
+      <a class="btn p" href="#">读 Essays / 长文判断</a>
+      <a class="btn s" href="#">看 Notes / 短观点</a>
+    </div>
+  </div>
+  <aside class="nowcard">
+    <span class="tag">现在正在长 · Now</span>
+    <h3>什么时候需要 microVM sandbox</h3>
+    <p>microVM 不是默认值,只在跑不可信代码、多租户、强隔离时才值得这份开销。这条笔记还在补反例。</p>
+    <div class="foot"><span>Note · 2026-06-14</span><a href="#">继续读 →</a></div>
+  </aside>
+</div>
+
+<section class="wrap">
+  <div class="sec-head">
+    <h2>正在<span class="u">校准</span>的判断</h2>
+    <p>短笔记保留“正在生成”的判断,不假装每个想法都已成文。</p>
+  </div>
+  <div class="grid">
+    <a class="card" href="#"><span class="meta"><b>Note</b> 2026-06-14</span>
+      <h3>Function calling 是能力,agent loop 是授权</h3>
+      <p>给模型工具不等于让它跑流程;多数生产事故来自接错 workflow。</p></a>
+    <a class="card" href="#"><span class="meta"><b>Note</b> 2026-06-14</span>
+      <h3>先投 harness,再谈 fine-tune</h3>
+      <p>能靠工具、权限、上下文、评估解决的,fine-tune 不该是第一反应。</p></a>
+    <a class="card" href="#"><span class="meta"><b>Note</b> 2026-06-14</span>
+      <h3>Sandbox 保护 host,不保护你放进去的 secrets</h3>
+      <p>隔离边界能挡住失控进程,但 secrets 不该进入 sandbox。</p></a>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <h2>长成了<span class="u">文章</span></h2>
+    <p>当一个判断稳到可以对外解释,它会从 note 变成长文。</p>
+  </div>
+  <div class="grid">
+    <a class="card" href="#"><span class="meta"><b>Essay</b> 2026-06-18</span>
+      <h3>AGENTS.md 到底该写什么</h3>
+      <p>给 coding agent 写开工边界:哪些内容真的会改变它的下一步动作。</p></a>
+    <a class="card" href="#"><span class="meta"><b>Essay</b> 2026-06-15</span>
+      <h3>评审 Coding Agent:关键是隔离</h3>
+      <p>什么时候用 subagent、什么时候新开会话、什么时候独立成 rubric。</p></a>
+    <a class="card" href="#"><span class="meta"><b>Essay</b> 2026-06-10</span>
+      <h3>Agent memory 的本质是写入策略</h3>
+      <p>记什么、何时记、记到哪一层,比“能不能记”更决定系统质量。</p></a>
+  </div>
+</section>
+
+<section class="wrap sample">
+  <div class="panel">
+    <span class="tag">长文综合 · 节选</span>
+    <h3>AGENTS.md 到底该写什么</h3>
+    <p>我前面写 AGENTS.md 这篇时,犯了一个很典型的问题:我把结论讲出来了,但证据给得不够。</p>
+    <p>读者如果还不知道 AGENTS.md 是什么,前一版开头太快;读者如果想判断“这些公开项目到底怎么写”,前一版又太像<a class="inline" href="#">我替大家消化过的二手总结</a>。</p>
+    <blockquote>Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</blockquote>
+    <p>所以这一版我换个写法。先讲背景,再看公开项目原文,把改变 agent 行为的段落一条条摘出来。</p>
+  </div>
+</section>
+
+<div class="wrap"><footer>
+  <span>© 2026 Shawn · Warm Garden preview</span>
+  <span>方向 B — 温暖 · 手札 · 浅色</span>
+</footer></div>
+</body>
+</html>

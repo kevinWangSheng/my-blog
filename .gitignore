@@ -13,5 +13,8 @@ dist/
 
 # Local UI verification artifacts
 .playwright-mcp/
-ai-lab-manual-home-*.png
 out/
+# 根目录临时截图一律不入库(验证产物请放 out/screenshots/)
+/*.png
+/*.webp
+/*.jpg

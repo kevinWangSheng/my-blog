@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>设计方向预览 — Shawn Field Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Inter",system-ui,sans-serif;background:#f5f2ea;color:#22251f;
+    -webkit-font-smoothing:antialiased;line-height:1.6;}
+  .wrap{width:min(960px,calc(100% - 2.4rem));margin-inline:auto;padding-block:4rem;}
+  h1{font-family:"Fraunces",Georgia,serif;font-weight:500;font-size:clamp(2.2rem,5vw,3.2rem);
+    letter-spacing:-.02em;margin:0 0 .6rem;}
+  .sub{color:#6b6c63;max-width:60ch;margin:0 0 2.6rem;}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;}
+  .card{display:flex;flex-direction:column;border-radius:16px;overflow:hidden;text-decoration:none;
+    color:inherit;border:1px solid #dcd5c6;background:#fff;transition:.2s;}
+  .card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(0,0,0,.1);}
+  .swatch{height:120px;display:flex;align-items:flex-end;padding:.9rem;font-family:"Fraunces",serif;
+    font-size:1.4rem;color:#fff;}
+  .a .swatch{background:linear-gradient(135deg,#faf8f3,#e7e2d6);color:#1d1b16;
+    border-bottom:1px solid #d9d3c6;}
+  .b .swatch{background:linear-gradient(135deg,#2f6f59,#b07a32);}
+  .c .swatch{background:linear-gradient(135deg,#0b0d0f,#14181b);color:#54d6a4;}
+  .body{padding:1.1rem 1.2rem 1.4rem;}
+  .body h2{font-family:"Fraunces",serif;font-weight:500;font-size:1.25rem;margin:0 0 .4rem;}
+  .body .vibe{font-size:.8rem;color:#8a5a2b;font-weight:600;letter-spacing:.02em;margin:0 0 .6rem;}
+  .body p{font-size:.92rem;color:#5a5b52;margin:0;}
+  .note{margin-top:2.4rem;font-size:.85rem;color:#8b8c81;border-top:1px solid #ddd6c8;padding-top:1.4rem;}
+  @media(max-width:760px){.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>三套设计方向预览</h1>
+  <p class="sub">同样的内容(首页 + 卡片 + 一段正文节选),三种明显不同的气质。点开任意一张全屏感受,挑你想要的方向。这只是预览,全站尚未改动。</p>
+  <div class="grid">
+    <a class="card a" href="direction-a-editorial.html">
+      <div class="swatch">A</div>
+      <div class="body"><p class="vibe">克制 · 杂志感 · 浅色</p>
+        <h2>Editorial Quiet</h2>
+        <p>近单色暖白、大量留白、细排版、没有装饰渐变。像一本安静的文学刊物,信息靠层级而非框线分隔。</p></div>
+    </a>
+    <a class="card b" href="direction-b-garden.html">
+      <div class="swatch">B</div>
+      <div class="body"><p class="vibe">温暖 · 手札 · 浅色</p>
+        <h2>Warm Garden</h2>
+        <p>暖奶油 + 鼠尾草绿 + 琥珀。延续现在的纸感但更统一、更亲切,卡片柔和圆润,是“数字花园 / 自留地”的气质。</p></div>
+    </a>
+    <a class="card c" href="direction-c-dark.html">
+      <div class="swatch">C</div>
+      <div class="body"><p class="vibe">技术感 · 深色 · sans+mono</p>
+        <h2>Modern Dark</h2>
+        <p>近黑底 + 薄荷绿点缀 + 等宽字。代码优先、对比强烈,贴近 AI / dev 读者的现代技术博客气质。</p></div>
+    </a>
+  </div>
+  <p class="note">字体通过 Google Fonts 在线加载(含思源宋体/黑体,解决中文显示)。预览页是独立 HTML,不属于项目依赖,也不会进入构建产物。</p>
+</div>
+</body>
+</html>

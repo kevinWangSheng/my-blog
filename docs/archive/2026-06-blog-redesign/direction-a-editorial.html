@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>方向 A · Editorial Quiet — Shawn Field Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Newsreader:ital,opsz,wght@0,6..72,300..500;1,6..72,400&family=Inter:wght@400;500;600&family=Noto+Serif+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf8f3; --paper-2:#f3f0e8; --ink:#1d1b16; --ink-soft:#403c34;
+    --ink-mute:#756f63; --line:#d9d3c6; --line-soft:#e7e2d6; --accent:#9a5b32;
+    --serif:"Newsreader","Noto Serif SC",Georgia,serif;
+    --display:"Fraunces","Noto Serif SC",Georgia,serif;
+    --ui:"Inter",system-ui,sans-serif;
+    --reading:680px;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.7;
+    font-optical-sizing:auto;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  a{color:inherit;}
+  .wrap{width:min(1080px,calc(100% - 3rem));margin-inline:auto;}
+  .read{width:min(var(--reading),calc(100% - 3rem));margin-inline:auto;}
+  /* nav */
+  header{border-bottom:1px solid var(--line);}
+  .nav{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+    padding-block:1.5rem;flex-wrap:wrap;}
+  .brand{font-family:var(--display);font-weight:400;font-size:1.15rem;letter-spacing:.01em;
+    text-decoration:none;}
+  .brand em{font-style:italic;color:var(--ink-soft);}
+  .nav nav{display:flex;gap:1.6rem;flex-wrap:wrap;}
+  .nav nav a{font-family:var(--ui);font-size:.82rem;letter-spacing:.02em;color:var(--ink-mute);
+    text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent;transition:.2s;}
+  .nav nav a:hover{color:var(--ink);border-color:var(--accent);}
+  /* hero */
+  .hero{padding-block:5.5rem 4.5rem;border-bottom:1px solid var(--line);}
+  .kicker{font-family:var(--ui);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-mute);margin:0 0 1.6rem;}
+  .hero h1{font-family:var(--display);font-optical-sizing:auto;font-weight:340;
+    font-size:clamp(2.8rem,6vw,4.6rem);line-height:1.04;letter-spacing:-.02em;margin:0;max-width:18ch;}
+  .hero h1 em{font-style:italic;color:var(--accent);}
+  .hero .lede{font-family:var(--serif);font-size:1.18rem;line-height:1.75;color:var(--ink-soft);
+    max-width:46ch;margin:1.8rem 0 0;}
+  .hero .meta{font-family:var(--ui);font-size:.8rem;color:var(--ink-mute);margin-top:2.4rem;
+    display:flex;gap:1.4rem;flex-wrap:wrap;}
+  .hero .meta b{color:var(--ink);font-weight:600;}
+  /* index list — editorial, no boxes, hairline separators */
+  section{padding-block:4rem;}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+    margin-bottom:2.2rem;}
+  .sec-head h2{font-family:var(--display);font-weight:380;font-size:1.5rem;letter-spacing:-.01em;margin:0;}
+  .sec-head span{font-family:var(--ui);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);}
+  .list{border-top:1px solid var(--line);}
+  .row{display:grid;grid-template-columns:7.5rem 1fr auto;gap:1.5rem;align-items:baseline;
+    padding:1.55rem 0;border-bottom:1px solid var(--line-soft);text-decoration:none;color:inherit;
+    transition:.2s;}
+  .row:hover{background:linear-gradient(90deg,var(--paper-2),transparent 70%);
+    padding-left:1rem;margin-left:-1rem;}
+  .row time{font-family:var(--ui);font-size:.78rem;color:var(--ink-mute);letter-spacing:.02em;}
+  .row .t{font-family:var(--display);font-weight:400;font-size:1.32rem;line-height:1.28;letter-spacing:-.01em;}
+  .row .t small{display:block;font-family:var(--serif);font-weight:400;font-size:.96rem;
+    color:var(--ink-mute);margin-top:.35rem;line-height:1.55;}
+  .row .k{font-family:var(--ui);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--accent);white-space:nowrap;}
+  /* reading sample */
+  .sample{background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .sample .read{padding-block:4.5rem;}
+  .sample .kicker{margin-bottom:1.2rem;}
+  .sample h3{font-family:var(--display);font-weight:360;font-size:clamp(2rem,4vw,2.9rem);
+    line-height:1.1;letter-spacing:-.02em;margin:0 0 1.6rem;}
+  .sample p{margin:0 0 1.25rem;}
+  .sample blockquote{margin:2rem 0;padding-left:1.3rem;border-left:2px solid var(--accent);
+    font-style:italic;color:var(--ink-soft);}
+  .sample a.inline{color:var(--accent);text-underline-offset:.18em;text-decoration-thickness:1px;}
+  footer{padding-block:3rem;font-family:var(--ui);font-size:.8rem;color:var(--ink-mute);
+    display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+  @media(max-width:640px){
+    body{font-size:18px;}
+    .row{grid-template-columns:1fr;gap:.5rem;}
+    .row time{order:-1;}
+    .hero{padding-block:3.5rem 3rem;}
+  }
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <a class="brand" href="#">Shawn <em>Field Notes</em></a>
+  <nav><a>Essays</a><a>Notes</a><a>Logs</a><a>Projects</a><a>Links</a><a>About</a></nav>
+</div></header>
+
+<div class="wrap hero">
+  <p class="kicker">Personal system · Public notes</p>
+  <h1>把 AI 学习里<em>已经稳下来</em>的判断,慢慢写清楚。</h1>
+  <p class="lede">这里公开 agent workflow、memory 与知识系统的判断。短笔记保留“正在生成”的想法,长文只在结论稳到能对外解释时出现。</p>
+  <p class="meta"><span><b>8</b> notes</span><span><b>7</b> essays</span><span><b>2</b> sources</span><span>更新于 2026-06-18</span></p>
+</div>
+
+<section class="wrap">
+  <div class="sec-head"><h2>正在校准的判断</h2><span>Notes</span></div>
+  <div class="list">
+    <a class="row" href="#"><time>2026-06-14</time>
+      <div class="t">Function calling 是能力,agent loop 是授权
+        <small>给模型工具不等于让它跑流程;多数生产事故来自接错 workflow。</small></div>
+      <span class="k">Agents</span></a>
+    <a class="row" href="#"><time>2026-06-14</time>
+      <div class="t">先投 harness,再谈 fine-tune
+        <small>如果问题能靠工具、权限、上下文、评估解决,fine-tune 不应该是第一反应。</small></div>
+      <span class="k">Harness</span></a>
+    <a class="row" href="#"><time>2026-06-14</time>
+      <div class="t">什么时候需要 microVM sandbox
+        <small>microVM 不是默认值,只在跑不可信代码、多租户、强隔离时才值得这份开销。</small></div>
+      <span class="k">Sandbox</span></a>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head"><h2>长文综合</h2><span>Essays</span></div>
+  <div class="list">
+    <a class="row" href="#"><time>2026-06-18</time>
+      <div class="t">AGENTS.md 到底该写什么
+        <small>给 coding agent 写开工边界:先讲它是什么,再用公开项目原文拆解哪些内容会改变 agent 的下一步动作。</small></div>
+      <span class="k">Workflow</span></a>
+    <a class="row" href="#"><time>2026-06-15</time>
+      <div class="t">评审 Coding Agent:关键不是多一个 Agent,而是隔离
+        <small>什么时候用 subagent、什么时候新开会话、什么时候该把评审独立成正式 rubric。</small></div>
+      <span class="k">Eval</span></a>
+  </div>
+</section>
+
+<div class="sample"><div class="read">
+  <p class="kicker">长文综合 · 节选</p>
+  <h3>AGENTS.md 到底该写什么</h3>
+  <p>我前面写 AGENTS.md 这篇时,犯了一个很典型的问题:我把结论讲出来了,但证据给得不够。</p>
+  <p>读者如果还不知道 AGENTS.md 是什么,前一版开头太快。读者如果想判断“这些公开项目到底怎么写”,前一版又太像我替大家消化过的二手总结。这样会有一个问题:<a class="inline" href="#">文章看起来顺,但不够能让人信</a>。</p>
+  <blockquote>Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</blockquote>
+  <p>所以这一版我换个写法。先讲背景:AGENTS.md 是什么、为什么会需要它、它和 README / 当前任务计划有什么区别,然后再看公开项目原文。</p>
+</div></div>
+
+<div class="wrap"><footer>
+  <span>© 2026 Shawn · Editorial Quiet preview</span>
+  <span>方向 A — 克制 · 杂志感 · 浅色</span>
+</footer></div>
+</body>
+</html>

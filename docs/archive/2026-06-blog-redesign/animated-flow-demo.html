@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>动态流程图 demo — my-blog 内容发布管线</title>
+<style>
+  body { margin: 0; padding: 2rem 1rem 4rem; background: #f5f1ea; font-family: system-ui, sans-serif; color: #44403c; }
+  main { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 1.25rem; } p.lead { font-size: .9rem; color: #78716c; }
+  @media (prefers-color-scheme: dark) { body { background: #171412; color: #d6d3d1; } p.lead { color: #a8a29e; } }
+</style>
+</head>
+<body>
+<main>
+<h1>my-blog 内容发布管线(animated-flow-explainer 实测)</h1>
+<p class="lead">下面整个 <code>&lt;figure&gt;</code> 就是可直接内嵌进 Astro markdown 的片段:scoped CSS、零外部依赖、明暗主题自适应、reduced-motion 静态兜底。</p>
+
+<!-- ==================== embeddable fragment starts ==================== -->
+<figure class="afe afe--publish-pipeline" role="img" tabindex="0"
+  aria-label="流程图:起草后进入三路并行 subagent 评审(editor、source、对抗),全部通过进门禁 agent-cleared,再 sync 加 build,eval subagent 校验链接图片,然后人工验收、发布。评审有 blocker 回炉重稿;eval 失败或人工拒绝则 needs-rework 并 revert 回炉。">
+<style>
+.afe--publish-pipeline {
+  --afe-bg: #faf7f2; --afe-node: #ffffff; --afe-border: #d6cdbf;
+  --afe-edge: #8a7a63; --afe-accent: #c2410c; --afe-loop: #9f7d18;
+  --afe-ok: #3f6212; --afe-text: #292524; --afe-dim: #78716c;
+  margin: 0; padding: 1rem 0; overflow-x: auto;
+}
+@media (prefers-color-scheme: dark) {
+  .afe--publish-pipeline {
+    --afe-bg: #1c1917; --afe-node: #292524; --afe-border: #44403c;
+    --afe-edge: #a8a29e; --afe-accent: #fb923c; --afe-loop: #eab308;
+    --afe-ok: #a3e635; --afe-text: #e7e5e4; --afe-dim: #a8a29e;
+  }
+}
+.afe--publish-pipeline svg { display: block; width: 100%; min-width: 760px; height: auto; background: var(--afe-bg); border: 1px solid var(--afe-border); border-radius: 8px; }
+.afe--publish-pipeline text { font: 600 13px/1 system-ui, sans-serif; fill: var(--afe-text); }
+.afe--publish-pipeline .sub { font-weight: 400; font-size: 10.5px; fill: var(--afe-dim); }
+.afe--publish-pipeline .tag { font-weight: 600; font-size: 10.5px; }
+.afe--publish-pipeline .node rect { fill: var(--afe-node); stroke: var(--afe-border); stroke-width: 1.5; }
+.afe--publish-pipeline .glyph { stroke: var(--afe-accent); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.afe--publish-pipeline .node--human rect { stroke-dasharray: 5 4; }
+.afe--publish-pipeline .node--human .glyph { stroke: var(--afe-ok); }
+
+.afe--publish-pipeline .edge-base { fill: none; stroke: var(--afe-edge); stroke-width: 1.5; opacity: .35; }
+.afe--publish-pipeline .edge-flow { fill: none; stroke: var(--afe-edge); stroke-width: 2; stroke-dasharray: 5 9; stroke-linecap: round; animation: afe-flow 1.6s linear infinite; opacity: .35; }
+.afe--publish-pipeline .edge-flow--loop { stroke: var(--afe-loop); animation-duration: 2.2s; opacity: .75; }
+.afe--publish-pipeline .arrow { fill: var(--afe-edge); }
+.afe--publish-pipeline .arrow--loop { fill: var(--afe-loop); }
+@keyframes afe-flow { to { stroke-dashoffset: -14; } }
+
+.afe--publish-pipeline .halo { fill: var(--afe-accent); opacity: 0; transform-origin: center; transform-box: fill-box; animation: afe-pulse 2.4s ease-in-out infinite; }
+@keyframes afe-pulse { 0%,100% { opacity: 0; transform: scale(.92); } 50% { opacity: .16; transform: scale(1.08); } }
+
+/* ---- master-timeline walkthrough: one 14s cycle, per-element delays ---- */
+.afe--publish-pipeline .wk { animation: afe-hot 14s linear infinite; animation-delay: var(--wk, 0s); }
+@keyframes afe-hot {
+  0%, 9% { stroke: var(--afe-accent); stroke-width: 2.5; }
+  13%, 100% { stroke: var(--afe-border); stroke-width: 1.5; }
+}
+.afe--publish-pipeline .pkt { fill: var(--afe-accent); stroke: var(--afe-bg); stroke-width: 2; opacity: 0; animation: afe-pkt 14s linear infinite; animation-delay: var(--wk, 0s); }
+@keyframes afe-pkt {
+  0% { offset-distance: 0%; opacity: 0; }
+  0.7% { opacity: 1; }
+  6.3% { opacity: 1; }
+  7% { offset-distance: 100%; opacity: 0; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+.afe--publish-pipeline .pub { opacity: .55; animation: afe-hot-op 14s linear infinite; animation-delay: var(--wk, 0s); }
+@keyframes afe-hot-op { 0%, 8% { opacity: 1; } 12%, 100% { opacity: .55; } }
+
+.afe--publish-pipeline .st { opacity: 0; animation: afe-in .5s ease forwards; }
+.afe--publish-pipeline .st-1 { animation-delay: .1s; }  .afe--publish-pipeline .st-2 { animation-delay: .4s; }
+.afe--publish-pipeline .st-3 { animation-delay: .7s; }  .afe--publish-pipeline .st-4 { animation-delay: 1s; }
+.afe--publish-pipeline .st-5 { animation-delay: 1.3s; } .afe--publish-pipeline .st-6 { animation-delay: 1.55s; }
+.afe--publish-pipeline .st-7 { animation-delay: 1.8s; } .afe--publish-pipeline .st-8 { animation-delay: 2.05s; }
+.afe--publish-pipeline .st-9 { animation-delay: 2.3s; }
+@keyframes afe-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.afe--publish-pipeline figcaption { font: 400 12.5px/1.5 system-ui, sans-serif; color: var(--afe-dim); margin-top: .5rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .afe--publish-pipeline * { animation: none !important; }
+  .afe--publish-pipeline .st { opacity: 1; transform: none; }
+  .afe--publish-pipeline .halo { opacity: .12; }
+}
+</style>
+<svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- stage 1: draft -->
+  <g class="node st st-1">
+    <rect class="wk" style="--wk:2.4s" x="40" y="93" width="140" height="64" rx="8"/>
+    <g class="glyph" transform="translate(56,108)">
+      <path d="M0 0 h9 l5 5 v13 h-14 z"/><path d="M9 0 v5 h5"/><path d="M3 10 h8 M3 14 h8"/>
+    </g>
+    <text x="84" y="119">起草 draft</text>
+    <text class="sub" x="84" y="137">完整叙事 + brief</text>
+  </g>
+
+  <!-- stage 2: three parallel subagent reviews -->
+  <g class="st st-2">
+    <path class="edge-base" d="M180 118 C 230 118, 230 58, 280 58"/><path class="edge-flow" d="M180 118 C 230 118, 230 58, 280 58" pathLength="100"/><path class="arrow" d="M280 58 l-8 -4 v8 z"/>
+    <path class="edge-base" d="M180 125 C 230 125, 230 146, 280 146"/><path class="edge-flow" d="M180 125 C 230 125, 230 146, 280 146" pathLength="100"/><path class="arrow" d="M280 146 l-8 -4 v8 z"/>
+    <path class="edge-base" d="M180 132 C 230 132, 230 234, 280 234"/><path class="edge-flow" d="M180 132 C 230 132, 230 234, 280 234" pathLength="100"/><path class="arrow" d="M280 234 l-8 -4 v8 z"/>
+    <g class="node">
+      <rect class="wk" style="--wk:4.5s" x="280" y="30" width="160" height="56" rx="8"/>
+      <g class="glyph" transform="translate(296,43)"><path d="M2 16 l10 -10 3 3 -10 10 -4 1 z"/><path d="M12 6 l3 3"/></g>
+      <text x="324" y="54">editor 评审</text>
+      <text class="sub" x="324" y="72">可读性 · 结构 · 标题</text>
+    </g>
+    <g class="node">
+      <rect class="wk" style="--wk:4.5s" x="280" y="118" width="160" height="56" rx="8"/>
+      <g class="glyph" transform="translate(296,131)"><circle cx="7" cy="7" r="5"/><path d="M11 11 l5 5"/></g>
+      <text x="324" y="142">source 评审</text>
+      <text class="sub" x="324" y="160">事实 · 来源可溯</text>
+    </g>
+    <g class="node">
+      <rect class="wk" style="--wk:4.5s" x="280" y="206" width="160" height="56" rx="8"/>
+      <g class="glyph" transform="translate(296,219)"><path d="M9 0 l8 3 v6 c0 5 -4 7 -8 9 c-4 -2 -8 -4 -8 -9 v-6 z"/><path d="M5 8 l3 3 5 -5"/></g>
+      <text x="324" y="230">对抗评审</text>
+      <text class="sub" x="324" y="248">隐私 · 风险 · 平庸</text>
+    </g>
+    <text class="tag" x="360" y="18" text-anchor="middle" style="fill: var(--afe-dim)">三路独立 subagent 并行</text>
+  </g>
+
+  <!-- stage 3: converge to gate -->
+  <g class="st st-3">
+    <path class="edge-base" d="M440 58 C 485 58, 485 138, 530 138"/><path class="edge-flow" d="M440 58 C 485 58, 485 138, 530 138" pathLength="100"/><path class="arrow" d="M530 138 l-8 -4 v8 z"/>
+    <path class="edge-base" d="M440 146 H530"/><path class="edge-flow" d="M440 146 H530" pathLength="100"/><path class="arrow" d="M530 146 l-8 -4 v8 z"/>
+    <path class="edge-base" d="M440 234 C 485 234, 485 154, 530 154"/><path class="edge-flow" d="M440 234 C 485 234, 485 154, 530 154" pathLength="100"/><path class="arrow" d="M530 154 l-8 -4 v8 z"/>
+    <g class="node">
+      <rect class="wk" style="--wk:7s" x="530" y="114" width="170" height="64" rx="8"/>
+      <g class="glyph" transform="translate(546,129)"><rect x="0" y="0" width="14" height="18" rx="2"/><path d="M3 5 h8 M3 9 h8"/><path d="M3 13 l2 2 4 -4"/></g>
+      <text x="574" y="140">agent-cleared</text>
+      <text class="sub" x="574" y="158">评分达标 · 0 blocker</text>
+    </g>
+  </g>
+
+  <!-- loop A: review blockers back to draft -->
+  <g class="st st-4">
+    <path class="edge-base" d="M360 30 C 320 4, 150 4, 110 93"/>
+    <path class="edge-flow edge-flow--loop" d="M360 30 C 320 4, 150 4, 110 93" pathLength="100"/>
+    <path class="arrow arrow--loop" d="M110 93 l-4 -8 h8 z"/>
+    <text class="tag" x="196" y="20" text-anchor="middle" style="fill: var(--afe-loop)">有 blocker → 回炉重稿</text>
+  </g>
+
+  <!-- stage 5: sync + build -->
+  <g class="st st-5">
+    <path class="edge-base" d="M615 178 V300"/><path class="edge-flow" d="M615 178 V300" pathLength="100"/><path class="arrow" d="M615 300 l-4 -8 h8 z"/>
+    <g class="node">
+      <rect class="wk" style="--wk:9s" x="540" y="300" width="160" height="64" rx="8"/>
+      <g class="glyph" transform="translate(556,315)">
+        <circle cx="9" cy="9" r="5"/>
+        <path d="M9 0v3M9 15v3M0 9h3M15 9h3M2.6 2.6l2.1 2.1M13.3 13.3l2.1 2.1M15.4 2.6l-2.1 2.1M4.7 13.3l-2.1 2.1"/>
+      </g>
+      <text x="584" y="326">sync + build</text>
+      <text class="sub" x="584" y="344">content:sync · build</text>
+    </g>
+  </g>
+
+  <!-- stage 6: eval subagent (current focus: pulse halo) -->
+  <g class="st st-6">
+    <path class="edge-base" d="M540 332 H460"/><path class="edge-flow" d="M540 332 H460" pathLength="100"/><path class="arrow" d="M460 332 l8 -4 v8 z"/>
+    <g class="node">
+      <rect class="halo" x="304" y="295" width="162" height="74" rx="12"/>
+      <rect class="wk" style="--wk:10.9s" x="310" y="300" width="150" height="64" rx="8"/>
+      <g class="glyph" transform="translate(326,315)">
+        <rect x="0" y="2" width="18" height="14" rx="2"/><circle cx="5" cy="7" r="1.5"/><path d="M2 13 l4 -4 3 3 4 -5 3 4"/>
+      </g>
+      <text x="354" y="326">eval subagent</text>
+      <text class="sub" x="354" y="344">链接/图片全通过?</text>
+    </g>
+  </g>
+
+  <!-- stage 7: human gate (dashed = waiting, no motion) -->
+  <g class="st st-7">
+    <path class="edge-base" d="M310 332 H250"/><path class="edge-flow" d="M310 332 H250" pathLength="100"/><path class="arrow" d="M250 332 l8 -4 v8 z"/>
+    <g class="node node--human">
+      <rect class="wk" style="--wk:13.1s" x="110" y="300" width="140" height="64" rx="8"/>
+      <g class="glyph" transform="translate(124,315)"><circle cx="7" cy="5" r="4"/><path d="M-1 19 c0-5 4-8 8-8 s8 3 8 8"/></g>
+      <text x="152" y="326">人工验收</text>
+      <text class="sub" x="152" y="344">preview → OK?</text>
+    </g>
+  </g>
+
+  <!-- loop B: eval fail / human reject -> rework rail -->
+  <g class="st st-8">
+    <path class="edge-base" d="M385 364 V420 H68 V157"/>
+    <path class="edge-flow edge-flow--loop" d="M385 364 V420 H68 V157" pathLength="100"/>
+    <path class="edge-base" d="M180 364 V420"/>
+    <path class="edge-flow edge-flow--loop" d="M180 364 V420" pathLength="100"/>
+    <path class="arrow arrow--loop" d="M68 157 l-4 8 h8 z"/>
+    <text class="tag" x="255" y="442" text-anchor="middle" style="fill: var(--afe-loop)">eval 挂 / 人工拒绝 → needs-rework · revert sync</text>
+  </g>
+
+  <!-- stage 9: publish (only after human OK, explicit request) -->
+  <g class="st st-9">
+    <path class="edge-base" d="M180 300 V258"/><path class="edge-flow" d="M180 300 V258" pathLength="100"/>
+    <path class="arrow pub" d="M180 250 l-4 8 h8 z" style="fill: var(--afe-ok); --wk:15.2s"/>
+    <text class="tag pub" x="180" y="240" text-anchor="middle" style="fill: var(--afe-ok); --wk:15.2s">发布 gh-pages</text>
+  </g>
+
+  <!-- walkthrough packets (one full process per 14s cycle) -->
+  <g aria-hidden="true">
+    <circle class="pkt" r="5" style="--wk:3.5s; offset-path: path('M180 118 C 230 118, 230 58, 280 58')"/>
+    <circle class="pkt" r="5" style="--wk:3.5s; offset-path: path('M180 125 C 230 125, 230 146, 280 146')"/>
+    <circle class="pkt" r="5" style="--wk:3.5s; offset-path: path('M180 132 C 230 132, 230 234, 280 234')"/>
+    <circle class="pkt" r="5" style="--wk:6s; offset-path: path('M440 58 C 485 58, 485 138, 530 138')"/>
+    <circle class="pkt" r="5" style="--wk:6s; offset-path: path('M440 146 L530 146')"/>
+    <circle class="pkt" r="5" style="--wk:6s; offset-path: path('M440 234 C 485 234, 485 154, 530 154')"/>
+    <circle class="pkt" r="5" style="--wk:8.1s; offset-path: path('M615 178 L615 300')"/>
+    <circle class="pkt" r="5" style="--wk:10.2s; offset-path: path('M540 332 L460 332')"/>
+    <circle class="pkt" r="5" style="--wk:12.1s; offset-path: path('M310 332 L250 332')"/>
+    <circle class="pkt" r="5" style="--wk:14.3s; offset-path: path('M180 300 L180 254')"/>
+  </g>
+</svg>
+<figcaption>my-blog 发布管线:流动的光点每 14 秒完整走播一轮流程(起草,三路并行评审,agent-cleared 门禁,sync + build,eval subagent 校验链接图片,人工验收,发布),走到哪个节点哪个节点点亮;背景暗色虚线只表示通道方向。琥珀色是两条回炉回路,评审有 blocker 回炉重稿,eval 失败或人工拒绝则 needs-rework 并 revert 已同步内容;虚线框的人工验收表示「等待中,无自动流动」。</figcaption>
+</figure>
+<!-- ==================== embeddable fragment ends ==================== -->
+
+</main>
+</body>
+</html>
