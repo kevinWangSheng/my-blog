@@ -9,7 +9,7 @@
  *  - 截图落盘交给 ⑦ human 看;审美主观判断不在此脚本里做。
  *
  * 用法:
- *   node scripts/ui-verify.mjs --serve <静态目录> [--path /route] [--breakpoints 375,768,1440] [--out out]
+ *   node scripts/ui-verify.mjs --serve <静态目录> [--path /route] [--breakpoints 375,768,1440] [--out out] [--relaxed]
  *   node scripts/ui-verify.mjs --url http://localhost:4321 [--path /]
  *   (Astro:先 `astro build` 得到 dist/,再 `--serve dist`;静态产物即可。)
  */
@@ -30,6 +30,9 @@ const serveDir = getArg('serve', null);
 const urlArg = getArg('url', null);
 const route = getArg('path', '/');
 const outDir = getArg('out', 'out');
+// --relaxed:把 console warning / lighthouse seo|best-practices|accessibility 从「判失败」降为「只记录」。
+// 用于外部 agent 的设计实验副本,避免噪音门把注意力从设计拉走。本仓库自己的验证不加此参数,行为不变。
+const relaxed = args.includes('--relaxed');
 const breakpoints = getArg('breakpoints', '375,768,1440')
   .split(',')
   .map((w) => parseInt(w.trim(), 10))
@@ -136,8 +139,13 @@ async function main() {
 
   const summary = {
     target: targetUrl, breakpoints, generatedBy: 'ui-verify.mjs',
-    screenshots: {}, axe: {}, layout: {}, lighthouse: null, ok: true, problems: [],
+    mode: relaxed ? 'relaxed' : 'strict',
+    screenshots: {}, axe: {}, layout: {}, lighthouse: null, ok: true,
+    problems: [], softProblems: [],
   };
+  // relaxed 模式下降级为「只记录」的问题走这里,不影响 summary.ok
+  const note = (msg) => (relaxed ? summary.softProblems : summary.problems).push(msg);
+  const fail = (msg) => { if (!relaxed) summary.ok = false; note(msg); };
 
   const browser = await chromium.launch();
   try {
@@ -197,7 +205,7 @@ async function main() {
       await page.screenshot({ path: shot, fullPage: true, animations: 'disabled' });
       summary.screenshots[w] = { file: shot, status, consoleErrors, consoleWarnings };
       if (consoleErrors.length) { summary.ok = false; summary.problems.push(`${consoleErrors.length} console error(s) @ ${w}px`); }
-      if (consoleWarnings.length) { summary.ok = false; summary.problems.push(`${consoleWarnings.length} console warning(s) @ ${w}px`); }
+      if (consoleWarnings.length) fail(`${consoleWarnings.length} console warning(s) @ ${w}px`);
 
       // axe a11y
       try {
@@ -230,8 +238,9 @@ async function main() {
   if (summary.lighthouse?.scores) {
     for (const [cat, val] of Object.entries(summary.lighthouse.scores)) {
       if (val != null && val < 80) {
-        summary.ok = false;
-        summary.problems.push(`lighthouse ${cat}=${val} (<80)`);
+        // relaxed 下只有 performance 仍是硬门;a11y 由 axe critical/serious 在三个断点上把关
+        if (cat === 'performance') { summary.ok = false; summary.problems.push(`lighthouse ${cat}=${val} (<80)`); }
+        else fail(`lighthouse ${cat}=${val} (<80)`);
       }
     }
   } else if (summary.lighthouse?.error) {
