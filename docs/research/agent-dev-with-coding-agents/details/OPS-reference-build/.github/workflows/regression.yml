@@ -1,0 +1,90 @@
+name: expense-agent regression gate
+
+# Fails the build if (a) evaluator isolation is broken, or (b) the eval
+# pass^k drops below the regression threshold vs the committed baseline.
+# Judges results, not paths. day-0 isolation gate runs BEFORE any grading.
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "evals/**"
+      - ".github/workflows/regression.yml"
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    env:
+      EXPENSE_AGENT_MODEL: claude-opus-4-8
+      EVAL_K: "5"            # trials per task for pass^k consistency
+      REGRESSION_THRESHOLD: "0.02"   # allowed pass^k drop vs baseline (2pp)
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      # ---- day-0 gate: evaluator isolation (non-negotiable) --------------
+      # Runs first. If the agent can patch the grader or the judge == agent,
+      # every downstream number is untrustworthy, so we stop here.
+      - name: Enforce dataset/grader read-only (CI cannot rely on git mode bits alone)
+        run: chmod 0444 evals/grader.py evals/dataset/*.jsonl
+
+      - name: Evaluator isolation gate
+        run: python evals/check_isolation.py
+
+      # ---- produce runs: agent under test, k trials per task ------------
+      # run_agent.py imports src.agent and writes runs/*.jsonl. It is the
+      # ONLY step that touches the agent; the grader never imports it.
+      - name: Run agent (k trials)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          mkdir -p runs
+          python evals/run_agent.py \
+            --dataset evals/dataset/extraction.jsonl \
+            --k "$EVAL_K" --out runs/extraction.jsonl
+          python evals/run_agent.py \
+            --dataset evals/dataset/classification.jsonl \
+            --k "$EVAL_K" --out runs/classification.jsonl
+
+      # ---- grade + absolute floor --------------------------------------
+      - name: Grade extraction (pass^k floor)
+        run: |
+          python evals/grader.py \
+            --dataset evals/dataset/extraction.jsonl \
+            --runs runs/extraction.jsonl \
+            --k "$EVAL_K" --gate 0.80 \
+            --report runs/extraction_report.json
+
+      - name: Grade classification (pass^k floor)
+        run: |
+          python evals/grader.py \
+            --dataset evals/dataset/classification.jsonl \
+            --runs runs/classification.jsonl \
+            --k "$EVAL_K" --gate 0.90 \
+            --report runs/classification_report.json
+
+      # ---- regression vs committed baseline ----------------------------
+      - name: Regression gate vs baseline
+        run: |
+          python evals/regression_gate.py \
+            --baseline evals/baseline.json \
+            --reports runs/extraction_report.json runs/classification_report.json \
+            --threshold "$REGRESSION_THRESHOLD"
+
+      - name: Upload eval reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-reports
+          path: runs/*_report.json

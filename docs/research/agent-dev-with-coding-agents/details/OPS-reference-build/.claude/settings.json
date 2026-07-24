@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Bash(rm:*)",
+      "Bash(sqlite3:*)",
+      "Write(**/ledger.db)",
+      "Edit(**/ledger.db)",
+      "Edit(./evals/**)",
+      "Write(./evals/**)"
+    ],
+    "ask": [
+      "mcp__expense__expense_post_ledger_entry"
+    ],
+    "allow": [
+      "mcp__expense__expense_ocr_extract",
+      "mcp__expense__expense_fx_rate",
+      "Read(./inbox/**)",
+      "Read(./evals/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/pre_tool_use_guard.sh",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PROJECT_DIR}/.claude/hooks/guard_ledger.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/post_tool_use_format.sh",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PROJECT_DIR}/.claude/hooks/stop_run_pytest.sh",
+            "timeout": 300
+          }
+        ]
+      }
+    ]
+  }
+}

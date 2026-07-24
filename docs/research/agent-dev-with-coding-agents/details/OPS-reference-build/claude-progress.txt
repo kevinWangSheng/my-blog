@@ -1,0 +1,49 @@
+# claude-progress.txt — expense-agent 跨 session 进度交接文件
+#
+# 用途:coding agent(Claude Code)开发 expense-agent 时,跨 session / 跨 context-reset
+#       的「durable, queryable record」。每个 session 结束前由 agent 覆写本文件;
+#       下一个 session(或 /clear 后的新 agent)开局先读它,而不是依赖被压缩的对话历史。
+# 加载方式:在 CLAUDE.md 里写 "session 开局先读 @claude-progress.txt",或人工 @ 提及。
+# 注意:本文件是「派生状态」,git 历史才是可信源头(single source of truth);
+#       Current State 的 ✓/✗ 必须能用下方 verify 命令复核,不能口说。
+#
+# ---- 结构是【推断/示例·非规定】:Anthropic harness-design 文只说用
+#      "structured artifacts (progress files, git history, JSON feature lists)"
+#      跨 session 交接,未规定具体小节名;下面 4 小节是据此推的可照抄模板。----
+
+==============================================================================
+PROJECT: expense-agent  (单据/发票抽取 + 入账建议;单 agent + tools;Python + Claude API)
+SESSION: <2026-06-18T14:30 / 第 N 次 session>
+LAST UPDATED BY: claude-opus-4-8 (Claude Code)
+==============================================================================
+
+## 1. WORK HISTORY  (本 session 实际做了什么,append-only,最新在最上)
+- [2026-06-18] 实现 src/tools/fx_rate.py 保鲜路径:汇率缓存 + 过期触发 web_search 取 API 文档。
+- [2026-06-18] 接好 ocr_extract → 字段抽取 → post_ledger_entry 主链路 (src/agent.py)。
+- [2026-06-17] evals/ 建 22 个真实失败样本 + 1 条 regression(category pass^3)。
+- [2026-06-17] 项目骨架:src/agent.py / src/tools/ / evals/;ledger.db schema 定稿。
+
+## 2. RECENT GIT LOG  (粘 `git log --oneline -8` 的真实输出;它是可信源头,不是手写)
+<在这里粘贴 git log --oneline -8 的输出,例如:>
+a1b2c3d feat(fx): cache fx_rate + web_search freshness path on staleness
+e4f5g6h feat(agent): wire ocr_extract -> extract -> post_ledger_entry
+i7j8k9l test(eval): add 22 extraction cases + category pass^3 regression
+m0n1o2p chore: ledger.db schema + post_ledger_entry skeleton (ask/deny default)
+
+## 3. CURRENT STATE  (✓=已验证可跑  ✗=未做/坏;每条后面注「怎么复核」)
+✓ ocr_extract(file_path) 返回原始文本            (复核: pytest tests/test_ocr.py -q)
+✓ 主链路抽取 7 字段 JSON 输出                     (复核: python -m src.agent samples/inv01.pdf)
+✓ fx_rate 缓存命中走本地、过期触发保鲜            (复核: pytest tests/test_fx_rate.py -q)
+✗ post_ledger_entry 仍是 stub,未真正写 ledger.db (复核: grep -n "raise NotImplementedError" src/tools/post_ledger_entry.py)
+✗ category 一致性 pass^3 仅 0.71,未达门(目标 ≥0.85)(复核: python -m evals.run --suite category --k 3)
+✗ amount_base = amount × fx_rate 的数值容差 grader 还没写 (复核: ls evals/graders/amount_base_grader.py)
+
+## 4. NEXT STEPS  (下一个 session 第一步该干什么,按依赖排序,最该先做的在最上)
+1. 实现 post_ledger_entry 真正写库 + 权限默认 ask/deny(危险写操作,见 .claude/settings.json)。
+2. 写 amount_base 数值容差 grader(abs/rel 容差),挂进 evals/。
+3. 把 category pass^3 从 0.71 提到 ≥0.85:先看 evals 里 fail 的 transcript 找系统性错因,别盲调 prompt。
+4. 全部 ✗ 转 ✓ 后,更新本文件 + git commit,再交接。
+
+## 5. OPEN QUESTIONS / BLOCKERS  (需要 human 决策或外部信息,agent 不要自行假设)
+- fx_rate 用哪家 API?当前骨架按「ECB/exchangerate.host」结构写,真实 endpoint 待 human 定(②决策类)。
+- needs_human 的触发阈值(confidence < ?)未定;暂用 0.7,待 eval 校准。

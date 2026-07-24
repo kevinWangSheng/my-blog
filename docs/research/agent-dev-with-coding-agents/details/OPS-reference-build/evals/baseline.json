@@ -1,0 +1,11 @@
+{
+  "_note": "Committed pass^k baseline per suite. Regenerate intentionally after a verified improvement: run the agent at EVAL_K, grade, and copy pass_caret_k_mean here. Treat changes as reviewed (PR), never auto-overwrite in CI.",
+  "extraction": {
+    "k": 5,
+    "pass_caret_k_mean": 0.80
+  },
+  "classification": {
+    "k": 5,
+    "pass_caret_k_mean": 0.90
+  }
+}

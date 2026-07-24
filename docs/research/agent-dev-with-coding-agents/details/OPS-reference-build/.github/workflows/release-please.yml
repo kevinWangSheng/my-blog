@@ -1,0 +1,23 @@
+name: release-please
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      # release-please-action@v5 is the current major (released 2026-04-22):
+      # runs on node24 and bundles release-please 17.6.0. v4 (latest v4.4.1)
+      # still runs but is superseded; pin to v5 to stay on the supported line.
+      - uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

@@ -1,0 +1,49 @@
+# Codex sandbox + approval policy for developing the expense-agent.
+# Keys/values per Codex config reference (developers.openai.com/codex,
+# verified 2026-06-18): sandbox_mode, approval_policy, [sandbox_workspace_write].
+#
+# Stance: the dev sandbox can read/write the repo and run tests, but CANNOT
+# reach the network without an approval prompt and CANNOT touch anything outside
+# the workspace. This keeps a misbehaving agent from exfiltrating data or hitting
+# paid external APIs (OCR / FX) unsupervised, while still letting it edit code.
+
+# Filesystem + network posture: writable workspace, network denied by default.
+sandbox_mode = "workspace-write"
+
+# Approval posture: prompt the human when the agent wants to step outside the
+# sandbox (e.g. run a networked command) or escalate. "on-request" = the agent
+# may ask to run a command with elevated permissions; the human approves each.
+approval_policy = "on-request"
+
+[sandbox_workspace_write]
+# Outbound network is OFF inside the sandbox. The real ocr_extract / fx_rate
+# calls hit external APIs (cost money, leave the box) — force them through an
+# approval prompt rather than letting the sandbox dial out silently.
+network_access = false
+# Only the repo root is writable. ledger.db lives in the repo; nothing outside
+# the workspace can be modified.
+exclude_slash_tmp = true
+exclude_tmpdir_env_var = true
+
+# ---------------------------------------------------------------------------
+# CROSS-REFERENCE: runtime tool permissions live in .claude/settings.json and in
+# src/tools/permissions.py, NOT here. Codex config gates what the *dev harness*
+# may do (filesystem/network of the coding sandbox). The .claude permissions and
+# permissions.py gate what the *agent's tools* may do at runtime. They must agree
+# on the dangerous boundary:
+#
+#   post_ledger_entry  -> WRITES ledger.db (irreversible side effect)
+#     src/tools/permissions.py: "ask" (default-deny; human approves every write)
+#     .claude/settings.json:    Bash(python:*) under "ask"
+#     Codex here:               workspace-write keeps ledger.db inside the
+#                               writable root, but a networked confirmation/
+#                               escalation still hits approval_policy=on-request.
+#
+#   ocr_extract, fx_rate -> external network calls (cost money)
+#     Codex here: network_access = false => any real call is blocked in-sandbox
+#                 and requires an approval prompt (on-request).
+#
+# Net effect: no path writes ledger.db or spends money on external APIs without
+# a human in the loop, whether the action originates from the dev harness
+# (Codex) or from the agent's own tool calls at runtime (.claude + permissions).
+# ---------------------------------------------------------------------------
