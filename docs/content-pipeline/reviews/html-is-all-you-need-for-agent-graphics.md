@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: preview-ready
+- status: publish-ready (human 已验收渲染预览 2026-07-23;final build pass)
 - source paths / source records:
   - https://www.youtube.com/watch?v=JRTAtZ5iBkU
   - YouTube metadata and auto captions fetched locally with `yt-dlp` on 2026-07-03

@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: preview-ready(v2)
+- status: publish-ready (human 已验收渲染预览 2026-07-23;final build pass)
 - source paths / source records:
   - https://www.youtube.com/watch?v=pSto5YaNGUo(核心来源,视频 34:49,AI Engineer 频道,2026-06-29 上传)
   - 字幕全文:yt-dlp 自动字幕,2026-07-02 抓取(会话 scratchpad/transcript.txt,可用 yt-dlp --write-auto-subs 复取)

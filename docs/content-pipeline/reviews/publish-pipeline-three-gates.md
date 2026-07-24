@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: preview-ready
+- status: publish-ready (human 已验收渲染预览 2026-07-23;final build pass)
 - source paths / source records:
   - .agents/skills/blog-publisher/SKILL.md(本次四处改动:强制 subagent 评审、eval subagent、links 维护、完整叙事)
   - .agents/skills/blog-publisher/references/quality-gate.md(eval reviewer pass)
