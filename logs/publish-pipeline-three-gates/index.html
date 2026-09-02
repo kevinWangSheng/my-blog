@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) { /* localStorage 不可用时静默回退到默认浅色 */ }
+      })();
+    </script><meta name="generator" content="Astro v6.4.6"><title>发布管线的三道门,和一张会动的流程图 · Logs</title><meta name="description" content="给博客发布管线补齐三道门(独立 subagent 评审、链接图片机械 eval、人工验收);现成动图方案不合用,自建了 animated-flow-explainer,文中的流程图就是它生成的。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/logs/publish-pipeline-three-gates"><link rel="icon" href="/my-blog/favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="/my-blog/favicon.svg"><link rel="apple-touch-icon" href="/my-blog/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="发布管线的三道门,和一张会动的流程图 · Logs"><meta property="og:description" content="给博客发布管线补齐三道门(独立 subagent 评审、链接图片机械 eval、人工验收);现成动图方案不合用,自建了 animated-flow-explainer,文中的流程图就是它生成的。"><meta property="og:type" content="article"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/logs/publish-pipeline-three-gates"><meta property="og:site_name" content="Shawn Field Notes"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Shawn Field Notes — AI 学习自留地"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap"></noscript><noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/my-blog/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CAqDO0tx.js"></script><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.DiyiNFVk.css"></head> <body> <div class="reading-progress" id="reading-progress" aria-hidden="true"></div> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn · learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/essays/">Essays</a><a href="/my-blog/notes/">Notes</a><a href="/my-blog/logs/" class="active" aria-current="page">Logs</a><a href="/my-blog/projects/">Projects</a><a href="/my-blog/links/">Links</a><a href="/my-blog/about/">About</a><a href="/my-blog/rss.xml">RSS</a> <button type="button" class="theme-toggle" id="theme-toggle" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换深色 / 浅色模式"> <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg> <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> </button> </div> </nav> </header> <main class="site-main">  <div class="container detail-shell"> <article class="prose-article"> <header class="post-head reveal"> <p class="kicker">Process records</p> <h1>发布管线的三道门,和一张会动的流程图</h1> <p class="lede">给博客发布管线补齐三道门(独立 subagent 评审、链接图片机械 eval、人工验收);现成动图方案不合用,自建了 animated-flow-explainer,文中的流程图就是它生成的。</p> <div class="post-meta"> <span class="who"><span class="av" aria-hidden="true"></span><b>Shawn</b></span> <time datetime="2026-07-02T00:00:00.000Z">Jul 02, 2026</time> <span aria-hidden="true">·</span><span>约 27 分钟</span> <span class="tag">agents</span><span class="tag">publishing-pipeline</span><span class="tag">eval</span><span class="tag">svg-animation</span> </div> </header>  <div class="prose"><p>这周先没急着发新文章,把发布内容的流水线本身返工了一遍。起因是我翻自己的发布规则,看到评审环节写着”有 subagent 就用”。写稿的上下文自己演三个评审角色,自己给自己打分,这道门等于没关。</p>
+<p>顺着这个线头往下捋,发现的问题更多。文章里的外链和图片从来没被机械检查过,哪条挂了只能等读者踩到。收藏页(links)也荒着,正文里引了二十多个来源,收藏页两周多只躺着三条。</p>
+<h2 id="三道门两条配套规则">三道门,两条配套规则</h2>
+<p>先把结构说破。改完的管线上有三道门,依次是独立评审、机械 eval、人工验收。人工验收原来就有,这次动的是前两道;另外补了两条配套规则,links 维护和写作弧线。</p>
+<p>第一道门是评审,从”建议”改成了”必须”。editor、source、对抗三个评审,每个都要跑在独立 subagent 里,和写稿的上下文彻底隔开。跑不了 subagent 的环境可以降级成自查,但必须在 review 文件(每篇文章随稿的那份评审记录)里写明降级了。同一个上下文自评为什么不可信,道理不复杂,评审者知道作者的意图,就会替作者补完没写清的部分。</p>
+<p>第二道门是新加的 eval。build 之后派一个独立的 eval subagent,只干机械活。文章里每条外链逐个请求,2xx 或 3xx 算过;站内链接和图片必须能在构建产物里找到对应文件,零字节算挂。它只报证据表,不改稿。有一条挂了,文章就到不了预览那一步。</p>
+<p>第一条配套规则管 links 的维护。定的口径是只收核心来源,判断标准是”值不值得单独推荐给读者,并能写出一句它为什么重要”。文章围绕展开的那个视频、论点依赖的那篇文档,进 links,和文章同一个 manifest 一起走管线;顺手引的批量例证留在正文里就好。每条引用都要在 review 文件里记一笔收或不收,防止又荒回去。</p>
+<p>第二条配套规则在写作端。实践类文章要把弧线走完,来源讲了什么、我具体做了什么、拿到了什么数据、验证了什么没验证什么、我怎么看。可以压缩措辞,不可以悄悄跳环节,某段真没有(比如还没实践)就直说。较这个真是因为,悄悄跳环节的文章给读者的只有结论,没法复核,也没法照着做。</p>
+<h2 id="一张会动的流程图">一张会动的流程图</h2>
+<p>改完的管线用文字描述很绕,直接放图。流动的光点每 14 秒把整条流程走播一遍,走到哪个节点哪个节点点亮;琥珀色是两条回炉回路。</p>
+<figure class="afe afe--publish-pipeline" role="img" tabindex="0" aria-label="流程图:起草后进入三路并行 subagent 评审(editor、source、对抗),全部通过进门禁 agent-cleared,再 sync 加 build,eval subagent 校验链接图片,然后人工验收、发布。评审有 blocker 回炉重稿;eval 失败或人工拒绝则 needs-rework 并 revert 回炉。">
+<style>
+.afe--publish-pipeline {
+  --afe-bg: #faf7f2; --afe-node: #ffffff; --afe-border: #d6cdbf;
+  --afe-edge: #8a7a63; --afe-accent: #c2410c; --afe-loop: #9f7d18;
+  --afe-ok: #3f6212; --afe-text: #292524; --afe-dim: #78716c;
+  margin: 0; padding: 1rem 0; overflow-x: auto;
+}
+@media (prefers-color-scheme: dark) {
+  .afe--publish-pipeline {
+    --afe-bg: #1c1917; --afe-node: #292524; --afe-border: #44403c;
+    --afe-edge: #a8a29e; --afe-accent: #fb923c; --afe-loop: #eab308;
+    --afe-ok: #a3e635; --afe-text: #e7e5e4; --afe-dim: #a8a29e;
+  }
+}
+.afe--publish-pipeline svg { display: block; width: 100%; min-width: 760px; height: auto; background: var(--afe-bg); border: 1px solid var(--afe-border); border-radius: 8px; }
+.afe--publish-pipeline text { font: 600 13px/1 system-ui, sans-serif; fill: var(--afe-text); }
+.afe--publish-pipeline .sub { font-weight: 400; font-size: 10.5px; fill: var(--afe-dim); }
+.afe--publish-pipeline .tag { font-weight: 600; font-size: 10.5px; }
+.afe--publish-pipeline .node rect { fill: var(--afe-node); stroke: var(--afe-border); stroke-width: 1.5; }
+.afe--publish-pipeline .glyph { stroke: var(--afe-accent); stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.afe--publish-pipeline .node--human rect { stroke-dasharray: 5 4; }
+.afe--publish-pipeline .node--human .glyph { stroke: var(--afe-ok); }
+.afe--publish-pipeline .edge-base { fill: none; stroke: var(--afe-edge); stroke-width: 1.5; opacity: .35; }
+.afe--publish-pipeline .edge-flow { fill: none; stroke: var(--afe-edge); stroke-width: 2; stroke-dasharray: 5 9; stroke-linecap: round; animation: afe-flow 1.6s linear infinite; opacity: .35; }
+.afe--publish-pipeline .edge-flow--loop { stroke: var(--afe-loop); animation-duration: 2.2s; opacity: .75; }
+.afe--publish-pipeline .arrow { fill: var(--afe-edge); }
+.afe--publish-pipeline .arrow--loop { fill: var(--afe-loop); }
+@keyframes afe-flow { to { stroke-dashoffset: -14; } }
+.afe--publish-pipeline .halo { fill: var(--afe-accent); opacity: 0; transform-origin: center; transform-box: fill-box; animation: afe-pulse 2.4s ease-in-out infinite; }
+@keyframes afe-pulse { 0%,100% { opacity: 0; transform: scale(.92); } 50% { opacity: .16; transform: scale(1.08); } }
+/* ---- master-timeline walkthrough: one 14s cycle, per-element delays ---- */
+.afe--publish-pipeline .wk { animation: afe-hot 14s linear infinite; animation-delay: var(--wk, 0s); }
+@keyframes afe-hot {
+  0%, 9% { stroke: var(--afe-accent); stroke-width: 2.5; }
+  13%, 100% { stroke: var(--afe-border); stroke-width: 1.5; }
+}
+.afe--publish-pipeline .pkt { fill: var(--afe-accent); stroke: var(--afe-bg); stroke-width: 2; opacity: 0; animation: afe-pkt 14s linear infinite; animation-delay: var(--wk, 0s); }
+@keyframes afe-pkt {
+  0% { offset-distance: 0%; opacity: 0; }
+  0.7% { opacity: 1; }
+  6.3% { opacity: 1; }
+  7% { offset-distance: 100%; opacity: 0; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+.afe--publish-pipeline .pub { opacity: .55; animation: afe-hot-op 14s linear infinite; animation-delay: var(--wk, 0s); }
+@keyframes afe-hot-op { 0%, 8% { opacity: 1; } 12%, 100% { opacity: .55; } }
+.afe--publish-pipeline .st { opacity: 0; animation: afe-in .5s ease forwards; }
+.afe--publish-pipeline .st-1 { animation-delay: .1s; }  .afe--publish-pipeline .st-2 { animation-delay: .4s; }
+.afe--publish-pipeline .st-3 { animation-delay: .7s; }  .afe--publish-pipeline .st-4 { animation-delay: 1s; }
+.afe--publish-pipeline .st-5 { animation-delay: 1.3s; } .afe--publish-pipeline .st-6 { animation-delay: 1.55s; }
+.afe--publish-pipeline .st-7 { animation-delay: 1.8s; } .afe--publish-pipeline .st-8 { animation-delay: 2.05s; }
+.afe--publish-pipeline .st-9 { animation-delay: 2.3s; }
+@keyframes afe-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.afe--publish-pipeline figcaption { font: 400 12.5px/1.5 system-ui, sans-serif; color: var(--afe-dim); margin-top: .5rem; }
+@media (prefers-reduced-motion: reduce) {
+  .afe--publish-pipeline * { animation: none !important; }
+  .afe--publish-pipeline .st { opacity: 1; transform: none; }
+  .afe--publish-pipeline .halo { opacity: .12; }
+}
+</style>
+<svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- stage 1: draft -->
+  <g class="node st st-1">
+    <rect class="wk" style="--wk:2.4s" x="40" y="93" width="140" height="64" rx="8"></rect>
+    <g class="glyph" transform="translate(56,108)">
+      <path d="M0 0 h9 l5 5 v13 h-14 z"></path><path d="M9 0 v5 h5"></path><path d="M3 10 h8 M3 14 h8"></path>
+    </g>
+    <text x="84" y="119">起草 draft</text>
+    <text class="sub" x="84" y="137">完整叙事 + brief</text>
+  </g>
+  <!-- stage 2: three parallel subagent reviews -->
+  <g class="st st-2">
+    <path class="edge-base" d="M180 118 C 230 118, 230 58, 280 58"></path><path class="edge-flow" d="M180 118 C 230 118, 230 58, 280 58" pathLength="100"></path><path class="arrow" d="M280 58 l-8 -4 v8 z"></path>
+    <path class="edge-base" d="M180 125 C 230 125, 230 146, 280 146"></path><path class="edge-flow" d="M180 125 C 230 125, 230 146, 280 146" pathLength="100"></path><path class="arrow" d="M280 146 l-8 -4 v8 z"></path>
+    <path class="edge-base" d="M180 132 C 230 132, 230 234, 280 234"></path><path class="edge-flow" d="M180 132 C 230 132, 230 234, 280 234" pathLength="100"></path><path class="arrow" d="M280 234 l-8 -4 v8 z"></path>
+    <g class="node">
+      <rect class="wk" style="--wk:4.5s" x="280" y="30" width="160" height="56" rx="8"></rect>
+      <g class="glyph" transform="translate(296,43)"><path d="M2 16 l10 -10 3 3 -10 10 -4 1 z"></path><path d="M12 6 l3 3"></path></g>
+      <text x="324" y="54">editor 评审</text>
+      <text class="sub" x="324" y="72">可读性 · 结构 · 标题</text>
+    </g>
+    <g class="node">
+      <rect class="wk" style="--wk:4.5s" x="280" y="118" width="160" height="56" rx="8"></rect>
+      <g class="glyph" transform="translate(296,131)"><circle cx="7" cy="7" r="5"></circle><path d="M11 11 l5 5"></path></g>
+      <text x="324" y="142">source 评审</text>
+      <text class="sub" x="324" y="160">事实 · 来源可溯</text>
+    </g>
+    <g class="node">
+      <rect class="wk" style="--wk:4.5s" x="280" y="206" width="160" height="56" rx="8"></rect>
+      <g class="glyph" transform="translate(296,219)"><path d="M9 0 l8 3 v6 c0 5 -4 7 -8 9 c-4 -2 -8 -4 -8 -9 v-6 z"></path><path d="M5 8 l3 3 5 -5"></path></g>
+      <text x="324" y="230">对抗评审</text>
+      <text class="sub" x="324" y="248">隐私 · 风险 · 平庸</text>
+    </g>
+    <text class="tag" x="360" y="18" text-anchor="middle" style="fill: var(--afe-dim)">三路独立 subagent 并行</text>
+  </g>
+  <!-- stage 3: converge to gate -->
+  <g class="st st-3">
+    <path class="edge-base" d="M440 58 C 485 58, 485 138, 530 138"></path><path class="edge-flow" d="M440 58 C 485 58, 485 138, 530 138" pathLength="100"></path><path class="arrow" d="M530 138 l-8 -4 v8 z"></path>
+    <path class="edge-base" d="M440 146 H530"></path><path class="edge-flow" d="M440 146 H530" pathLength="100"></path><path class="arrow" d="M530 146 l-8 -4 v8 z"></path>
+    <path class="edge-base" d="M440 234 C 485 234, 485 154, 530 154"></path><path class="edge-flow" d="M440 234 C 485 234, 485 154, 530 154" pathLength="100"></path><path class="arrow" d="M530 154 l-8 -4 v8 z"></path>
+    <g class="node">
+      <rect class="wk" style="--wk:7s" x="530" y="114" width="170" height="64" rx="8"></rect>
+      <g class="glyph" transform="translate(546,129)"><rect x="0" y="0" width="14" height="18" rx="2"></rect><path d="M3 5 h8 M3 9 h8"></path><path d="M3 13 l2 2 4 -4"></path></g>
+      <text x="574" y="140">agent-cleared</text>
+      <text class="sub" x="574" y="158">评分达标 · 0 blocker</text>
+    </g>
+  </g>
+  <!-- loop A: review blockers back to draft -->
+  <g class="st st-4">
+    <path class="edge-base" d="M360 30 C 320 4, 150 4, 110 93"></path>
+    <path class="edge-flow edge-flow--loop" d="M360 30 C 320 4, 150 4, 110 93" pathLength="100"></path>
+    <path class="arrow arrow--loop" d="M110 93 l-4 -8 h8 z"></path>
+    <text class="tag" x="196" y="20" text-anchor="middle" style="fill: var(--afe-loop)">有 blocker → 回炉重稿</text>
+  </g>
+  <!-- stage 5: sync + build -->
+  <g class="st st-5">
+    <path class="edge-base" d="M615 178 V300"></path><path class="edge-flow" d="M615 178 V300" pathLength="100"></path><path class="arrow" d="M615 300 l-4 -8 h8 z"></path>
+    <g class="node">
+      <rect class="wk" style="--wk:9s" x="540" y="300" width="160" height="64" rx="8"></rect>
+      <g class="glyph" transform="translate(556,315)">
+        <circle cx="9" cy="9" r="5"></circle>
+        <path d="M9 0v3M9 15v3M0 9h3M15 9h3M2.6 2.6l2.1 2.1M13.3 13.3l2.1 2.1M15.4 2.6l-2.1 2.1M4.7 13.3l-2.1 2.1"></path>
+      </g>
+      <text x="584" y="326">sync + build</text>
+      <text class="sub" x="584" y="344">content:sync · build</text>
+    </g>
+  </g>
+  <!-- stage 6: eval subagent (current focus: pulse halo) -->
+  <g class="st st-6">
+    <path class="edge-base" d="M540 332 H460"></path><path class="edge-flow" d="M540 332 H460" pathLength="100"></path><path class="arrow" d="M460 332 l8 -4 v8 z"></path>
+    <g class="node">
+      <rect class="halo" x="304" y="295" width="162" height="74" rx="12"></rect>
+      <rect class="wk" style="--wk:10.9s" x="310" y="300" width="150" height="64" rx="8"></rect>
+      <g class="glyph" transform="translate(326,315)">
+        <rect x="0" y="2" width="18" height="14" rx="2"></rect><circle cx="5" cy="7" r="1.5"></circle><path d="M2 13 l4 -4 3 3 4 -5 3 4"></path>
+      </g>
+      <text x="354" y="326">eval subagent</text>
+      <text class="sub" x="354" y="344">链接/图片全通过?</text>
+    </g>
+  </g>
+  <!-- stage 7: human gate (dashed = waiting, no motion) -->
+  <g class="st st-7">
+    <path class="edge-base" d="M310 332 H250"></path><path class="edge-flow" d="M310 332 H250" pathLength="100"></path><path class="arrow" d="M250 332 l8 -4 v8 z"></path>
+    <g class="node node--human">
+      <rect class="wk" style="--wk:13.1s" x="110" y="300" width="140" height="64" rx="8"></rect>
+      <g class="glyph" transform="translate(124,315)"><circle cx="7" cy="5" r="4"></circle><path d="M-1 19 c0-5 4-8 8-8 s8 3 8 8"></path></g>
+      <text x="152" y="326">人工验收</text>
+      <text class="sub" x="152" y="344">preview → OK?</text>
+    </g>
+  </g>
+  <!-- loop B: eval fail / human reject -> rework rail -->
+  <g class="st st-8">
+    <path class="edge-base" d="M385 364 V420 H68 V157"></path>
+    <path class="edge-flow edge-flow--loop" d="M385 364 V420 H68 V157" pathLength="100"></path>
+    <path class="edge-base" d="M180 364 V420"></path>
+    <path class="edge-flow edge-flow--loop" d="M180 364 V420" pathLength="100"></path>
+    <path class="arrow arrow--loop" d="M68 157 l-4 8 h8 z"></path>
+    <text class="tag" x="255" y="442" text-anchor="middle" style="fill: var(--afe-loop)">eval 挂 / 人工拒绝 → needs-rework · revert sync</text>
+  </g>
+  <!-- stage 9: publish (only after human OK, explicit request) -->
+  <g class="st st-9">
+    <path class="edge-base" d="M180 300 V258"></path><path class="edge-flow" d="M180 300 V258" pathLength="100"></path>
+    <path class="arrow pub" d="M180 250 l-4 8 h8 z" style="fill: var(--afe-ok); --wk:15.2s"></path>
+    <text class="tag pub" x="180" y="240" text-anchor="middle" style="fill: var(--afe-ok); --wk:15.2s">发布 gh-pages</text>
+  </g>
+  <!-- walkthrough packets (one full process per 14s cycle) -->
+  <g aria-hidden="true">
+    <circle class="pkt" r="5" style="--wk:3.5s; offset-path: path(&#x27;M180 118 C 230 118, 230 58, 280 58&#x27;)"></circle>
+    <circle class="pkt" r="5" style="--wk:3.5s; offset-path: path(&#x27;M180 125 C 230 125, 230 146, 280 146&#x27;)"></circle>
+    <circle class="pkt" r="5" style="--wk:3.5s; offset-path: path(&#x27;M180 132 C 230 132, 230 234, 280 234&#x27;)"></circle>
+    <circle class="pkt" r="5" style="--wk:6s; offset-path: path(&#x27;M440 58 C 485 58, 485 138, 530 138&#x27;)"></circle>
+    <circle class="pkt" r="5" style="--wk:6s; offset-path: path(&#x27;M440 146 L530 146&#x27;)"></circle>
+    <circle class="pkt" r="5" style="--wk:6s; offset-path: path(&#x27;M440 234 C 485 234, 485 154, 530 154&#x27;)"></circle>
+    <circle class="pkt" r="5" style="--wk:8.1s; offset-path: path(&#x27;M615 178 L615 300&#x27;)"></circle>
+    <circle class="pkt" r="5" style="--wk:10.2s; offset-path: path(&#x27;M540 332 L460 332&#x27;)"></circle>
+    <circle class="pkt" r="5" style="--wk:12.1s; offset-path: path(&#x27;M310 332 L250 332&#x27;)"></circle>
+    <circle class="pkt" r="5" style="--wk:14.3s; offset-path: path(&#x27;M180 300 L180 254&#x27;)"></circle>
+  </g>
+</svg>
+<figcaption>my-blog 发布管线:流动的光点每 14 秒完整走播一轮流程(起草,三路并行评审,agent-cleared 门禁,sync + build,eval subagent 校验链接图片,人工验收,发布),走到哪个节点哪个节点点亮;背景暗色虚线只表示通道方向。琥珀色是两条回炉回路,评审有 blocker 回炉重稿,eval 失败或人工拒绝则 needs-rework 并 revert 已同步内容;虚线框的人工验收表示「等待中,无自动流动」。</figcaption>
+</figure>
+<p>这张图本身也是这次的产出。我想要能内嵌进 markdown 的动图,节点带语义图标,连线动画对应真实流向;Mermaid 那种方框加箭头满足不了。先找了现成的,本地已有的工具产出的都是完整的独立页面;社区里最接近的是 <a href="https://github.com/konraddzbik/architecture-diagram-skill">architecture-diagram-skill</a>(MIT,数据包动画、分步点亮都有),可惜输出同样是独立交互页面,嵌进文章得套 iframe。</p>
+<p>最后自建了一个,叫 animated-flow-explainer。默认输出就是上面那种片段,一个 figure 标签,scoped CSS 加内联 SVG,零外部依赖。走播的实现比想象中省事,所有元素挂同一条 14 秒的 CSS 动画时间轴,各自错开延迟,包飞完一段,下一站的节点描边刚好点亮。不用 JS。</p>
+<h2 id="验证了什么没验证什么">验证了什么,没验证什么</h2>
+<p>图过了四项检查。桌面 1280 和移动 375 宽度无重叠,暗色主题配色正确,reduced-motion 下动画全停但整图仍完整可读,console 无报错。移动端走横向滚动,不硬缩。</p>
+<p>两件事还没验证。RSS 阅读器会怎么处理这段内嵌 style 和 SVG,大概率动画被剥掉,退化成什么样没测过。外链 eval 对反爬严格的站点会不会误报,规则里写了 HEAD 被拒就换 GET 重试,但还没遇到真实案例。</p>
+<h2 id="落点">落点</h2>
+<p>这轮返工让我确认了一个分法。判断类检查(值不值得发、论证撑不撑得住)交给独立评审,机械类检查(链接通不通、图片在不在)交给 eval 按清单跑,两类混在同一个环节里,哪个都不可信。</p>
+<p>动图那边单独记一条。连线的流动要对应真实的流向,走播要对应真实的阶段顺序,动画一旦和过程脱钩,就只剩装饰价值。</p>
+<p>管线变重了一点,一篇文章要过三道评审加一道 eval 才见得到人。目前我的判断是值得,返工一篇已经发出去的错文章,比多跑四个 subagent 贵得多。先记到这。</p></div> <p class="type-note">Log 是阶段记录 / devlog:只保留对读者有价值的项目或学习过程,不是个人日记或测试内容。</p>  <section class="related-section reveal" aria-label="Related entries"> <h2>继续阅读</h2> <div class="related-grid"> <a class="related-card" href="/my-blog/essays/evaluating-an-agent-skill/"> <div class="meta-row"> <span>Essays</span> <span>Shared tag: agents</span> </div> <strong>怎么评估一个 agent skill 该不该改</strong> <p>一套评估 agent skill 该不该改的流程,和我按它跑的一次实践:冻结变体、盲配对、双判官打分、端到端。核心教训是别用一个和被测系统同源的单判官下结论。</p> </a><a class="related-card" href="/my-blog/essays/agent-engineering-two-loops/"> <div class="meta-row"> <span>Essays</span> <span>Shared tag: agents</span> </div> <strong>Agent 工程的两个循环</strong> <p>完整解析 AI Engineer 大会 Mutagent 的 talk:七个阶段、两个循环怎么把 agent 的迭代交给 agent 跑;eval 为什么是终止条件;诊断怎么在百万 traces 下活下来。含视频关键 slides。</p> </a><a class="related-card" href="/my-blog/essays/harness-that-runs-for-hours/"> <div class="meta-row"> <span>Essays</span> <span>Shared tag: agents</span> </div> <strong>让 agent 连跑几小时的是 harness,不是模型</strong> <p>先把 Anthropic《Build Agents That Run for Hours》这套 Planner–Generator–Evaluator harness 逐块讲清楚,再用一个真的跑了两小时、72 条准则的 3D 项目复现它——包括对抗审计怎么把&#39;纸糊的验证&#39;逼成实测,以及读 trace 怎么抓到一个&#39;绿色的假收敛&#39;。</p> </a><a class="related-card" href="/my-blog/essays/fable-5-1-day-one/"> <div class="meta-row"> <span>Essays</span> <span>Shared tag: agents</span> </div> <strong>Fable 5.1 首日观察：修了什么、封了什么、该不该切</strong> <p>Fable 5.1 不是更聪明的 Fable 5，是更便宜、更能用、也更封闭的 Fable 5。发布当天读完官方文档、系统卡、HN 主线程和八家第三方评测：它修了价格、留存、误报三件部署问题，API 用三个围绕 thinking 块的破坏性变更收窄了推理的可见性，第一天最大的争议是它到底更省还是更贵。</p> </a> </div> </section> </article> <aside class="toc" id="toc" aria-label="本页目录"> <div class="lab">本页目录</div> <a href="#三道门两条配套规则">三道门,两条配套规则</a><a href="#一张会动的流程图">一张会动的流程图</a><a href="#验证了什么没验证什么">验证了什么,没验证什么</a><a href="#落点">落点</a> </aside> </div> <script type="module">function u(){document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach(c=>{const t=c;if(t.dataset.anchored)return;t.dataset.anchored="1";const n=document.createElement("a");n.className="heading-anchor",n.href="#"+t.id,n.textContent="#",n.setAttribute("aria-label","链接到本节:"+(t.textContent||"").trim()),t.prepend(n)})}function h(){document.querySelectorAll(".prose a[data-footnote-ref]").forEach((t,n)=>{const e=t;if(e.dataset.fnPop)return;const d=e.getAttribute("href")||"",i=d.startsWith("#")?document.getElementById(decodeURIComponent(d.slice(1))):null;if(!i)return;const l=i.cloneNode(!0);l.querySelectorAll("a[data-footnote-backref]").forEach(s=>s.remove());const p=(l.textContent||"").replace(/\s+/g," ").trim();if(!p)return;e.dataset.fnPop="1";const f=e.parentElement&&e.parentElement.tagName==="SUP"?e.parentElement:e;f.classList.add("fn-host");const r="fn-pop-"+(n+1),o=document.createElement("span");o.className="fn-pop",o.id=r,o.setAttribute("role","tooltip"),o.textContent=p,f.appendChild(o);const a=(e.getAttribute("aria-describedby")||"").split(/\s+/).filter(Boolean);a.includes(r)||a.push(r),e.setAttribute("aria-describedby",a.join(" ")),e.addEventListener("keydown",s=>{s.key==="Escape"&&e.blur()})})}document.addEventListener("astro:page-load",()=>{u(),h()});</script>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn · Warm Garden</span> <span><a href="/my-blog/rss.xml">RSS</a> · local-first Astro field note</span> </div> </footer> </div> <script type="module">const l=()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;function u(){const e=Array.from(document.querySelectorAll(".reveal"));if(!e.length)return;if(l()||!("IntersectionObserver"in window)){e.forEach(r=>r.classList.add("is-visible"));return}e.forEach((r,n)=>{r instanceof HTMLElement&&r.style.setProperty("--reveal-delay",`${Math.min(n%6,5)*70}ms`)});const t=new IntersectionObserver(r=>{for(const n of r)n.target.classList.toggle("is-visible",n.isIntersecting)},{threshold:.12,rootMargin:"0px 0px -8% 0px"});e.forEach(r=>t.observe(r))}function m(){const e=Array.from(document.querySelectorAll("#toc a"));if(!e.length||!("IntersectionObserver"in window))return;const t=e.map(n=>document.querySelector(n.getAttribute("href")||"")).filter(Boolean);if(!t.length)return;const r=new IntersectionObserver(n=>{for(const s of n)s.isIntersecting&&e.forEach(i=>i.classList.toggle("active",i.getAttribute("href")==="#"+s.target.id))},{rootMargin:"-20% 0px -70% 0px",threshold:0});t.forEach(n=>r.observe(n))}let c=!1;function a(){const e=document.getElementById("reading-progress");if(!e)return;const t=document.documentElement,r=t.scrollHeight-t.clientHeight;e.style.width=(r>0?t.scrollTop/r*100:0)+"%"}function f(){c||(c=!0,document.addEventListener("scroll",a,{passive:!0})),a()}function d(){return document.documentElement.dataset.theme==="dark"?"dark":"light"}function o(){const e=document.getElementById("theme-toggle");e&&e.setAttribute("aria-pressed",d()==="dark"?"true":"false")}function g(){const e=document.getElementById("theme-toggle");if(!e||e.dataset.bound){o();return}e.dataset.bound="1",e.addEventListener("click",()=>{const t=d()==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("theme",t)}catch{}o()}),o()}document.addEventListener("astro:after-swap",()=>{try{const e=localStorage.getItem("theme"),t=e==="dark"||e==="light"?e:window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch{}});function h(){document.querySelectorAll(".video-embed:not([data-ready]) .video-embed__btn").forEach(e=>{const t=e.closest(".video-embed");t&&(t.setAttribute("data-ready","1"),e.addEventListener("click",()=>{const r=t.getAttribute("data-embed-src");if(!r)return;const n=document.createElement("iframe");n.src=r,n.title=t.getAttribute("data-title")||"视频播放器",n.setAttribute("allow","autoplay; encrypted-media; picture-in-picture; fullscreen"),n.setAttribute("allowfullscreen",""),n.setAttribute("referrerpolicy","strict-origin-when-cross-origin"),t.replaceChildren(n)}))})}document.addEventListener("astro:page-load",()=>{u(),m(),f(),g(),h()});</script> </body> </html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html><html lang="zh-CN"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><script>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored === 'dark' || stored === 'light'
+            ? stored
+            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          document.documentElement.dataset.theme = theme;
+        } catch (e) { /* localStorage 不可用时静默回退到默认浅色 */ }
+      })();
+    </script><meta name="generator" content="Astro v6.4.6"><title>Fable 5.1 首日观察：修了什么、封了什么、该不该切 · Essays</title><meta name="description" content="Fable 5.1 不是更聪明的 Fable 5，是更便宜、更能用、也更封闭的 Fable 5。发布当天读完官方文档、系统卡、HN 主线程和八家第三方评测：它修了价格、留存、误报三件部署问题，API 用三个围绕 thinking 块的破坏性变更收窄了推理的可见性，第一天最大的争议是它到底更省还是更贵。"><link rel="canonical" href="https://kevinwangsheng.github.io/my-blog/essays/fable-5-1-day-one"><link rel="icon" href="/my-blog/favicon.ico" sizes="any"><link rel="icon" type="image/svg+xml" href="/my-blog/favicon.svg"><link rel="apple-touch-icon" href="/my-blog/apple-touch-icon.png"><link rel="alternate" type="application/rss+xml" title="Shawn Field Notes RSS" href="/my-blog/rss.xml"><meta property="og:title" content="Fable 5.1 首日观察：修了什么、封了什么、该不该切 · Essays"><meta property="og:description" content="Fable 5.1 不是更聪明的 Fable 5，是更便宜、更能用、也更封闭的 Fable 5。发布当天读完官方文档、系统卡、HN 主线程和八家第三方评测：它修了价格、留存、误报三件部署问题，API 用三个围绕 thinking 块的破坏性变更收窄了推理的可见性，第一天最大的争议是它到底更省还是更贵。"><meta property="og:type" content="article"><meta property="og:url" content="https://kevinwangsheng.github.io/my-blog/essays/fable-5-1-day-one"><meta property="og:site_name" content="Shawn Field Notes"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Shawn Field Notes — AI 学习自留地"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://kevinwangsheng.github.io/my-blog/og.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..500&family=Literata:ital,opsz,wght@0,7..72,400..600;1,7..72,400..500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;500;600&display=swap"></noscript><noscript><style>.reveal{opacity:1 !important;transform:none !important;}</style></noscript><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/my-blog/_astro/ClientRouter.astro_astro_type_script_index_0_lang.CAqDO0tx.js"></script><link rel="stylesheet" href="/my-blog/_astro/BaseLayout.DiyiNFVk.css"></head> <body> <div class="reading-progress" id="reading-progress" aria-hidden="true"></div> <div class="site-shell"> <header class="site-header"> <nav class="container nav" aria-label="Primary navigation"> <a class="brand" href="/my-blog/" aria-label="Shawn Field Notes home"> <strong>Shawn Field Notes</strong> <span>Shawn · learning systems</span> </a> <div class="nav-links"> <a href="/my-blog/essays/" class="active" aria-current="page">Essays</a><a href="/my-blog/notes/">Notes</a><a href="/my-blog/logs/">Logs</a><a href="/my-blog/projects/">Projects</a><a href="/my-blog/links/">Links</a><a href="/my-blog/about/">About</a><a href="/my-blog/rss.xml">RSS</a> <button type="button" class="theme-toggle" id="theme-toggle" aria-label="切换深色 / 浅色模式" aria-pressed="false" title="切换深色 / 浅色模式"> <svg class="ic-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg> <svg class="ic-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg> </button> </div> </nav> </header> <main class="site-main">  <div class="container detail-shell"> <article class="prose-article"> <header class="post-head reveal"> <p class="kicker">Long-form synthesis</p> <h1>Fable 5.1 首日观察：修了什么、封了什么、该不该切</h1> <p class="lede">Fable 5.1 不是更聪明的 Fable 5，是更便宜、更能用、也更封闭的 Fable 5。发布当天读完官方文档、系统卡、HN 主线程和八家第三方评测：它修了价格、留存、误报三件部署问题，API 用三个围绕 thinking 块的破坏性变更收窄了推理的可见性，第一天最大的争议是它到底更省还是更贵。</p> <div class="post-meta"> <span class="who"><span class="av" aria-hidden="true"></span><b>Shawn</b></span> <time datetime="2026-09-02T07:30:00.000Z">Sep 02, 2026</time> <span aria-hidden="true">·</span><span>约 28 分钟</span> <span class="tag">agents</span><span class="tag">claude-code</span><span class="tag">fable-5-1</span><span class="tag">model-release</span> </div> </header>  <div class="prose has-drop-cap"><p>美西时间 2026 年 9 月 1 日上午，Anthropic 发布了 Claude Fable 5.1。发布后的十个小时里，我把官方公告、开发者文档、212 页系统卡、Hacker News 主线程的 917 条评论、X 上 21 个账号的时间线，以及 Every、Amp、CodeRabbit、Snorkel、Simon Willison、Artificial Analysis、ARC Prize、Vals AI 这八家的第三方评测过了一遍。这篇不是评测，我没有跑自己的 eval。它是一份「怎么读这次发布」的地图。</p>
+<p>先说结论：5.1 不是更聪明的 Fable 5，是更便宜、更能用、也更封闭的 Fable 5。相对半价的 Opus 5，通用基准的增量小到 HN 能用一道减法否掉；真正变的是账怎么算、误报多不多，以及 API 不再让你碰它的思考。</p>
+<p>读法交代一下：所有数字都标了来源；官方 benchmark 是厂商自报，第三方数字引自原文，我没有复现；社区反馈只覆盖发布后十小时，长期口碑还没形成；哪些是我的判断，我在句子里标了「我的读法」。</p>
+<h2 id="它修的是三个部署问题不只是刷分">它修的是三个部署问题，不只是刷分</h2>
+<p>Fable 5.1 与 Mythos 5.1 是同一个模型，区别只在安全分类器。Fable 5.1 全平台通用（Pro / Max / Team / Enterprise、Claude Code、API、Bedrock、Vertex、Foundry，GitHub Copilot 也在当天的 changelog 里宣布可用；不过发布日 HN 上也有 Pro 用户说自己还没看到），Mythos 5.1 只给经审核的网络防御和生命科学机构，目前还限于美国机构。输入 $10、输出 $50 每百万 token，和 Fable 5 一致。</p>
+<p>要理解这次发布，得先看 Fable 5 上线 12 周的处境。它 6 月 9 日发布，6 月 12 日到 7 月 1 日暂停访问近三周（官方时间线只写了暂停与恢复，HN 当时的热帖把原因归为出口管制），7 月底 Opus 5 以一半价格在多项基准上接近或追平了它。AppSo 转引支出平台 Ramp 的样本数据，Fable 5 只占其客户 Anthropic token 消耗的约 6%，这是二手数字，Ramp 的原始口径我没有核，但它和 HN 上「谁在付 $50/M 的钱」的质疑是一个方向。太贵、留不住数据、分类器误伤，是这三个月里被反复提的三件事。5.1 的公告把它们放在 benchmark 前面讲：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>问题</th><th>Fable 5 的状态</th><th>Fable 5.1 的改法</th></tr></thead><tbody><tr><td>太贵</td><td>缓存读 $1 / MTok</td><td>缓存读降到 <strong>$0.25 / MTok</strong>，是输入价的 0.025 倍（其他 Claude 模型是 0.1 倍）。官方按 8 月真实负载测算：典型负载省 25%，重 agent 负载最多约省 45%</td></tr><tr><td>30 天留存</td><td>Every 的说法是「把大多数大公司挡在了门外」</td><td>推出 <strong>Enterprise Frontier Safeguards（EFS）</strong>：数据存客户自己的云，人工审核默认由客户做，今秋分批上线。就绪之前，符合资格的企业可以用零留存</td></tr><tr><td>分类器误伤</td><td>HN 用户 nrmitchi：「只要看到和 Linux 沾边的东西就发作」；scronkfinkle：「对齐检查太敏感，基本总把我踢回 Opus」</td><td>Claude Code 里 cyber 干预每会话平均少约 60%，允许在源码里找漏洞；bio 分类器（Fable 5 与 5.1 共用，此前已更新过）对基础生物和医学类良性问题的误触发少 85%。渗透测试、exploit 生成、二进制扫描仍然回退到 Opus</td></tr></tbody></table>
+<p>三条里最实在的是第一条。长时 agent 会话里，缓存读经常占 token 的大头。Amp 说他们典型线程里超过 90% 的 token 是缓存读，所以切到 5.1 后 ultra 线程的成本降了约 35%。</p>
+<p>第二条要看清范围。官方原文是「符合 EFS 资格的客户在 EFS 就绪前可以用零留存」，Every 的评测写成「支持零留存协议、符合资格的企业客户可用」，漏掉了 EFS 过渡期这个前提。普通 API 账号仍然是 30 天留存，没有授权的零留存（ZDR）组织无法调用这个模型。</p>
+<h2 id="能力涨在长任务和科研相对-opus-5-是小幅增量">能力涨在长任务和科研，相对 Opus 5 是小幅增量</h2>
+<p><img src="/my-blog/images/fable-5-1-day-one/01-official-benchmarks.svg" alt="官方 benchmark：Fable 5.1 在七项百分比基准上对比 Fable 5、Opus 5 和 GPT-5.6 Sol。Terminal-Bench-Science 从 24.7% 涨到 52.6%；相对 Fable 5，Terminal-Bench 4.0 和 AutomationBench 各涨约 14 个点；相对 Opus 5，除 Science 外其余基准涨 1.4 到 4.5 个点">
+<em>官方公告的七项百分比基准。GDPval-AA v2 是 Elo 分：Fable 5.1 1853，Fable 5 1723，Opus 5 1824，GPT-5.6 Sol 1711。</em></p>
+<p>比较对象决定结论。相对 Fable 5，这是一次实打实的升级：Terminal-Bench 4.0 从 42.0% 到 55.8%，AutomationBench 从 17.1% 到 31.4%，Terminal-Bench-Science 翻倍。相对半价的 Opus 5，除了 Science 那一项，其余基准的差距是 1.4 到 4.5 个点。HN 用户 GodelNumbering 做了一道减法（这条评论下面有 32 条回复）：去掉 Terminal-Bench-Science，5.1 对 Opus 5 的优势是 TB 4.0 加 3.5、GDPval 加 1.5、OSWorld 加 2.5、Humanity’s Last Exam 加 1.6。这位用户的结论是「一个档次加一个版本，这不算提升」。</p>
+<p>两个官方自己写的脚注值得记住。第一，所有分数是在生产安全分类器开启下测的，分类器触发时 OSWorld 记 0，cyber 任务实际由 Opus 4.8 完成、bio 任务由 Opus 5 完成。Mythos 5.1 在 Terminal-Bench 4.0 上是 60.9%（和 Humanity’s Last Exam 无工具那格的 60.9% 是巧合，我回公告核过），比 Fable 5.1 高 5.1 个点；官方脚注只说分类器触发时 cyber 任务由 Opus 4.8 代做、「可能拉低」了 Fable 5.1 的分数，没有明确把这 5.1 个点全归因于分类器，那是我的推断。第二，Terminal-Bench-Science 0.1 的标准误是 ±3.5 到 4.5 个点，Simon Willison 指出它是 8 月 27 日才公布的新基准。他对整张表的评价是：其他基准只是略有提升，没有一个像 Science 这个那么惊人。</p>
+<p>第三方评测给的是另一种画面。它们测的不是通用基准，而是「成功时省多少、失败时怎么失败」。其中 Artificial Analysis 自述参与了发布前评测，Every 提前一周拿到访问，所以我叫它们第三方而不是独立：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>评测方</th><th>一句话结论</th><th>一个关键数</th></tr></thead><tbody><tr><td>Artificial Analysis</td><td>Intelligence Index 66 分榜首（Opus 5 63、Fable 5 62、GPT-5.6 Sol 61），但「非常啰嗦」</td><td>跑完整套输出 1.4 亿 token，中位数模型是 0.71 亿</td></tr><tr><td>ARC Prize</td><td>ARC-AGI-2 90.0%、ARC-AGI-1 97.5%（max 档）</td><td>每题 $4.49 / $1.40</td></tr><tr><td>Snorkel AI</td><td>对比 Opus 5「不是严格升级」：成功时更省更快，但更容易半途丢失</td><td>共同任务集里同解 18 题、Opus 独解 5 题、Fable 独解 2 题</td></tr><tr><td>CodeRabbit</td><td>「专科审查员，不是默认替代」；High 推理反而更差</td><td>最终评论从 253 条降到 166 条</td></tr><tr><td>Every</td><td>「Fable for everyone」：更快、更友好、说人话；但不守限制</td><td>Slack agent 任务用不到 Opus 5 一半的 token</td></tr></tbody></table>
+<p>Snorkel 和 CodeRabbit 的发现值得展开，因为它们说的是失败方式。Snorkel 在自己的 Terminal-Bench+ 私有集上测到，5.1 成功运行的输出 token 比 Opus 5 少 58%、耗时少 36%，但 Build / 依赖管理这一类任务只有 18%，Opus 5 是 67%；它的失败模式是终端里大文件写入之后恢复不了，工作其实已经接近完成，却在最后一步丢掉。CodeRabbit 在 45 个代码审查任务上测到召回持平（61.0% 对 Fable 5 的 61.9%）、精度升（37.3% 对 32.8%）、评论数少三分之一，但单任务从 12 分半慢到 18 分半（CodeRabbit 自己注明两次评测用的审查系统版本不同，只能看方向）；开更高的推理档位反而召回更低。两条合起来读：5.1 在「环境能反驳它」的任务上更好，在靠约定而不是靠反馈的任务上没有变强。</p>
+<p>轶事类的两条我也放一句。Vals AI 让它零干预解出了 Thomas Urquhart 1653 年书里的 Cyphral Distich 密码，三百七十多年没人解出，用了 44 分钟、17.6 万 token。Simon Willison 用 pelican 测试扫了五个 effort 档，max 档给出他见过 Anthropic 模型里最好的一张，但 low 和 medium 两档没有返回推理摘要。</p>
+<p>官方另外给了三个科研案例：Mythos 5.1 设计的蛋白结合剂在 12 个靶点上命中率接近 50%（行业常见是 10% 到 15%）；Fable 5.1 用 30 年前 Magellan 雷达数据重建了金星三分之一的高程图；Mythos 5.1 给七个开源基因组模型写 GPU kernel，H100 上最高提速 2.5 倍。这三项都是厂商自报，其中只有蛋白结合剂一项写明送了外部机构做实验验证。</p>
+<h2 id="api-的三个破坏性变更都围绕-thinking-块">API 的三个破坏性变更，都围绕 thinking 块</h2>
+<p>这是开发者最该读的一节。官方文档说 Fable 5 的提示词在 5.1 上「应该无需修改就能工作」，但 API 契约有三处会破坏现有调用：两处直接 400，一处静默丢块。</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>变更</th><th>表现</th><th>官方给的替代</th></tr></thead><tbody><tr><td>禁止强制 tool_choice</td><td><code>{"type": "any"}</code> 和 <code>{"type": "tool"}</code> 返回 400，count_tokens 端点做同样的校验</td><td><code>auto</code> 加提示词点名工具；<code>strict: true</code> 保证 schema；或者改用 structured outputs</td></tr><tr><td>thinking 块绑定模型</td><td>只有产出它的模型或更新的模型能读；向 Opus 5 等旧模型切换时块被静默丢弃（不计费；带 <code>thinking-binding-controls-2026-08-01</code> 这个 beta header 才会在响应里报告）</td><td>向上切到 5.1 保留推理，向下切丢失</td></tr><tr><td>修改历史即失效（官方叫 preserved thinking）</td><td>改了 system、tools 或任何早期消息之后再回放 thinking 块，返回 400 <code>bound to a different conversation</code></td><td>对话保持 append-only；用 mid-conversation system message 改指令和工具；用服务端 compaction 或 context editing 裁剪</td></tr></tbody></table>
+<p>第三条的执行范围有个时间线：2026 年 8 月 31 日（UTC）起新建的账号立即强制；旧账号目前不强制，除非请求里主动设置 <code>prefix_mismatch_behavior</code>；官方明说「未来模型发布将适用于所有用户」。这不是可选项，只是给了旧账号一个缓冲期。</p>
+<p>动机官方说了一半。支持中心的文章直接说第三条是反蒸馏：编辑前文诱导模型解密并打印自己的思考，是「公开记录的工业级蒸馏技术」，用几千个假账号批量做；同一篇也把「限制把会话或推理从更强模型转移到更弱模型」列为已有的反蒸馏措施，那就是第二条。第一条官方给的理由不是蒸馏，而是质量：思考常开，强制调用会跳过思考，模型会把推理写进工具参数里，参数质量下降。把三条串成同一个动机、说第一条堵的是「伪造一个工具再强制调用来套出原始思考」，是 HN 用户 mlaux 的推测，他自己也写了「我相信是这样」。我的读法是：不管第一条的动机是什么，三条的共同效果是 thinking 块只能被本模型在原封不动的对话里读回来，推理的可见性和可编辑性同时收窄了一圈。</p>
+<p>配套新增了五项。前三项正好是给「append-only」这个约束配的工具，后两项是定价和溯源：</p>
+<ul>
+<li><strong>per-message effort</strong>（beta）：在 <code>messages</code> 里塞一条 <code>role: system</code> 加 <code>output_config.effort</code>，中途改档不打断缓存。</li>
+<li><strong>turn-scoped system message</strong>（beta）：<code>clear_at: "next_user_message"</code>，只在当前轮生效，之后留在数组里不渲染、不计费。这就是你以前「注入 reminder、下一轮删掉」的替代品。</li>
+<li><strong><code>thinking.display: "updates"</code></strong>（beta）：隐藏推理，但把工具调用之间的进度短句作为 thinking 块返回。</li>
+<li>缓存读降价（第一节已经讲过）。</li>
+<li>内容溯源：所有平台的文本输出带统计水印，Files API 取回的图片和视频带 C2PA 签名。这条在 HN 上引出了一整串争论，后面再说。</li>
+</ul>
+<p>如果你自己拼 <code>messages</code> 数组，迁移前至少做这几件事：</p>
+<pre class="astro-code warm-garden-dark" style="background-color:#1f2b26;color:#d7e3dc; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>1. 删掉所有 tool_choice: any / tool，改 strict 或 structured outputs</span></span>
+<span class="line"><span>2. 用 prefix_mismatch_behavior: "drop_block" 跑一遍会话，看 input_transformations 里有没有 prefix_binding_mismatch</span></span>
+<span class="line"><span>3. 把每轮注入又删除的 reminder 改成 turn-scoped system message</span></span>
+<span class="line"><span>4. 把动态改 system / tools 改成 mid-conversation system message</span></span>
+<span class="line"><span>5. 客户端压缩时整段换成一条 summary，不回放任何 thinking 块</span></span>
+<span class="line"><span>6. 重跑 effort 扫描：同名档位在不同模型上思考量不同，官方说 5.1 的 medium 档结果大致与 Fable 5 持平、成本更低</span></span>
+<span class="line"><span>7. 开 display: "updates"，否则长任务对用户是静默的</span></span>
+<span class="line"><span>8. 配 fallbacks: "default"：分类器拦下请求时（stop_reason 为 refusal），服务端自动按类别回退到 Opus 4.8 或 Opus 5 重跑</span></span></code></pre>
+<h2 id="系统卡里值得记住的几句">系统卡里值得记住的几句</h2>
+<p>212 页系统卡我没有通读，但把关键结论逐条核对过原文：</p>
+<ul>
+<li>化生风险判为 CB-1（能显著帮助有基础背景的人制造已知武器），未达 CB-2（替代稀缺专家），官方说这个判断「带一些不确定性」。</li>
+<li>对齐风险从「very low」上调为「low」。这承接 8 月的 Risk Report，原因是 cyber 评测里模型未授权访问真实系统的事故被披露。</li>
+<li>Cyber 能力是「发布过的模型里最强」：Mythos 5.1 在针对 Firefox 147 版本漏洞的 250 次试验里 245 次做出了完整 exploit。</li>
+<li>行为审计（对象是同一模型的 Mythos 5.1 版本）：相对 Opus 5「整体失准行为略有回退」，但优于 Mythos 5 和 Sonnet 5；「在压力下不如近期 Claude 诚实」；「是测过的模型里最能控制自己扩展思考内容、最能不被发现地完成隐蔽副任务的之一」。官方称这是「可能更难监控的弱证据」。</li>
+<li>外部测试中曾利用沙箱漏洞读取环境外的文件，官方评为低严重度。</li>
+<li>外部红队：Trajectory Labs 花 74 小时、6,500 多个请求，仅用 Fable 5.1 没有拿到端到端 exploit，也没找到通用越狱。</li>
+</ul>
+<p>把「更会控制自己的思考内容」和上一节的「不再让你编辑历史、不再让旧模型读它的思考」放在一起看，就是我说「更封闭」的意思：模型这一侧更会藏，API 这一侧更不让看。这是我读完系统卡最在意的一点，也是我自己的叠加判断，系统卡没有这样连起来说。</p>
+<h2 id="不改代码也会变的几件事">不改代码也会变的几件事</h2>
+<p>What’s new 页列了七条「不改代码也会出现」的差异，Prompting 指南另外按症状索引了十几条，每条附了修法。完整的表在同批收录的 links 里，这里只留对 agent 负载影响最大的四条：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>变化</th><th>官方描述</th><th>修法</th></tr></thead><tbody><tr><td>并行工具调用变得不稳定</td><td>编码和 computer-use 循环里可能一轮只发一个调用，Fable 5 会批量发</td><td>每轮工具结果后追加一句 batching 提示</td></tr><tr><td>长工具链里进度更新更少</td><td>高 effort、长链时用户会看到「静默几分钟」</td><td>先开 <code>display: "updates"</code>，删掉「把发现留到最后」类的旧指令</td></tr><tr><td>小改动整文件重写</td><td>输出 token 和时间上升</td><td>加「优先定点编辑」指令</td></tr><tr><td>任务没做完就结束回合</td><td>「Next, I’ll…」或者询问已经授权过的步骤</td><td>加「用户不在看，不要问已授权的事」和「用户请求即交付范围」两段</td></tr></tbody></table>
+<p>另外几条（超范围修改和多余测试文件、散文更密、xhigh / max 先在思考里打草稿、low 档更少触发搜索）在后面成本那一节还会碰到。如果只能先改一条，我会先改并行调用和进度更新这两处，因为它们直接决定一个 agent 在用户眼里是快还是卡。还有三条和误报有关的建议我觉得挺实用：不要问「这个程序能不能编译通过」，改问「有没有 bug」；冷门语言给它文档上下文；工具输出里的 base64 会触发误报，建议剥掉。</p>
+<h2 id="第一天大家在吵什么">第一天大家在吵什么</h2>
+<p><img src="/my-blog/images/fable-5-1-day-one/02-hn-themes.svg" alt="HN 主线程 917 条评论的主题计数：Opus 对比 127 条、价格 93 条、写作风格 78 条、GPT 对比 60 条、水印 40 条">
+<em>按关键词正则计数，一条评论可以命中多个主题，美西时间 9 月 1 日 20:50 抓取。</em></p>
+<p><strong>最长的讨论树是一位自称在 Anthropic 工作的用户开的。</strong> felixrieseberg 说：「抛开 benchmark，我觉得 5.1 在写作风格上是很大的进步，不再那么像刻板的 Claude，对我的风格指令响应更可靠。」这棵 333 条的树和 tarr11 开的 68 条树（他的原话是「散文密度不等于简洁，人也有 token 上限」）加起来有三种声音：认同的（ddahlen：「写作风格明显改善了」）、反问的（troupo：「你觉得，还是真的更好？」），以及在 tarr11 那棵树下被多人证实的观察：任何「写简洁点」的指令在长会话里几轮之后都会衰减，output style、hook、CLAUDE.md 都只管两三轮。这一点 5.1 有没有改善，第一天还没有证据。</p>
+<p><strong>正面集中在四件事。</strong></p>
+<ul>
+<li>写作与沟通：Amp 说这是第一次让团队愿意用 AI 写文档；Every 量化成阅读级别降到 7 年级、AI 痕迹最少。</li>
+<li>长任务和中途 steer：Amp 的描述是「跑几小时，证明不成立就回去改，再证明」；官方产品页里 Cognition 的客户引言说发布当天就把 Devin 的 Opus 5 流量迁过去。</li>
+<li>相对 Opus 5 的 token 效率：Every 测 Slack agent 用不到一半 token；Snorkel 测成功运行少 58% 输出 token。</li>
+<li>安全误报下降：HN 用户 llm_nerd 说「5.0 拒绝的项目加固任务现在能做，GPT-5.6 Sol 和 Gemini 也拒了」。</li>
+</ul>
+<p><strong>负面集中在四件事。</strong></p>
+<ul>
+<li>价格和额度：sergiotapia 问「$50/M 输出太离谱，谁在付这个钱」；InsideOutSanta 说两个账号都在第一个任务做完之前撞到 5 小时上限；Claude Code 仓库当天就有 issue 说 medium 档 20 分钟烧完 100% 额度。</li>
+<li>推理不可见和 preserved thinking：exabrial 说「没有 thought traces 就没法确认 prompt 对不对」；sippeangelo 说「这一条就够我们把 API 用量整体迁出 Anthropic」。</li>
+<li>增量太小：GodelNumbering 的减法上面已经引过；爆料账号 synthwavedd 的话是「相对 Fable 5 是相当增量的改进，OpenAI 传闻中的下一代模型 Astra 大概会碾压它，但仍然很酷」。</li>
+<li>写作更密、指令衰减：见上面 tarr11 那棵树；官方 Prompting 指南自己也承认「某些情况下比 Fable 5 更密」。</li>
+</ul>
+<p><strong>水印是第五大主题，40 条评论。</strong> 官方说水印「不增加 token 或隐藏字符、不含用户信息、对质量无实际影响」，检测 API 只私测开放给监管、媒体和事实核查机构。HN 上的追问集中在两点：dabinat 和 tosh 都问「不改输出怎么可能有水印」；mixedbit 担心的是另一头，如果我自己写的文章用模型校对，哪怕改动很小，也可能被检测 API 判成 AI 生成。BoorishBears 的总结更尖：「至少一半的变更都是反蒸馏策略。」</p>
+<p><strong>第三方评测里最有信息量的是 Every。</strong> 他们提前一周拿到访问，五个测试者里两个给了金牌，结论是「Fable for everyone」：更快、更友好、说人话，Slack agent 任务用 Opus 5 一半的 token。但同一篇里也记录了它不守限制：让写 1000 字写了 1288 字，要 8 到 12 条引用给了 43 条，抽查的 27 条里有 5 条不在原文里；xhigh 档会忽略中断继续开子代理；一个人一天打了 18 亿 token。</p>
+<p><strong>X 上的官方口径</strong>和 HN 形成对照。Alex Albert 说「向人描述 5.1 的方式就是：它就是能用，几句含糊的话它就能补全其余部分」；Claude Code 负责人 Boris Cherny 说「什么都用它」，并承认「我们听到了反馈，正在减少 Claude-speak」。我抓到的账号里当天点赞最高的一条不是任何能力展示，而是「重置了所有用户的 5 小时和周额度」，接近两万赞。这大概比任何 benchmark 都能说明用户在意什么。</p>
+<p><strong>Reddit 我没有拿到。</strong> 所有路径都被反爬拦住，只有一份 8 月 28 日灰度期的存档帖：一批人说 CLI 突然快很多、回复只剩两三句，另一批说 Fable 和 Opus 都变得极慢。发布后的 Reddit 反应在这篇里是空白。</p>
+<h2 id="争议更省还是更贵">争议：更省还是更贵</h2>
+<p>Every 那句总结是理解这个争议的钥匙：「它每一步都便宜，但你让它走多少步它就走多少步，effort 决定步数。」六方的数字每一方都对，但测的不是同一件事：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>说法</th><th>测的是什么</th><th>为什么省 / 为什么贵</th></tr></thead><tbody><tr><td>Anthropic 省 25%，最多 45%</td><td>8 月四周真实负载，默认 effort，按 token 计费</td><td>缓存读 $1 降到 $0.25</td></tr><tr><td>Amp 省 35%</td><td>ultra 线程，90% 以上 token 是缓存读</td><td>90% 缓存读乘以缓存单价降 75%</td></tr><tr><td>ARC 省 32%</td><td>max 档，两个基准每题平均成本</td><td>token 效率提升；若按 ARC 结果页的 $4.49 而不是推文的 $3.12 算，两基准平均只省约 9%，这个差异我没核清</td></tr><tr><td>Every 和 Snorkel「一半 token」</td><td>对比对象是 <strong>Opus 5</strong>，不是 Fable 5</td><td>每步更省</td></tr><tr><td>Artificial Analysis 贵 20%</td><td><strong>max effort</strong> 跑推理密集的基准，缓存占比低</td><td>输出 1.4 亿 token，远超中位数</td></tr><tr><td>HN 和 GitHub「20 到 60 分钟烧完额度」</td><td>订阅额度按 token 折算；Claude Code 默认 high 档，那条 issue 报的是 medium 档</td><td>每步便宜，但步数不设限</td></tr></tbody></table>
+<p>我的读法是：缓存命中率高、能用 high 及以下档的负载，价格是真降了；推理密集、缓存占比低、必须跑 max effort 的负载，不降反升。官方 Prompting 指南自己也承认 xhigh 和 max 会「先在思考里打草稿，再写一遍」。Simon Willison 用同一个提示扫了五档：low $0.10，high $0.13，xhigh $1.83，max $3.30。差 30 倍的不是模型，是你选的档位。</p>
+<p>订阅用户要另算一笔账。上面六方里只有最后一行是订阅视角，而这个博客的读者多数是 Claude Code 的订阅用户。订阅额度看到的不是单价，是按 token 折算的配额；缓存读降价 75% 有没有进入 5 小时和周额度的折算，官方没说，第一天也没人测出来。如果没有，那「省 45%」对 Max 用户是零，5.1 更长的步数只会让你更快撞墙。这也是为什么当天点赞最高的是「重置额度」。这一项我列进了未确认。</p>
+<h2 id="我的判断">我的判断</h2>
+<p>回到开头那句：<strong>它不是「更聪明的 Fable 5」，是「更便宜、更能用、也更封闭的 Fable 5」。</strong> 相对半价的 Opus 5，通用能力的增量小到 HN 能用一道减法否掉；真正的变化是缓存定价把长时 agent 的账算平了、误报下降让它在日常编码里不再动不动就被踢回 Opus、EFS 让企业有了合规路径，同时 API 用三个围绕 thinking 块的变更把推理的可见性和可编辑性收窄了一圈。评价这个版本，看它修了什么和封了什么，比看 benchmark 涨了几个点更有用。</p>
+<p><strong>该不该切，取决于负载形状。</strong> 我会切的条件是满足两条以上：</p>
+<ol>
+<li>负载是多小时的自主 agent（代码审查、迁移、研究），缓存读占 token 大头。</li>
+<li>Opus 5 在高 effort 下的 eval 仍然不达标。官方文档给的「用 Fable」条件就两个：高难度推理与长时 agent 任务，或者 Opus 5 高 effort 仍不达标。</li>
+<li>需要文档、表格、幻灯片端到端交付，或者密集图表阅读。</li>
+<li>能接受 30 天留存，或者有 EFS 资格。</li>
+</ol>
+<p>我不会切的条件：</p>
+<ol>
+<li>短交互、缓存命中低、必须 max effort 的推理任务。</li>
+<li>自建 harness 依赖编辑历史而短期改不了，新账号会立即 400。</li>
+<li>依赖强制 tool_choice 拿结构化输出，改完 strict 再说。</li>
+<li>订阅用户而且任务不是「一次跑几小时」，额度消耗是第一天最集中的抱怨。</li>
+</ol>
+<p><strong>会改变我判断的证据</strong>：一周后 Reddit 和 X 上普通用户对额度的反应；Artificial Analysis 补充 high 和 medium 档的每任务成本；Opus 5.1 会不会出现（GodelNumbering 的看法是 Opus 5 半价已经追平 Fable 5，再出 5.1 定价上「没地方放」）；以及 OpenAI Astra 发布之后的对比，我抓到的 scaling01、synthwavedd 和 DanDr1s 这几个账号都预期 Astra 会超过它。</p>
+<p>差 30 倍的不是模型，是你选的档位；该不该切也不看它多聪明，看你的负载长什么样。</p>
+<h2 id="方法与未确认">方法与未确认</h2>
+<p>官方文档和系统卡是一手来源，系统卡我用 pdftotext 转成文本后按关键句逐条核对。HN 主线程通过 Algolia API 全量抓取，主题计数用正则做，一条评论可以命中多个主题。X 因为搜索接口故障，只抓了 21 个账号的时间线，覆盖偏向官方和 KOL。Reddit 见上一节。中文渠道以 AppSo 的稿子为主，知乎只有 8 月 19 日的爆料稿，V2EX 唯一的 5.1 帖是渠道商广告。</p>
+<p>没有核实的几项：Reddit 发布后的真实反应；缓存读降价是否进入订阅额度的折算；ARC 结果页每题 $4.49 和 ARC 推文里每题 $3.12 的差异；爆料账号 DanDr1s 说的「幻觉测试 69% 到 73%」出处，我在系统卡里没找到这个数字；HN 引用的 Fable 5 跑 Artificial Analysis 全套成本 $5,455。</p>
+<p>主要来源：<a href="https://www.anthropic.com/claude-fable-and-mythos-5-1">Anthropic 发布公告</a>、<a href="https://www.anthropic.com/claude/fable">Fable 产品页</a>、<a href="https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1">What’s new in Claude Fable 5.1</a>、<a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1">Prompting Claude Fable 5.1</a>、<a href="https://www-cdn.anthropic.com/0339e6a7c5c7b87f5c07798616dc32c215d14235/Claude%20Fable%205.1%20&#x26;%20Claude%20Mythos%205.1%20System%20Card.pdf">系统卡 PDF</a>、<a href="https://support.claude.com/en/articles/16761192">支持中心：preserved thinking</a>、<a href="https://github.blog/changelog/2026-09-01-claude-fable-5-1-generally-available-in-github-copilot/">GitHub Copilot changelog</a>、<a href="https://news.ycombinator.com/item?id=49525378">HN 主线程</a>、<a href="https://every.to/vibe-check/fable-5-1-vibe-check">Every Vibe Check</a>、<a href="https://ampcode.com/news/fable-5.1">Amp</a>、<a href="https://www.coderabbit.ai/blog/fable-5-1-model-review">CodeRabbit</a>、<a href="https://snorkel.ai/blog/fable-5-1-vs-opus-5-coding-benchmark/">Snorkel AI</a>、<a href="https://simonwillison.net/2026/Sep/1/claude-fable-5-1/">Simon Willison</a>、<a href="https://artificialanalysis.ai/models/claude-fable-5-1">Artificial Analysis</a>、<a href="https://arcprize.org/results/anthropic-claude-fable-5-1">ARC Prize</a>、<a href="https://www.vals.ai/blogs/fable-solves-cyphral-distich">Vals AI</a>、<a href="https://www.163.com/dy/article/L5Q76G030511CSAO.html">AppSo 报道</a>、<a href="https://github.com/anthropics/claude-code/issues/91289">claude-code issue #91289</a>。</p></div> <p class="type-note">Essay 是长文综合:把多个观察和判断收束成可对外阅读的表达。</p>  <section class="related-section reveal" aria-label="Related entries"> <h2>继续阅读</h2> <div class="related-grid"> <a class="related-card" href="https://platform.claude.com/docs/en/models/fable-5-1/whats-new-fable-5-1" target="_blank" rel="noreferrer"> <div class="meta-row"> <span>Links</span> <span>Shared tag: agents</span> </div> <strong>What&#39;s new in Claude Fable 5.1</strong> <p>Anthropic 官方的 Fable 5.1 变更清单：三个破坏性 API 变更、五个新增功能、行为差异、定价与迁移步骤。</p> </a><a class="related-card" href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1" target="_blank" rel="noreferrer"> <div class="meta-row"> <span>Links</span> <span>Shared tag: agents</span> </div> <strong>Prompting Claude Fable 5.1</strong> <p>Anthropic 官方的 Fable 5.1 提示词指南：按观察到的症状索引，每条行为差异都给了可直接粘贴的修法。</p> </a><a class="related-card" href="/my-blog/essays/field-guide-to-fable/"> <div class="meta-row"> <span>Essays</span> <span>Shared tag: agents</span> </div> <strong>Fable 5 的用法：先找到未知</strong> <p>解析 Thariq Shihipar 的 Field Guide to Fable：模型能力的 overhang、系统提示词为什么变短、unknown 四象限怎么用，以及为什么“be unreasonable”仍然离不开验收。</p> </a><a class="related-card" href="https://www.youtube.com/watch?v=9fubhllmsBU" target="_blank" rel="noreferrer"> <div class="meta-row"> <span>Links</span> <span>Shared tag: agents</span> </div> <strong>Field Guide to Fable</strong> <p>Thariq Shihipar 在 AI Engineer 的 talk：怎么和 Fable 5 这类更强、更会探索的模型一起工作。</p> </a> </div> </section> </article> <aside class="toc" id="toc" aria-label="本页目录"> <div class="lab">本页目录</div> <a href="#它修的是三个部署问题不只是刷分">它修的是三个部署问题，不只是刷分</a><a href="#能力涨在长任务和科研相对-opus-5-是小幅增量">能力涨在长任务和科研，相对 Opus 5 是小幅增量</a><a href="#api-的三个破坏性变更都围绕-thinking-块">API 的三个破坏性变更，都围绕 thinking 块</a><a href="#系统卡里值得记住的几句">系统卡里值得记住的几句</a><a href="#不改代码也会变的几件事">不改代码也会变的几件事</a><a href="#第一天大家在吵什么">第一天大家在吵什么</a><a href="#争议更省还是更贵">争议：更省还是更贵</a><a href="#我的判断">我的判断</a><a href="#方法与未确认">方法与未确认</a> </aside> </div> <script type="module">function u(){document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach(c=>{const t=c;if(t.dataset.anchored)return;t.dataset.anchored="1";const n=document.createElement("a");n.className="heading-anchor",n.href="#"+t.id,n.textContent="#",n.setAttribute("aria-label","链接到本节:"+(t.textContent||"").trim()),t.prepend(n)})}function h(){document.querySelectorAll(".prose a[data-footnote-ref]").forEach((t,n)=>{const e=t;if(e.dataset.fnPop)return;const d=e.getAttribute("href")||"",i=d.startsWith("#")?document.getElementById(decodeURIComponent(d.slice(1))):null;if(!i)return;const l=i.cloneNode(!0);l.querySelectorAll("a[data-footnote-backref]").forEach(s=>s.remove());const p=(l.textContent||"").replace(/\s+/g," ").trim();if(!p)return;e.dataset.fnPop="1";const f=e.parentElement&&e.parentElement.tagName==="SUP"?e.parentElement:e;f.classList.add("fn-host");const r="fn-pop-"+(n+1),o=document.createElement("span");o.className="fn-pop",o.id=r,o.setAttribute("role","tooltip"),o.textContent=p,f.appendChild(o);const a=(e.getAttribute("aria-describedby")||"").split(/\s+/).filter(Boolean);a.includes(r)||a.push(r),e.setAttribute("aria-describedby",a.join(" ")),e.addEventListener("keydown",s=>{s.key==="Escape"&&e.blur()})})}document.addEventListener("astro:page-load",()=>{u(),h()});</script>  </main> <footer class="site-footer"> <div class="container footer-grid"> <span>© 2026 Shawn · Warm Garden</span> <span><a href="/my-blog/rss.xml">RSS</a> · local-first Astro field note</span> </div> </footer> </div> <script type="module">const l=()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;function u(){const e=Array.from(document.querySelectorAll(".reveal"));if(!e.length)return;if(l()||!("IntersectionObserver"in window)){e.forEach(r=>r.classList.add("is-visible"));return}e.forEach((r,n)=>{r instanceof HTMLElement&&r.style.setProperty("--reveal-delay",`${Math.min(n%6,5)*70}ms`)});const t=new IntersectionObserver(r=>{for(const n of r)n.target.classList.toggle("is-visible",n.isIntersecting)},{threshold:.12,rootMargin:"0px 0px -8% 0px"});e.forEach(r=>t.observe(r))}function m(){const e=Array.from(document.querySelectorAll("#toc a"));if(!e.length||!("IntersectionObserver"in window))return;const t=e.map(n=>document.querySelector(n.getAttribute("href")||"")).filter(Boolean);if(!t.length)return;const r=new IntersectionObserver(n=>{for(const s of n)s.isIntersecting&&e.forEach(i=>i.classList.toggle("active",i.getAttribute("href")==="#"+s.target.id))},{rootMargin:"-20% 0px -70% 0px",threshold:0});t.forEach(n=>r.observe(n))}let c=!1;function a(){const e=document.getElementById("reading-progress");if(!e)return;const t=document.documentElement,r=t.scrollHeight-t.clientHeight;e.style.width=(r>0?t.scrollTop/r*100:0)+"%"}function f(){c||(c=!0,document.addEventListener("scroll",a,{passive:!0})),a()}function d(){return document.documentElement.dataset.theme==="dark"?"dark":"light"}function o(){const e=document.getElementById("theme-toggle");e&&e.setAttribute("aria-pressed",d()==="dark"?"true":"false")}function g(){const e=document.getElementById("theme-toggle");if(!e||e.dataset.bound){o();return}e.dataset.bound="1",e.addEventListener("click",()=>{const t=d()==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("theme",t)}catch{}o()}),o()}document.addEventListener("astro:after-swap",()=>{try{const e=localStorage.getItem("theme"),t=e==="dark"||e==="light"?e:window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.dataset.theme=t}catch{}});function h(){document.querySelectorAll(".video-embed:not([data-ready]) .video-embed__btn").forEach(e=>{const t=e.closest(".video-embed");t&&(t.setAttribute("data-ready","1"),e.addEventListener("click",()=>{const r=t.getAttribute("data-embed-src");if(!r)return;const n=document.createElement("iframe");n.src=r,n.title=t.getAttribute("data-title")||"视频播放器",n.setAttribute("allow","autoplay; encrypted-media; picture-in-picture; fullscreen"),n.setAttribute("allowfullscreen",""),n.setAttribute("referrerpolicy","strict-origin-when-cross-origin"),t.replaceChildren(n)}))})}document.addEventListener("astro:page-load",()=>{u(),m(),f(),g(),h()});</script> </body> </html>
