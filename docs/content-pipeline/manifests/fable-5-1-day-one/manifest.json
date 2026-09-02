@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "fable-5-1-day-one.md",
+      "slug": "fable-5-1-day-one",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "fable-5-1-whats-new.md",
+      "slug": "fable-5-1-whats-new",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "prompting-claude-fable-5-1.md",
+      "slug": "prompting-claude-fable-5-1",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}

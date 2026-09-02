@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="900" height="500" role="img" aria-labelledby="t2">
+<title id="t2">HN 主线程 917 条评论的主题计数（横向条形图）</title>
+<rect width="900" height="500" fill="#ffffff"/>
+<text x="190" y="26" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="15" font-weight="700" fill="#1f2430">HN 主线程 917 条评论在聊什么</text>
+<text x="190" y="44" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="11.5" fill="#6c7283">按关键词正则计数，一条评论命中一次记 1，可多主题重叠（原帖 992 分，2026-09-01 20:50 抓取）</text>
+<line x1="190.0" x2="190.0" y1="70" y2="460" stroke="#e8eaf0"/>
+<text x="190.0" y="478" text-anchor="middle" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">0</text>
+<line x1="372.9" x2="372.9" y1="70" y2="460" stroke="#e8eaf0"/>
+<text x="372.9" y="478" text-anchor="middle" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">40</text>
+<line x1="555.7" x2="555.7" y1="70" y2="460" stroke="#e8eaf0"/>
+<text x="555.7" y="478" text-anchor="middle" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">80</text>
+<line x1="738.6" x2="738.6" y1="70" y2="460" stroke="#e8eaf0"/>
+<text x="738.6" y="478" text-anchor="middle" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">120</text>
+<text x="178" y="90.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">Opus 对比</text>
+<rect x="190" y="78.0" width="580.6" height="14" fill="#2a78d6"/>
+<text x="776.6" y="90.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">127</text>
+<text x="178" y="120.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">价格 / 成本</text>
+<rect x="190" y="108.0" width="425.1" height="14" fill="#2a78d6"/>
+<text x="621.1" y="120.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">93</text>
+<text x="178" y="150.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">写作风格 / Claude 腔</text>
+<rect x="190" y="138.0" width="356.6" height="14" fill="#2a78d6"/>
+<text x="552.6" y="150.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">78</text>
+<text x="178" y="180.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">GPT / Codex 对比</text>
+<rect x="190" y="168.0" width="274.3" height="14" fill="#2a78d6"/>
+<text x="470.3" y="180.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">60</text>
+<text x="178" y="210.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">水印</text>
+<rect x="190" y="198.0" width="182.9" height="14" fill="#2a78d6"/>
+<text x="378.9" y="210.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">40</text>
+<text x="178" y="240.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">安全分类器 / 回退</text>
+<rect x="190" y="228.0" width="178.3" height="14" fill="#2a78d6"/>
+<text x="374.3" y="240.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">39</text>
+<text x="178" y="270.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">benchmark</text>
+<rect x="190" y="258.0" width="169.1" height="14" fill="#2a78d6"/>
+<text x="365.1" y="270.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">37</text>
+<text x="178" y="300.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">科学发现</text>
+<rect x="190" y="288.0" width="155.4" height="14" fill="#2a78d6"/>
+<text x="351.4" y="300.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">34</text>
+<text x="178" y="330.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">订阅额度</text>
+<rect x="190" y="318.0" width="155.4" height="14" fill="#2a78d6"/>
+<text x="351.4" y="330.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">34</text>
+<text x="178" y="360.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">系统卡 / 对齐</text>
+<rect x="190" y="348.0" width="114.3" height="14" fill="#2a78d6"/>
+<text x="310.3" y="360.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">25</text>
+<text x="178" y="390.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">缓存价格</text>
+<rect x="190" y="378.0" width="96.0" height="14" fill="#2a78d6"/>
+<text x="292.0" y="390.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">21</text>
+<text x="178" y="420.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">思维链不可见</text>
+<rect x="190" y="408.0" width="86.9" height="14" fill="#2a78d6"/>
+<text x="282.9" y="420.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">19</text>
+<text x="178" y="450.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">反蒸馏</text>
+<rect x="190" y="438.0" width="68.6" height="14" fill="#2a78d6"/>
+<text x="264.6" y="450.0" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">15</text>
+<line x1="190" x2="190" y1="70" y2="460" stroke="#d9dce4"/>
+</svg>

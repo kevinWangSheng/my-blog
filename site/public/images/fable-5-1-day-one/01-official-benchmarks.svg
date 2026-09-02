@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 516" width="900" height="516" role="img" aria-labelledby="t1">
+<title id="t1">官方 benchmark：Fable 5.1 对比 Fable 5、Opus 5、GPT-5.6 Sol（横向分组条形图）</title>
+<rect width="900" height="516" fill="#ffffff"/>
+<text x="250" y="26" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="15" font-weight="700" fill="#1f2430">官方 benchmark：Fable 5.1 对比 Fable 5、Opus 5、GPT-5.6 Sol</text>
+<text x="250" y="44" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="11.5" fill="#6c7283">百分比基准，生产安全分类器开启下测得（来源：Anthropic 发布公告，2026-09-01）</text>
+<rect x="250" y="54" width="10" height="10" rx="2" fill="#2a78d6"/>
+<text x="264" y="63" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="11.5" fill="#4b5162">Fable 5.1</text>
+<rect x="350.8" y="54" width="10" height="10" rx="2" fill="#eb6834"/>
+<text x="364.8" y="63" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="11.5" fill="#4b5162">Fable 5</text>
+<rect x="437.20000000000005" y="54" width="10" height="10" rx="2" fill="#1baf7a"/>
+<text x="451.20000000000005" y="63" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="11.5" fill="#4b5162">Opus 5</text>
+<rect x="516.4000000000001" y="54" width="10" height="10" rx="2" fill="#eda100"/>
+<text x="530.4000000000001" y="63" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="11.5" fill="#4b5162">GPT-5.6 Sol</text>
+<line x1="250.0" x2="250.0" y1="70" y2="476" stroke="#e8eaf0"/>
+<text x="250.0" y="494" text-anchor="middle" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">0%</text>
+<line x1="368.0" x2="368.0" y1="70" y2="476" stroke="#e8eaf0"/>
+<text x="368.0" y="494" text-anchor="middle" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">20%</text>
+<line x1="486.0" x2="486.0" y1="70" y2="476" stroke="#e8eaf0"/>
+<text x="486.0" y="494" text-anchor="middle" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">40%</text>
+<line x1="604.0" x2="604.0" y1="70" y2="476" stroke="#e8eaf0"/>
+<text x="604.0" y="494" text-anchor="middle" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">60%</text>
+<line x1="722.0" x2="722.0" y1="70" y2="476" stroke="#e8eaf0"/>
+<text x="722.0" y="494" text-anchor="middle" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">80%</text>
+<line x1="840.0" x2="840.0" y1="70" y2="476" stroke="#e8eaf0"/>
+<text x="840.0" y="494" text-anchor="end" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11" fill="#4b5162">100%</text>
+<text x="238" y="103.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">Terminal-Bench-Science 0.1</text>
+<rect x="250" y="76" width="310.3" height="10" fill="#2a78d6" stroke="#ffffff" stroke-width="2"/>
+<text x="566.3" y="85" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">52.6%</text>
+<rect x="250" y="88" width="145.7" height="10" fill="#eb6834" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="100" width="171.1" height="10" fill="#1baf7a" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="112" width="132.2" height="10" fill="#eda100" stroke="#ffffff" stroke-width="2"/>
+<text x="238" y="161.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">Terminal-Bench 4.0</text>
+<rect x="250" y="134" width="329.2" height="10" fill="#2a78d6" stroke="#ffffff" stroke-width="2"/>
+<text x="585.2" y="143" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">55.8%</text>
+<rect x="250" y="146" width="247.8" height="10" fill="#eb6834" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="158" width="308.6" height="10" fill="#1baf7a" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="170" width="220.1" height="10" fill="#eda100" stroke="#ffffff" stroke-width="2"/>
+<text x="238" y="219.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">CursorBench 3.2.0</text>
+<rect x="250" y="192" width="433.1" height="10" fill="#2a78d6" stroke="#ffffff" stroke-width="2"/>
+<text x="689.1" y="201" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">73.4%</text>
+<rect x="250" y="204" width="416.0" height="10" fill="#eb6834" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="216" width="413.0" height="10" fill="#1baf7a" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="228" width="396.5" height="10" fill="#eda100" stroke="#ffffff" stroke-width="2"/>
+<text x="238" y="277.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">Humanity&#x27;s Last Exam（无工具）</text>
+<rect x="250" y="250" width="359.3" height="10" fill="#2a78d6" stroke="#ffffff" stroke-width="2"/>
+<text x="615.3" y="259" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">60.9%</text>
+<rect x="250" y="262" width="341.0" height="10" fill="#eb6834" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="274" width="333.9" height="10" fill="#1baf7a" stroke="#ffffff" stroke-width="2"/>
+<text x="256" y="295" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#6c7283">— 未公布</text>
+<text x="238" y="335.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">OSWorld 2.0（partial）</text>
+<rect x="250" y="308" width="459.6" height="10" fill="#2a78d6" stroke="#ffffff" stroke-width="2"/>
+<text x="715.6" y="317" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">77.9%</text>
+<rect x="250" y="320" width="430.1" height="10" fill="#eb6834" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="332" width="444.9" height="10" fill="#1baf7a" stroke="#ffffff" stroke-width="2"/>
+<text x="256" y="353" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#6c7283">— 未公布</text>
+<text x="238" y="393.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">OSWorld 2.0（strict）</text>
+<rect x="250" y="366" width="246.0" height="10" fill="#2a78d6" stroke="#ffffff" stroke-width="2"/>
+<text x="502.0" y="375" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">41.7%</text>
+<rect x="250" y="378" width="213.0" height="10" fill="#eb6834" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="390" width="233.6" height="10" fill="#1baf7a" stroke="#ffffff" stroke-width="2"/>
+<text x="256" y="411" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="10.5" fill="#6c7283">— 未公布</text>
+<text x="238" y="451.0" text-anchor="end" font-family="-apple-system,'PingFang SC','Noto Sans SC','Hiragino Sans GB','Microsoft YaHei',Helvetica,Arial,sans-serif" font-size="12.5" fill="#1f2430">AutomationBench</text>
+<rect x="250" y="424" width="185.3" height="10" fill="#2a78d6" stroke="#ffffff" stroke-width="2"/>
+<text x="441.3" y="433" font-family="'JetBrains Mono','SF Mono',Menlo,Consolas,monospace" font-size="11.5" fill="#1f2430">31.4%</text>
+<rect x="250" y="436" width="100.9" height="10" fill="#eb6834" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="448" width="158.7" height="10" fill="#1baf7a" stroke="#ffffff" stroke-width="2"/>
+<rect x="250" y="460" width="115.6" height="10" fill="#eda100" stroke="#ffffff" stroke-width="2"/>
+<line x1="250" x2="250" y1="70" y2="476" stroke="#d9dce4"/>
+</svg>
