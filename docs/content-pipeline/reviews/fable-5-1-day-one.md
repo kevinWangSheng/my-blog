@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: publish-ready
+- status: published
 - source paths / source records:
   - /Users/shenghuikevin/dev/AI/report/fable-5-1/fable-5-1-report.md（研究主报告）
   - /Users/shenghuikevin/dev/AI/report/fable-5-1/notes/sources.md（渠道覆盖、官方规格、第三方数字、系统卡关键句）
@@ -239,7 +239,7 @@ Total: 18/18（三轮 review 修订后复核；editor 原评 16/18，做完 M1/M
 
 ```yaml
 agent_review:
-  status: agent-cleared
+  status: published
   reviewer: agent
   date: 2026-09-02
   notes: 三轮独立子代理评审（editor pass / source 13 blockers / adversarial 6 blockers）全部处理并复核；泄露 grep 无命中；links 维护表已填；等待 content:sync、build、eval 子代理。
@@ -264,3 +264,4 @@ human_blog_review:
 - ui-verify: `/my-blog/essays/fable-5-1-day-one/` ok=true；375/768/1440 axe 0（crit 0 / serious 0），console 0，横向溢出无；Lighthouse perf 94 / a11y 100 / best-practices 100 / seo 100（CLS 0，LCP 2.5 s）
 - leak check: staged markdown、synced source、dist HTML 三处 grep（/Users/、kb-vault、docs/content-pipeline、scratchpad、private draft、confidential、机密、不发布、禁止发布）均无命中
 - rejection cleanup if needed: 无（用户在同一会话明确要求发布，跳过本地 human preview 门，直接 publish-ready）
+- publish: main 推送 f0a50a0 → CI → Deploy run 33602492741 success（build / publish 两个 job 均 success）；线上核验 2026-09-02 07:15Z：https://kevinwangsheng.github.io/my-blog/essays/fable-5-1-day-one 200 且含标题与两张 SVG（均 200 image/svg+xml），links 页含两条新条目，rss.xml 含本文；canonical 已通
