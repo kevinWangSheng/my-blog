@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: preview-ready
+- status: published
 - source paths / source records:
   - /Users/shenghuikevin/dev/AI/report/research/gpt-6-astra-primary-sources.md
   - /Users/shenghuikevin/dev/AI/report/research/gpt-6-astra-community-signals.md
@@ -229,10 +229,10 @@ Total: 18/18
 
 ```yaml
 agent_review:
-  status: preview-ready
+  status: published
   reviewer: agent
   date: 2026-09-03
-  notes: Editor, factual, adversarial and post-build eval subagents all passed after blocker revisions. Content check, sync, build, strict responsive UI verification and leak checks pass.
+  notes: Editor, factual, adversarial and post-build eval subagents all passed after blocker revisions. Content check, sync, build, strict responsive UI verification, leak checks, CI, Pages deployment and public URL verification pass.
 ```
 
 ## Final human blog review
@@ -253,4 +253,11 @@ human_blog_review:
 - preview URL: /my-blog/essays/gpt-6-astra-searchable-context/ under `out/ui-serve`
 - ui-verify if run: PASS in strict mode at 375/768/1440; `out/summary.json` has `ok: true`
 - leak check: PASS across manifest drafts, synced content and built essay HTML; no local paths, secrets, private markers or draft markers
+- publish commit: `6e64784`; pushed fast-forward to `origin/main`
+- CI: PASS, GitHub Actions run `33817682728`
+- deployment: PASS, GitHub Pages run `33817706946`
+- public article: https://kevinwangsheng.github.io/my-blog/essays/gpt-6-astra-searchable-context/ returned 200 and 21263 bytes; expected title, image reference and Fable internal link present
+- public image: https://kevinwangsheng.github.io/my-blog/images/gpt-6-astra-searchable-context/context-memory.svg returned 200 and 6231 bytes
+- public links index: https://kevinwangsheng.github.io/my-blog/links/ returned 200; both promoted source cards present
+- public RSS: https://kevinwangsheng.github.io/my-blog/rss.xml returned 200; article title present
 - rejection cleanup if needed: n/a, explicit publish request
