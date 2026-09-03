@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "gpt-6-astra-searchable-context.md",
+      "slug": "gpt-6-astra-searchable-context",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "codex-searchable-context-config.md",
+      "slug": "codex-searchable-context-config",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "gpt-6-astra-system-card.md",
+      "slug": "gpt-6-astra-system-card",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}
