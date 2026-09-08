@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- status: publish-ready
+- status: published
 - source paths / source records:
   - `~/dev/AI/adversarial-loop-eval/` — 本次实验的完整产物目录（规划、审查意见、评分 JSON、统计脚本）
   - `~/dev/AI/adversarial-loop-eval/results/REPORT.md` — 实验报告
@@ -273,4 +273,12 @@ human_blog_review:
 - preview URL: pnpm preview:prepare 后 out/ui-serve，路由 /my-blog/essays/adversarial-review-loop-decay/
 - ui-verify: 375/768/1440 三断点 axe critical 0 / serious 0，consoleErr 0，无横向溢出，lighthouse performance 96、a11y 100、best-practices 100、seo 100
 - leak check: 对暂存 markdown、同步源、产出 HTML 三处执行，/Users/、kb-vault、docs/content-pipeline、机密、不发布等关键词零命中；另检查厂商与模型名，正文零命中
+- 部署与线上核验（2026-09-08）:
+  - commit bea904b 推送至 main；CI success，Deploy Astro site to GitHub Pages success
+  - 线上返回码：文章页 / essays 列表 / links / 首页 / rss.xml 全部 200
+  - 线上正文抽查命中：标题、p ≈ 0.031、范围忠实、无虚构、条件性多进程解析实例
+  - 三张内联 SVG 均在线上 HTML 中（afe--loopdecay / loopdims / loopmech），正文 img 数为 0
+  - 线上 HTML 泄露复检零命中
+  - 公开地址：https://kevinwangsheng.github.io/my-blog/essays/adversarial-review-loop-decay/
+- 备注：本次发布在 main 的临时 worktree 中完成，未触碰 kimi-k3/readability 分支及其未提交改动
 - rejection cleanup if needed: 若人工驳回，删除 site/src/content/essays/adversarial-review-loop-decay.md 与 site/src/content/links/{pan-spontaneous-reward-hacking,kamoi-when-can-llms-self-correct}.md，并将本文件状态改为 needs-rework
