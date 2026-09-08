@@ -1,0 +1,357 @@
+---
+title: "让 agent 反复自审，质量是往下走的"
+description: "6 个规划任务 × 2 条臂 × 5 轮的受控实验：无外部验证信号的对抗审查循环不收敛，从第二轮起持续退化，范围失守是最大的一条通道。"
+date: "2026-09-08"
+tags: ["agents", "evals", "coding-agents", "llm-as-judge"]
+visibility: "public"
+series: "Agent Workflows"
+---
+写完一份实施规划，让 agent 再跑一轮对抗性审查，发现问题就改，改完再审，直到审查者说没问题为止。这个循环里没有人。
+
+它的隐含假设是每一轮都在收敛。我把这条曲线量了一遍，结论是它不收敛，也不改善：**质量最高的是完全没做过审查的初版，第一轮基本打平，从第二轮起一路下滑。六个任务全部下降，平均掉 0.58 分（满分 5）。**
+
+已有研究把大方向讲过了——无外部反馈的自纠错往往不能带来改善、有时反而变差（[Huang 等](https://arxiv.org/abs/2310.01798)、[Kamoi 等](https://arxiv.org/abs/2406.01297)），评审分会和真实质量脱钩（[Pan 等](https://arxiv.org/abs/2407.04549)）。但这些证据来自数学题、代码、摘要和申请文书，**没有一项覆盖实施规划**：没有标准答案，却又能部分核对，而这恰恰是 coding agent 日常产出最多的东西。
+
+所以这次自己跑了一遍。有两个结果是我没在文献里见过的，也是这篇真正想说的：**退化主要发生在哪个维度**，以及**成对比较会给你一个持续向好的假信号**。
+
+## 实验怎么搭的
+
+六个软件实施规划任务，从日志合并命令行工具、接口限流，到单体认证服务零停机拆分。每个任务写了完整需求和约束，另外单独写了一份评审用的必备项与禁止项清单——**规划者看不到这份清单**，只看公开需求。
+
+每个任务跑两条臂，共用同一份初版，各跑五轮：
+
+- **纯对抗**：审查者只拿到需求和当前规划，让它挑毛病。
+- **带锚点**：审查者额外拿到那份必备项清单，先逐条核对再补充。
+
+评分和生成完全隔离：换用另一个模型，盲评，不知道手上是第几轮，也看不到任何审查意见。每份规划打六个维度，另外做成对比较（两个顺序各判一次，不一致记平局）和退化核查。
+
+后面反复出现的**「深层分」指其中五个维度的均值**：范围忠实、依赖顺序、可验收、风险对策、无虚构。第六个维度可读性单独看，不计入——它是全场掉得最多的一个（−2.08），把它算进来只会让结论更难看，所以这个排除是保守的。
+
+固定跑满五轮，不以审查者说没问题为止——事实证明这个停止条件根本不会触发。
+
+## 结果一：曲线是向下的
+
+<figure class="afe afe--loopdecay">
+<style>
+.afe--loopdecay{margin:2rem 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif}
+.afe--loopdecay{--bg:#f7f8f7;--panel:#fff;--ink:#151b1a;--soft:#5a6663;--line:#dcdfdd;--grid:#e6eae8;--s1:#1a6da8;--s2:#c25708;--shadow:0 1px 2px rgba(20,25,25,.06),0 6px 20px rgba(20,25,25,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .afe--loopdecay{--bg:#15181a;--panel:#1b1f21;--ink:#e7eae9;--soft:#9aa4a1;--line:#2b3133;--grid:#252b2d;--s1:#4088bf;--s2:#c87730;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px rgba(0,0,0,.4)}}
+:root[data-theme="dark"] .afe--loopdecay{--bg:#15181a;--panel:#1b1f21;--ink:#e7eae9;--soft:#9aa4a1;--line:#2b3133;--grid:#252b2d;--s1:#4088bf;--s2:#c87730;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px rgba(0,0,0,.4)}
+.afe--loopdecay .wrap{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:20px 18px 14px;box-shadow:var(--shadow);overflow-x:auto}
+.afe--loopdecay .wrap:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+.afe--loopdecay .board{min-width:660px}
+.afe--loopdecay svg{width:100%;height:auto;display:block}
+.afe--loopdecay .cap{color:var(--soft);font-size:12.5px;line-height:1.55;margin:12px 4px 2px}
+.afe--loopdecay .cap b{color:var(--ink)}
+.afe--loopdecay .ax{fill:var(--soft);font-size:12px;font-family:ui-monospace,Menlo,monospace}
+.afe--loopdecay .vd{font-size:12.5px;font-weight:700;font-family:ui-monospace,Menlo,monospace}
+.afe--loopdecay .lg{display:flex;gap:1.1rem;flex-wrap:wrap;margin:10px 4px 0;font-size:12.5px;color:var(--soft)}
+.afe--loopdecay .lg i{display:inline-block;width:15px;height:3px;border-radius:2px;margin-right:.4rem;vertical-align:middle}
+</style>
+<div class="wrap" tabindex="0" role="img" aria-label="折线图:两条臂的深层分从初版 4.80 逐轮下降,纯对抗臂末轮 4.13,带锚点臂末轮 4.30,无一轮回升。"><div class="board">
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <g stroke="var(--grid)" stroke-width="1">
+    <line x1="86" y1="40" x2="860" y2="40"/><line x1="86" y1="100" x2="860" y2="100"/>
+    <line x1="86" y1="160" x2="860" y2="160"/><line x1="86" y1="220" x2="860" y2="220"/>
+    <line x1="86" y1="280" x2="860" y2="280"/>
+  </g>
+  <g class="ax" text-anchor="end">
+    <text x="74" y="44">5.0</text><text x="74" y="104">4.8</text>
+    <text x="74" y="164">4.6</text><text x="74" y="224">4.4</text><text x="74" y="284">4.2</text>
+  </g>
+  <line x1="86" y1="310" x2="860" y2="310" stroke="var(--line)" stroke-width="1"/>
+  <g class="ax" text-anchor="middle">
+    <text x="86" y="330">初版</text><text x="241" y="330">1 轮</text><text x="396" y="330">2 轮</text>
+    <text x="551" y="330">3 轮</text><text x="706" y="330">4 轮</text><text x="860" y="330">5 轮</text>
+  </g>
+  <polyline fill="none" stroke="var(--s2)" stroke-width="2.5" stroke-linejoin="round"
+    points="86,100 241,100 396,150.1 551,169.9 706,169.9 860,250"/>
+  <polyline fill="none" stroke="var(--s1)" stroke-width="2.5" stroke-linejoin="round"
+    points="86,100 241,139.9 396,150.1 551,180.1 706,220 860,300.1"/>
+  <g fill="var(--s2)"><circle cx="86" cy="100" r="4.5"/><circle cx="241" cy="100" r="4.5"/>
+    <circle cx="396" cy="150.1" r="4.5"/><circle cx="551" cy="169.9" r="4.5"/>
+    <circle cx="706" cy="169.9" r="4.5"/><circle cx="860" cy="250" r="4.5"/></g>
+  <g fill="var(--s1)"><circle cx="86" cy="100" r="4.5"/><circle cx="241" cy="139.9" r="4.5"/>
+    <circle cx="396" cy="150.1" r="4.5"/><circle cx="551" cy="180.1" r="4.5"/>
+    <circle cx="706" cy="220" r="4.5"/><circle cx="860" cy="300.1" r="4.5"/></g>
+  <g class="vd">
+    <text x="86" y="86" fill="var(--ink)" text-anchor="middle">4.80</text>
+    <text x="843" y="240" fill="var(--s2)" text-anchor="end">4.30</text>
+    <text x="843" y="316" fill="var(--s1)" text-anchor="end">4.13</text>
+  </g>
+</svg>
+</div>
+<div class="lg"><span><i style="background:var(--s1)"></i>纯对抗臂</span><span><i style="background:var(--s2)"></i>带锚点臂</span></div>
+<p class="cap"><b>深层分逐轮变化。</b>五维均值,每点为六个任务的平均,满分 5。两条臂的最高分都在初版。两条臂的差异在 n=6 下不可分辨,不要读成「给审查者清单更好」。</p>
+</div>
+</figure>
+
+每条臂只有六个任务，所以证据不在均值，而在方向的一致性。两条臂共用同一份初版，十二个格子不是独立样本，把两臂按任务合并成六个独立单元后：
+
+| 任务 | 纯对抗 | 带锚点 | 合并 |
+|---|---:|---:|---:|
+| 日志合并 | −1.0 | −0.4 | −0.7 |
+| 接口限流 | −0.4 | −1.0 | −0.7 |
+| 认证拆分 | −0.4 | −0.2 | −0.3 |
+| 浏览器扩展 | −1.0 | 0.0 | −0.5 |
+| 数据管道 | −0.4 | −0.2 | −0.3 |
+| 功能开关 | −0.8 | −1.2 | −1.0 |
+
+六个任务全部下降，符号检验双侧 p ≈ 0.031。
+
+这里要替读者先说一句：**这个显著性有天花板效应的成分。**依赖顺序、可验收、风险对策三项在初版就是 5.00，只能持平或往下，五维合成分从初版往上只剩 0.20 的空间、往下有约 3.8。也就是说「不下降」本身就比「下降」难发生，检验的零假设是偏的。方向可信，强度别当真。
+
+## 结果二：退化主要发生在范围上
+
+把六个维度拆开：
+
+<figure class="afe afe--loopdims">
+<style>
+.afe--loopdims{margin:2rem 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif}
+.afe--loopdims{--bg:#f7f8f7;--panel:#fff;--ink:#151b1a;--soft:#5a6663;--line:#dcdfdd;--grid:#e6eae8;--s1:#1a6da8;--s2:#c25708;--s3:#9b3080;--inert:#a3ada9;--shadow:0 1px 2px rgba(20,25,25,.06),0 6px 20px rgba(20,25,25,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .afe--loopdims{--bg:#15181a;--panel:#1b1f21;--ink:#e7eae9;--soft:#9aa4a1;--line:#2b3133;--grid:#252b2d;--s1:#4088bf;--s2:#c87730;--s3:#ba5e92;--inert:#69746f;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px rgba(0,0,0,.4)}}
+:root[data-theme="dark"] .afe--loopdims{--bg:#15181a;--panel:#1b1f21;--ink:#e7eae9;--soft:#9aa4a1;--line:#2b3133;--grid:#252b2d;--s1:#4088bf;--s2:#c87730;--s3:#ba5e92;--inert:#69746f;--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px rgba(0,0,0,.4)}
+.afe--loopdims .wrap{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:20px 18px 14px;box-shadow:var(--shadow);overflow-x:auto}
+.afe--loopdims .wrap:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+.afe--loopdims .board{min-width:700px}
+.afe--loopdims svg{width:100%;height:auto;display:block}
+.afe--loopdims .cap{color:var(--soft);font-size:12.5px;line-height:1.55;margin:12px 4px 2px}
+.afe--loopdims .cap b{color:var(--ink)}
+.afe--loopdims .ax{fill:var(--soft);font-size:12px;font-family:ui-monospace,Menlo,monospace}
+.afe--loopdims .sl{font-size:11.5px;font-family:ui-monospace,Menlo,monospace;font-weight:700}
+</style>
+<div class="wrap" tabindex="0" role="img" aria-label="折线图:六个维度逐轮走势。范围忠实从 4.25 降到 2.75,可读性从 4.58 降到 2.50,无虚构从 4.75 降到 3.83,风险对策从 5.00 降到 4.58;依赖顺序与可验收基本不动。"><div class="board">
+<svg viewBox="0 0 900 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <g stroke="var(--grid)" stroke-width="1">
+    <line x1="96" y1="34" x2="790" y2="34"/><line x1="96" y1="86" x2="790" y2="86"/>
+    <line x1="96" y1="138" x2="790" y2="138"/><line x1="96" y1="190" x2="790" y2="190"/>
+    <line x1="96" y1="242" x2="790" y2="242"/>
+  </g>
+  <g class="ax" text-anchor="end">
+    <text x="84" y="38">5.0</text><text x="84" y="90">4.5</text><text x="84" y="142">4.0</text>
+    <text x="84" y="194">3.5</text><text x="84" y="246">3.0</text>
+  </g>
+  <line x1="96" y1="306" x2="790" y2="306" stroke="var(--line)" stroke-width="1"/>
+  <g class="ax" text-anchor="middle">
+    <text x="96" y="326">初版</text><text x="235" y="326">1 轮</text><text x="374" y="326">2 轮</text>
+    <text x="513" y="326">3 轮</text><text x="651" y="326">4 轮</text><text x="790" y="326">5 轮</text>
+  </g>
+  <polyline fill="none" stroke="var(--inert)" stroke-width="1.8" points="96,34 235,34 374,34 513,34 651,34 790,34"/>
+  <polyline fill="none" stroke="var(--inert)" stroke-width="1.8" points="96,34 235,34 374,34 513,34 651,34 790,42.6"/>
+  <polyline fill="none" stroke="var(--inert)" stroke-width="2.2" points="96,34 235,34 374,34 513,42.6 651,34 790,77.4"/>
+  <polyline fill="none" stroke="var(--s3)" stroke-width="2.5" stroke-linejoin="round"
+    points="96,60 235,86 374,112 513,112 651,138 790,155.4"/>
+  <polyline fill="none" stroke="var(--s1)" stroke-width="3" stroke-linejoin="round"
+    points="96,112 235,120.6 374,146.6 513,181.4 651,198.6 790,268"/>
+  <polyline fill="none" stroke="var(--s2)" stroke-width="2.5" stroke-linejoin="round"
+    points="96,77.4 235,146.6 374,190 513,224.6 651,242 790,294"/>
+  <circle cx="790" cy="268" r="4" fill="var(--s1)"/><circle cx="790" cy="294" r="4" fill="var(--s2)"/>
+  <circle cx="790" cy="155.4" r="4" fill="var(--s3)"/>
+  <g class="sl" fill="var(--inert)" font-weight="400">
+    <text x="800" y="32">可验收 0.00</text><text x="800" y="48">依赖顺序 −0.08</text><text x="800" y="81">风险对策 −0.42</text>
+  </g>
+  <g class="sl">
+    <text x="800" y="159" fill="var(--s3)">无虚构 −0.92</text>
+    <text x="800" y="272" fill="var(--s1)">范围忠实 −1.50</text>
+    <text x="800" y="298" fill="var(--s2)">可读性 −2.08</text>
+  </g>
+</svg>
+</div>
+<p class="cap"><b>六个维度的分头走势。</b>十二格合并均值,右侧数字为初版到第五轮的变化。范围忠实贡献了深层分降幅的约一半,无虚构约三成。</p>
+</div>
+</figure>
+
+不是「只有范围坏了」。**范围忠实掉 1.50，贡献了深层分降幅的约一半；无虚构掉 0.92，占约三成；风险对策掉 0.42。**依赖顺序和可验收基本不动，但它们初版就是满分，本来也没地方涨。
+
+无虚构那条线值得单独说一句：**反复自审会让规划开始编需求里没有的约束和事实。**这比范围蔓延更难在 review 时发现，因为编出来的东西读起来往往比真的更具体。
+
+范围失守长什么样？日志合并那个任务的禁止项写得很直白，不许加需求之外的功能，并且点名了并行处理。第五轮的规划里排进了这些东西：滞后重排窗口、两档超长行处理、样本体检脚本、外部归并分支，以及**条件性多进程解析**——正好是被点名禁止的那一项。评审给它记了全场唯一一次禁止项违反。
+
+需要说清的边界：那三条平线同时说明了实验的天花板。它们在初版就是满分，循环没有上升空间。所以这个实验能证明「循环不改善一份已经很好的规划」，不能证明「循环救不回一份差的规划」。后者要故意用弱初版重跑一遍，我没做。
+
+## 机制：永不满足的审查者，加上从不筛选的执行者
+
+<figure class="afe afe--loopmech">
+<style>
+.afe--loopmech{margin:2rem 0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB",sans-serif}
+.afe--loopmech{--bg:#f7f8f7;--panel:#fff;--ink:#151b1a;--soft:#5a6663;--line:#dcdfdd;--s1:#1a6da8;--s2:#c25708;--wash:rgba(194,87,8,.10);--shadow:0 1px 2px rgba(20,25,25,.06),0 6px 20px rgba(20,25,25,.05)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .afe--loopmech{--bg:#15181a;--panel:#1b1f21;--ink:#e7eae9;--soft:#9aa4a1;--line:#2b3133;--s1:#4088bf;--s2:#c87730;--wash:rgba(200,119,48,.16);--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px rgba(0,0,0,.4)}}
+:root[data-theme="dark"] .afe--loopmech{--bg:#15181a;--panel:#1b1f21;--ink:#e7eae9;--soft:#9aa4a1;--line:#2b3133;--s1:#4088bf;--s2:#c87730;--wash:rgba(200,119,48,.16);--shadow:0 1px 2px rgba(0,0,0,.4),0 8px 26px rgba(0,0,0,.4)}
+.afe--loopmech .wrap{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:20px 18px 14px;box-shadow:var(--shadow);overflow-x:auto}
+.afe--loopmech .wrap:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+.afe--loopmech .board{min-width:700px}
+.afe--loopmech svg{width:100%;height:auto;display:block}
+.afe--loopmech .cap{color:var(--soft);font-size:12.5px;line-height:1.55;margin:12px 4px 2px}
+.afe--loopmech .cap b{color:var(--ink)}
+.afe--loopmech .lbl{fill:var(--ink);font-size:15px;font-weight:700}
+.afe--loopmech .sub{fill:var(--soft);font-size:11.5px;font-family:ui-monospace,Menlo,monospace}
+.afe--loopmech .tag{fill:var(--soft);font-size:10.5px;letter-spacing:1.6px;font-family:ui-monospace,Menlo,monospace}
+.afe--loopmech .note{fill:var(--soft);font-size:13px}
+</style>
+<div class="wrap" tabindex="0" role="img" aria-label="示意图:审查者与规划者构成循环。审查者第五轮仍提出 6 到 11 个问题,60 轮里 0 次说没问题;60 份修订版里 54 份写明对当轮意见全部采纳。右侧柱状图从零基线显示篇幅从 9.5K 字符增长到 59K。"><div class="board">
+<svg viewBox="0 0 900 306" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs><marker id="lmah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+    <path d="M0 0 L10 5 L0 10 z" fill="var(--soft)"/></marker></defs>
+  <rect x="60" y="112" width="188" height="76" rx="4" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+  <text class="lbl" x="154" y="145" text-anchor="middle">审查者</text>
+  <text class="sub" x="154" y="167" text-anchor="middle">找问题</text>
+  <rect x="472" y="112" width="188" height="76" rx="4" fill="var(--panel)" stroke="var(--line)" stroke-width="1.5"/>
+  <text class="lbl" x="566" y="145" text-anchor="middle">规划者</text>
+  <text class="sub" x="566" y="167" text-anchor="middle">改规划</text>
+  <path d="M248 137 L462 137" stroke="var(--s1)" stroke-width="2" marker-end="url(#lmah)" fill="none"/>
+  <path d="M472 176 C420 214, 300 214, 248 176" stroke="var(--s2)" stroke-width="2" marker-end="url(#lmah)" fill="none"/>
+  <text class="sub" x="355" y="128" fill="var(--s1)" text-anchor="middle">意见</text>
+  <text class="sub" x="355" y="222" fill="var(--s2)" text-anchor="middle">新版</text>
+  <text class="tag" x="60" y="46">失灵 A · 不收敛</text>
+  <text class="note" x="60" y="72">第 5 轮仍提出 6–11 个问题(纯对抗臂)</text>
+  <text class="note" x="60" y="92">60 轮里 0 次说「没问题」</text>
+  <text class="tag" x="472" y="46">失灵 B · 不筛选</text>
+  <text class="note" x="472" y="72">60 份修订版里 54 份写明</text>
+  <text class="note" x="472" y="92">对当轮意见「全部采纳」</text>
+  <path d="M566 196 L566 232" stroke="var(--soft)" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#lmah)"/>
+  <rect x="60" y="242" width="600" height="42" rx="4" fill="var(--wash)"/>
+  <text class="note" x="78" y="268" fill="var(--ink)" font-size="13.5">结果:篇幅按臂均值每轮增长,需求外的内容不断堆积,范围失守。</text>
+  <text class="tag" x="700" y="46">篇幅 · 零基线</text>
+  <g fill="var(--s1)">
+    <rect x="700" y="216.1" width="22" height="29.9" opacity=".35"/>
+    <rect x="729" y="190.4" width="22" height="55.6" opacity=".48"/>
+    <rect x="758" y="160.6" width="22" height="85.4" opacity=".61"/>
+    <rect x="787" y="127.3" width="22" height="118.7" opacity=".74"/>
+    <rect x="816" y="98.0" width="22" height="148.0" opacity=".87"/>
+    <rect x="845" y="60" width="22" height="186"/>
+  </g>
+  <line x1="694" y1="246" x2="874" y2="246" stroke="var(--line)" stroke-width="1"/>
+  <text class="sub" x="700" y="264">9.5K</text>
+  <text class="sub" x="874" y="264" fill="var(--s1)" text-anchor="end" font-weight="700">59K</text>
+  <text class="tag" x="700" y="282">字符 · 初版 → 5 轮</text>
+</svg>
+</div>
+<p class="cap"><b>循环的两处失灵。</b>审查者永远能找出东西,规划者几乎全盘照收。两者相乘,规划就只会变长。</p>
+</div>
+</figure>
+
+两个数字撑起这张图。审查者在 60 轮里**一次都没说过「没问题」**，第五轮面对一份已经吸收了三十多条修改、篇幅六倍于初版的规划，它照样找出六到十一个问题（纯对抗臂计数）。另一头，60 份修订版里有 54 份明确写着对当轮意见「全部采纳」。
+
+篇幅从 9.5K 涨到 59K 字符。第五轮有一份规划撞到了模型单次输出的长度上限，重试才写出来（这一条来自运行时观察，没有留下日志）——**循环把产物推到了它自己的生成器一次写不完的长度**。
+
+顺带一个和「什么时候该停」直接相关的观察：有工作建议用编辑量饱和当停止信号（[Wu 等](https://arxiv.org/abs/2607.22653) 观察到递归改写几轮后进入软不动点；把编辑量当停止信号是我的推论，不是该文的原话）。我这里没有出现这种收敛，**各轮的十二格平均编辑量始终在两成以上**（0.47 / 0.33 / 0.30 / 0.25 / 0.23），跑到第五轮也没有进入只剩表面改动的状态。逐格看确有个别低点，最低一格 8.7%。这个停止信号在本设置下不成立。
+
+## 一个危险的假信号
+
+同一批评审员，换一种问法，给出完全相反的答案。
+
+问「这两份哪份更好」，它几乎每次都选后改的那份。问「按这套标准给这份打分」，分数却在一路下滑。
+
+| 对比 | 新版胜 | 旧版胜 | 平局 |
+|---|---:|---:|---:|
+| 1 轮 vs 初版 | 12 | 0 | 0 |
+| 2 轮 vs 1 轮 | 12 | 0 | 0 |
+| 3 轮 vs 2 轮 | 12 | 0 | 0 |
+| 4 轮 vs 3 轮 | 11 | 0 | 1 |
+| 5 轮 vs 4 轮 | 12 | 0 | 0 |
+| 5 轮 vs 初版 | 10 | 0 | 1 |
+
+六组对比、71 次判定（最后一组有一次调用未完成），新版 69 胜 0 负 2 平。
+
+这张表来自**未脱敏**的那一遍（下一节会讲什么是脱敏）。理论上它可能被版本号泄露污染，所以我查了脱敏那一遍已完成的部分：51 次判定里，50 次仍判新版胜，0 次判旧版胜。**方向不是泄露造成的。**
+
+成对比较系统性偏好更详尽的那一份。**如果你用它当循环的验收门禁，你会一路收到「正在改善」的确认，直到东西已经坏掉也看不出来。**
+
+## 中途翻车：盲评不只是不告诉评审员轮次
+
+教训先说：**还得确认被评的东西自己不会说。**
+
+跑到评审阶段才发现，规划者每次改完会在正文开头自报家门：
+
+```text
+# T4 实施规划 v6：...
+> 本版基于 v5（P4）修订，处理审查意见 C5 的 H1/H2/H3/H4/M1/M2/M3/M4/M5/L1，
+> 共 10 条，全部采纳。
+```
+
+六十份修订版里有五十四份明写了「全部采纳」这类字样；若按脱敏脚本实际匹配的版本号与意见编号规则算，六十份全部带标记。评审员本该盲评，结果这行字直接告诉它「这是第六版」。
+
+我写了个脚本把这些片段擦掉，平均只删掉 2.5% 的字符，然后把整套评分重跑了一遍：
+
+| 材料 | 初版 | 5 轮后 | 降幅 |
+|---|---:|---:|---:|
+| 未脱敏（评审员看得见版本号） | 4.75 | 4.45 | −0.30 |
+| 脱敏后 | 4.80 | 4.22 | **−0.58** |
+
+降幅接近翻倍。评审员看得见版本号时，给后期版本多打了 0.23 分（纯对抗臂 0.37、带锚点臂 0.20）。**真实退化比第一次测出来的更严重。**本文的深层分曲线、维度分解、逐任务表都以脱敏结果为准；成对比较和退化核查的脱敏重跑没做完（模型额度耗尽），已在上一节标明数据来源。
+
+## 第一轮到底值不值
+
+直觉会说至少第一轮有用。数据没支持：深层分第一轮相对初版基本为零（未脱敏 0.0，脱敏 −0.1），可读性在脱敏一遍是十二格里七格下降、五格持平、零格上升（未脱敏是十一格下降）。
+
+但我把首轮的审查意见逐条读了一遍，它指出的是真缺陷：
+
+- 一个没有声明的前置假设（默认认证是全局中间件，而需求只说了用 Bearer token）；
+- 一条无论挂载正确与否都返回同样状态码、因而没有区分力的验收用例；
+- 一份第一天就能从日志统计出来、却被排到第九天的关键数据；
+- 排期表与「两周交付」的承诺自相矛盾。
+
+这些是真问题。之所以没反映在分数上，是因为相关的三个维度在初版就已经满分，修好了也无处可涨。
+
+所以准确的说法是：**首轮的「批评」有价值，首轮的「自动改后产物」没有。**差别在于谁来决定改什么。我的判断是：规划者把所有意见照单全收时，收益被篇幅膨胀和范围蔓延抵消掉了。这一条是推论——我没有做「人工筛选后再改」的对照臂。
+
+## 这个结论管到哪里为止
+
+本实验测的是**没有外部验证信号**的循环：判定完全来自另一个模型的意见。我没有测这个审查者的假阳性率——首轮那几条批评是真问题。我能确定的只是它**不终止**：六十轮里一次都没说过「没问题」，所以循环没有自然停止点。
+
+它**不覆盖**有真实验证器的循环，比如代码配上测试、编译器和 linter。那种循环每轮都有一个能跑的判定，[Reflexion](https://arxiv.org/abs/2303.11366)（其代码实验用单测结果作反馈）和 [CRITIC](https://arxiv.org/abs/2305.11738)（用工具验证）都显示有效。Reflexion 报告了一组值得记住的数字：自生成单测的假阳性率在两个数据集上是 1.4% 与 16.3%，而它在后者上的增益明显更小——把两者联系起来是我的读法。判定信号的假阳性率决定循环的上限——这一条是文献推论，不是我实测的。
+
+最强的反证来自 [Bohnet 等](https://arxiv.org/abs/2512.24103) 的一篇预印本：它声称在 Blocksworld 规划任务上，**无验证器**的内在自评也有效。如果成立，我的结论就得收窄。我的判断是它不构成反驳，而是划清了边界：Blocksworld 的规划有形式化的正确性判定，模型自评时实际上在对一个可判定的目标做检查，这恰好属于 Kamoi 综述所说「天然适合自纠」的那一类；实施规划没有这个性质。该文也自限于 2024 年 10 月的模型检查点。
+
+还有两个边界要说明：整个实验只用了一个模型家族（生成与评审换了模型但同源），**结论未必跨家族转移**；评审员与生成方同源意味着自偏好只能降低、不能消除。
+
+一句话分界：**每轮的判定来自能跑起来的东西，就可以循环；来自另一个模型的判断，就别循环。**
+
+## 四条可操作的规则
+
+1. **最多跑一轮，并且只取批评。**人工决定采纳哪几条，不要让规划者自动出新版。第二轮起收益为负。
+2. **别用「审查者说没问题」当停止条件。**六十轮里它一次都没说过。用固定轮次上限——注意编辑量饱和在本设置下也没出现，别指望它。
+3. **别用成对比较做验收门禁。**它系统性偏好更长的那份，两遍评分都是这个方向。改用固定评分标准的绝对打分，并且遮蔽版本信息。
+4. **给循环加硬约束：禁止引入需求之外的内容，禁止补充需求没给的事实。**范围忠实和无虚构是两条最大的退化通道，加起来占了八成降幅。
+
+最后一句判断。这套循环失败的方式不是「改错了」，而是**它把「找得到问题」当成了「应该改」**。审查者永远找得到问题，这是它的本职；出问题的是没人负责说「这条不改」。人工只要守住这一个位置，前面那些退化通道大部分就关上了——这也是为什么规则一强调的是取批评，而不是取新版。
+
+## 实验本身的局限
+
+- **天花板效应。**三个维度在初版就接近满分，本设置观测不到「越改越好」，也让符号检验的零假设偏向下降。这是评分标准的设计缺陷。
+- **必备项清单没有区分度。**初版就已经全部满足，全程无变化；两条臂的差异在 n=6 下也不可分辨。
+- **单一模型家族**，评审与生成同源。
+- **脱敏那一遍的成对比较与退化核查未跑完。**深层分两遍各 72 项全部完成；成对比较的脱敏部分已跑的 51 次判定与未脱敏同方向。
+- **每格一个样本，无重复采样。**稳健性来自六个任务方向一致，而非格内重复。
+
+## 相关工作
+
+标「预印本」的未经同行评审。会议信息只在 arXiv 页面明确标注时才写；每条的编号、标题、作者、年份与会议均已逐条核对。
+
+**自纠错为什么会退化**
+
+- [Large Language Models Cannot Self-Correct Reasoning Yet](https://arxiv.org/abs/2310.01798)（Huang 等，2023 · ICLR 2024）——无外部反馈的内在自纠错往往不能改善，有时反而变差。
+- [When Can LLMs Actually Correct Their Own Mistakes?](https://arxiv.org/abs/2406.01297)（Kamoi 等，2024 · TACL）——除少数天然极适合自纠的任务外，没有工作证明仅靠 prompt 的反馈能成功自纠；有效前提是可靠外部反馈**或**大规模微调。
+- [Spontaneous Reward Hacking in Iterative Self-Refinement](https://arxiv.org/abs/2407.04549)（Pan 等，2024）——评审分上升而人类评分持平或下降。最贴近本实验。
+- [Pride and Prejudice: LLM Amplifies Self-Bias in Self-Refinement](https://arxiv.org/abs/2402.11436)（Xu 等，2024）
+- [Multi-Agent LLMs for Generating Research Limitations](https://arxiv.org/abs/2601.11578)（Al Azher 等，2026 · 预印本）——第一轮反馈有帮助，第二轮反而使多数 agent 下降。
+
+**什么样的循环才有效**
+
+- [Reflexion](https://arxiv.org/abs/2303.11366)（Shinn 等，2023）
+- [CRITIC](https://arxiv.org/abs/2305.11738)（Gou 等，2023 · ICLR 2024）
+- [Self-Refine](https://arxiv.org/abs/2303.17651)（Madaan 等，2023）——最多跑到 4 轮，明确报告收益递减。
+- [Self-Correction as Feedback Control](https://arxiv.org/abs/2604.22273)（Liu 等，2026 · 预印本）——稳定条件是纠错率与引错率的**比值**，不是轮次阈值。
+- [Is Self-Repair a Silver Bullet for Code Generation?](https://arxiv.org/abs/2306.09896)（Olausson 等，2023 · ICLR 2024）
+
+**评审偏差，本实验据此设计**
+
+- [Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena](https://arxiv.org/abs/2306.05685)（Zheng 等，2023 · NeurIPS 2023 D&B）——位置交换、不一致记平局的做法出自这里。
+- [Large Language Models are not Fair Evaluators](https://arxiv.org/abs/2305.17926)（Wang 等，2023）
+- [LLM Evaluators Recognize and Favor Their Own Generations](https://arxiv.org/abs/2404.13076)（Panickssery 等，2024）
+- [Quantifying and Mitigating Self-Preference Bias of LLM Judges](https://arxiv.org/abs/2604.22891)（Yang 等，2026 · 预印本）——结构化多维评分的依据。
+
+**循环会在哪里停下**
+
+- [Improving Factuality and Reasoning in Language Models through Multiagent Debate](https://arxiv.org/abs/2305.14325)（Du 等，2023）
+- [Do Language Models Converge to Themselves?](https://arxiv.org/abs/2607.22653)（Wu 等，2026 · 预印本）

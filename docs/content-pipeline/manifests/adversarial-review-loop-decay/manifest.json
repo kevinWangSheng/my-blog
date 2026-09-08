@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "type": "essays",
+      "file": "adversarial-review-loop-decay.md",
+      "slug": "adversarial-review-loop-decay",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "pan-spontaneous-reward-hacking.md",
+      "slug": "pan-spontaneous-reward-hacking",
+      "publish": true,
+      "visibility": "public"
+    },
+    {
+      "type": "links",
+      "file": "kamoi-when-can-llms-self-correct.md",
+      "slug": "kamoi-when-can-llms-self-correct",
+      "publish": true,
+      "visibility": "public"
+    }
+  ]
+}
